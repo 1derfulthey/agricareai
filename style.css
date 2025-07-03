@@ -186,18 +186,10 @@ canvas {
     align-items: center;
     color: #888;
     padding: 20px;
-    text-align: center;
 }
 
 .placeholder-box i {
     color: var(--primary-light);
-    margin-bottom: 15px;
-}
-
-.placeholder-box p {
-    font-size: 18px;
-    margin-top: 10px;
-    color: #666;
 }
 
 .action-buttons {
@@ -267,7 +259,6 @@ canvas {
     border-radius: 5px;
 }
 
-/* สไตล์สำหรับคำแนะนำ */
 .advice-box {
     margin-top: 10px;
     padding: 10px;
@@ -323,13 +314,7 @@ canvas {
     font-size: 1.1em;
 }
 
-.loading-state {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.loading-state i {
+.fa-spinner {
     animation: spin 1s linear infinite;
 }
 
@@ -416,7 +401,6 @@ canvas {
     line-height: 1.5;
 }
 
-/* Animation */
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -431,7 +415,6 @@ canvas {
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
     .container {
         padding: 20px;

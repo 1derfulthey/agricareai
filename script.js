@@ -2,8 +2,8 @@ const MODEL_URL = "https://teachablemachine.withgoogle.com/models/gCL-xqZ8C/";
 
 // องค์ประกอบ DOM
 const webcamButton = document.getElementById("webcamButton");
-const fileUpload = document.getElementById("fileUpload");
 const uploadButton = document.getElementById("uploadButton");
+const fileUpload = document.getElementById("fileUpload");
 const retakeButton = document.getElementById("retakeButton");
 const analyzeButton = document.getElementById("analyzeButton");
 const webcamElement = document.getElementById("webcam");
@@ -68,18 +68,14 @@ const insectAdvice = {
 
 // ฟังก์ชันเริ่มต้น
 async function init() {
-    resultText.innerText = "กำลังโหลดโมเดล AI...";
-    
     try {
         model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
         maxPredictions = model.getTotalClasses();
-        resultText.innerText = "พร้อมใช้งาน! กรุณาอัปโหลดหรือถ่ายภาพแมลง";
+        resultText.innerText = "พร้อมใช้งาน! กรุณาถ่ายภาพแมลง";
     } catch (error) {
         console.error("ข้อผิดพลาดในการโหลดโมเดล:", error);
         resultText.innerText = "ไม่สามารถโหลดโมเดล AI ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต";
     }
-
-    resetUI();
 }
 
 // รีเซ็ต UI
@@ -87,7 +83,7 @@ function resetUI() {
     webcamElement.style.display = 'none';
     uploadedImageElement.style.display = 'none';
     canvasElement.style.display = 'none';
-    placeholderImage.style.display = 'flex';
+    placeholderImage.style.display = 'none';
     actionButtons.style.display = 'none';
     confidenceBar.style.width = '0%';
 }
@@ -96,13 +92,8 @@ function resetUI() {
 async function toggleWebcamAndCapture() {
     if (!isWebcamRunning) {
         try {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                throw new Error("อุปกรณ์ของคุณไม่รองรับการใช้งานกล้อง");
-            }
-
             resetUI();
-            resultText.innerText = "กำลังพรีวิวกล้อง...";
-
+            
             webcamElement.style.display = 'block';
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: { width: 400, height: 300, facingMode: "environment" },
@@ -113,9 +104,8 @@ async function toggleWebcamAndCapture() {
             webcamButton.innerHTML = '<i class="fas fa-camera"></i> ถ่ายภาพ';
         } catch (error) {
             console.error("ไม่สามารถเปิดกล้อง:", error);
-            resultText.innerText = "ไม่สามารถเข้าถึงกล้องได้: " + error.message;
+            resultText.innerText = "ไม่สามารถเข้าถึงกล้องได้";
             webcamButton.innerHTML = '<i class="fas fa-camera"></i> เปิดกล้อง';
-            placeholderImage.style.display = 'flex';
         }
     } else {
         capturePhoto();
@@ -139,7 +129,6 @@ function capturePhoto() {
 
         uploadedImageElement.src = resizedCanvas.toDataURL();
         uploadedImageElement.style.display = 'block';
-        placeholderImage.style.display = 'none';
         actionButtons.style.display = 'flex';
         currentImage = resizedCanvas;
         resultText.innerText = "พร้อมวิเคราะห์ภาพ";
@@ -151,8 +140,6 @@ function capturePhoto() {
 
 // ปรับขนาดรูปภาพ
 function resizeImage(image, width = 224, height = 224) {
-    if (!image) return null;
-    
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
@@ -163,23 +150,8 @@ function resizeImage(image, width = 224, height = 224) {
 
 // จัดการอัปโหลดไฟล์
 function handleFileUpload(event) {
-    if (isWebcamRunning) {
-        const stream = webcamElement.srcObject;
-        if (stream) {
-            const tracks = stream.getTracks();
-            tracks.forEach(track => track.stop());
-        }
-        isWebcamRunning = false;
-        webcamElement.style.display = 'none';
-        webcamElement.srcObject = null;
-        webcamButton.innerHTML = '<i class="fas fa-camera"></i> เปิดกล้อง';
-    }
-
     const file = event.target.files[0];
-    if (!file) {
-        resultText.innerText = "ไม่ได้เลือกไฟล์";
-        return;
-    }
+    if (!file) return;
 
     resultText.innerText = "กำลังประมวลผลรูปภาพ...";
     resetUI();
@@ -192,58 +164,39 @@ function handleFileUpload(event) {
                 const resizedCanvas = resizeImage(img);
                 uploadedImageElement.src = resizedCanvas.toDataURL();
                 uploadedImageElement.style.display = 'block';
-                placeholderImage.style.display = 'none';
                 actionButtons.style.display = 'flex';
                 currentImage = resizedCanvas;
                 resultText.innerText = "พร้อมวิเคราะห์ภาพ";
             } catch (error) {
                 console.error("ข้อผิดพลาดในการประมวลผลภาพ:", error);
                 resultText.innerText = "ไม่สามารถโหลดรูปภาพได้";
-                placeholderImage.style.display = 'flex';
             }
         };
         img.onerror = () => {
             resultText.innerText = "ไม่สามารถโหลดรูปภาพได้";
-            placeholderImage.style.display = 'flex';
         };
         img.src = e.target.result;
     };
     reader.onerror = () => {
         resultText.innerText = "ไม่สามารถอ่านไฟล์ได้";
-        placeholderImage.style.display = 'flex';
     };
     reader.readAsDataURL(file);
 }
 
 // ทำนายภาพ
 async function predict(image) {
-    if (!model) {
-        resultText.innerText = "ยังไม่ได้โหลดโมเดล";
-        return;
-    }
-
-    if (!image) {
-        resultText.innerText = "ไม่มีภาพที่จะวิเคราะห์";
+    if (!model || !image) {
+        resultText.innerText = "ยังไม่ได้โหลดโมเดลหรือไม่มีภาพที่จะวิเคราะห์";
         return;
     }
 
     try {
-        resultText.innerHTML = `
-            <div class="loading-state">
-                <i class="fas fa-spinner fa-spin"></i> กำลังวิเคราะห์ภาพ...
-            </div>
-        `;
+        resultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังวิเคราะห์ภาพ...';
         
-        // ปรับขนาดภาพหากจำเป็น
-        if (image.width !== 224 || image.height !== 224) {
-            image = resizeImage(image);
-        }
-
         const prediction = await model.predict(image);
         let highestProbability = 0;
         let predictedClass = "ไม่ทราบ";
 
-        // หาคลาสที่มีความน่าจะเป็นสูงสุด
         for (let i = 0; i < maxPredictions; i++) {
             const { className, probability } = prediction[i];
             if (probability > highestProbability) {
@@ -252,10 +205,8 @@ async function predict(image) {
             }
         }
 
-        // อัปเดตความมั่นใจ
         confidenceBar.style.width = `${highestProbability * 100}%`;
         
-        // แสดงผลลัพธ์
         if (highestProbability > 0.8) {
             const adviceData = insectAdvice[predictedClass] || {
                 type: "unknown",
@@ -284,14 +235,10 @@ async function predict(image) {
                 </div>
             `;
 
-            // ตั้งค่าสีตามประเภท
-            if (adviceData.type === "friendly") {
-                confidenceBar.style.backgroundColor = "var(--primary-color)";
-            } else if (adviceData.type === "pest") {
-                confidenceBar.style.backgroundColor = "var(--danger-color)";
-            } else {
-                confidenceBar.style.backgroundColor = "var(--warning-color)";
-            }
+            confidenceBar.style.backgroundColor = 
+                adviceData.type === "friendly" ? "var(--primary-color)" :
+                adviceData.type === "pest" ? "var(--danger-color)" :
+                "var(--warning-color)";
         } else {
             resultText.innerHTML = `
                 <div>ไม่สามารถระบุชนิดแมลงได้แน่ชัด (ความมั่นใจต่ำกว่า 80%)</div>
@@ -319,13 +266,7 @@ webcamButton.addEventListener("click", toggleWebcamAndCapture);
 uploadButton.addEventListener("click", () => fileUpload.click());
 fileUpload.addEventListener("change", handleFileUpload);
 retakeButton.addEventListener("click", resetUI);
-analyzeButton.addEventListener("click", () => {
-    if (currentImage) {
-        predict(currentImage);
-    } else {
-        resultText.innerText = "ไม่มีภาพที่จะวิเคราะห์";
-    }
-});
+analyzeButton.addEventListener("click", () => predict(currentImage));
 
 // เริ่มโหลดโมเดลเมื่อหน้าเว็บโหลดเสร็จ
 window.addEventListener('load', init);

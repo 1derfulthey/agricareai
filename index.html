@@ -11,9 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- TensorFlow.js & Teachable Machine -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -35,10 +32,10 @@
             <button id="webcamButton" type="button" class="btn-primary">
                 <i class="fas fa-camera"></i> เปิดกล้อง
             </button>
-            <input type="file" id="fileUpload" accept="image/*" capture="environment" style="display: none;">
             <button id="uploadButton" type="button" class="btn-secondary">
-                <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
+                <i class="fas fa-upload"></i> ถ่ายภาพใหม่
             </button>
+            <input type="file" id="fileUpload" accept="image/*" capture="environment" style="display: none;">
         </div>
 
         <div class="image-display-area">
@@ -46,9 +43,8 @@
                 <video id="webcam" autoplay playsinline style="display: none;"></video>
                 <img id="uploadedImage" alt="รูปภาพที่อัปโหลด" style="display: none;">
                 <canvas id="canvas" style="display: none;"></canvas>
-                <div id="placeholderImage" class="placeholder-box">
+                <div id="placeholderImage" class="placeholder-box" style="display: none;">
                     <i class="fas fa-insect fa-3x"></i>
-                    <p>กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง</p>
                 </div>
             </div>
             
@@ -68,7 +64,7 @@
                 <h3>ผลการวิเคราะห์</h3>
             </div>
             <div class="result-content">
-                <p id="resultText">กำลังโหลดโมเดล AI...</p>
+                <p id="resultText">กรุณาถ่ายภาพแมลงเพื่อเริ่มการวิเคราะห์</p>
                 <div id="confidenceBar" class="confidence-bar">
                     <div class="confidence-level"></div>
                 </div>
@@ -105,6 +101,9 @@
         </div>
     </footer>
 
+    <!-- TensorFlow.js & Teachable Machine -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <!-- Custom script -->
     <script src="script.js"></script>
 </body>
