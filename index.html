@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="แอปพลิเคชันระบุชนิดแมลงทางการเกษตรด้วย AI เทคโนโลยีล้ำสมัย">
     <title>AgriBug-AI - เครื่องมือตรวจแยกแมลงทางการเกษตร</title>
-    <!-- Favicon -->
     <link rel="icon" href="favicon.ico">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,21 +26,22 @@
 
         <div class="camera-upload-section">
             <button id="webcamButton" type="button" class="btn-primary">
-                <i class="fas fa-camera"></i> เปิดกล้อง
+                <i class="fas fa-camera"></i> ถ่ายภาพ
             </button>
             <button id="uploadButton" type="button" class="btn-secondary">
-                <i class="fas fa-upload"></i> ถ่ายภาพใหม่
+                <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
             </button>
-            <input type="file" id="fileUpload" accept="image/*" capture="environment" style="display: none;">
+            <!-- แก้ไขตรงนี้: ลบ capture="environment" ออก -->
+            <input type="file" id="fileUpload" accept="image/*" style="display: none;">
         </div>
 
         <div class="image-display-area">
             <div class="image-container">
                 <video id="webcam" autoplay playsinline style="display: none;"></video>
                 <img id="uploadedImage" alt="รูปภาพที่อัปโหลด" style="display: none;">
-                <canvas id="canvas" style="display: none;"></canvas>
-                <div id="placeholderImage" class="placeholder-box" style="display: none;">
+                <div id="placeholderImage" class="placeholder-box">
                     <i class="fas fa-insect fa-3x"></i>
+                    <p>กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง</p>
                 </div>
             </div>
             
@@ -58,16 +55,14 @@
             </div>
         </div>
 
-        <div id="predictionResult" class="result-box">
+        <div id="predictionResult" class="result-box" style="display: none;">
             <div class="result-header">
                 <i class="fas fa-clipboard-check"></i>
                 <h3>ผลการวิเคราะห์</h3>
             </div>
             <div class="result-content">
-                <p id="resultText">กรุณาถ่ายภาพแมลงเพื่อเริ่มการวิเคราะห์</p>
-                <div id="confidenceBar" class="confidence-bar">
-                    <div class="confidence-level"></div>
-                </div>
+                <div id="resultText"></div>
+                <div id="additionalInfo" class="additional-info"></div>
             </div>
         </div>
     </div>
@@ -92,19 +87,19 @@
 
     <footer class="developer-footer">
         <div class="footer-content">
-            <p>พัฒนาโดย</p>
             <div class="developer-info">
                 <img src="https://via.placeholder.com/50" alt="โลโก้โรงเรียน" class="school-logo">
-                <p>โรงเรียนเทศบาลเฉลิมพระเกียรติสมเด็จพระเทพรัตนราชสุดา ฯ สยามบรมราชกุมารี<br>
-                สังกัดเทศบาลนครแม่สอด อำเภอแม่สอด จังหวัดตาก</p>
+                <div class="developer-text">
+                    <p>พัฒนาโดย</p>
+                    <p>โรงเรียนเทศบาลเฉลิมพระเกียรติสมเด็จพระเทพรัตนราชสุดา ฯ สยามบรมราชกุมารี</p>
+                    <p>สังกัดเทศบาลนครแม่สอด อำเภอแม่สอด จังหวัดตาก</p>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- TensorFlow.js & Teachable Machine -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <!-- Custom script -->
     <script src="script.js"></script>
 </body>
 </html>

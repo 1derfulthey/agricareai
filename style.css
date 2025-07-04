@@ -142,14 +142,14 @@ h1 {
     width: 100%;
     min-height: 350px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* จัดเรียงลูกในแนวตั้ง */
+    /* ลบ justify-content และ align-items ออกจากที่นี่ */
     border: 2px dashed #c8e6c9;
     border-radius: 15px;
     overflow: hidden;
     background-color: #f9f9f9;
     transition: all 0.3s ease;
+    padding: 20px;
 }
 
 .image-display-area:hover {
@@ -158,38 +158,44 @@ h1 {
 
 .image-container {
     width: 100%;
-    height: 100%;
+    flex-grow: 1; /* ทำให้ image-container ขยายเต็มพื้นที่ว่างที่เหลือในแนวตั้ง */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    flex-direction: column; /* จัดเรียงลูกในแนวตั้ง */
+    justify-content: center; /* จัดกลางลูกในแนวตั้ง */
+    align-items: center; /* จัดกลางลูกในแนวนอน */
+    position: relative;
 }
 
-video, img {
+video, #uploadedImage {
     max-width: 100%;
-    max-height: 400px;
+    max-height: 100%; /* ให้รูปภาพ/วิดีโอขยายได้เต็มความสูงของ container */
+    width: auto;
+    height: auto;
     object-fit: contain;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-canvas {
-    display: none;
+    display: block;
+    /* margin: auto; <-- ลบบรรทัดนี้ออก */
 }
 
 .placeholder-box {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #888;
-    padding: 20px;
+    height: 100%; /* ทำให้ placeholder-box ขยายเต็มความสูงของ image-container */
+    width: 100%;
+    text-align: center;
 }
 
 .placeholder-box i {
     color: var(--primary-light);
+    margin-bottom: 15px;
+}
+
+.placeholder-box p {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #666;
 }
 
 .action-buttons {
@@ -242,87 +248,71 @@ canvas {
     font-size: 18px;
 }
 
-.confidence-bar {
-    width: 100%;
-    height: 10px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
+.additional-info {
     margin-top: 15px;
-    overflow: hidden;
 }
 
-.confidence-level {
-    height: 100%;
-    background-color: var(--primary-color);
-    width: 0%;
-    transition: width 0.5s ease, background-color 0.3s ease;
-    border-radius: 5px;
-}
-
-.advice-box {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #f8f9fa;
-}
-
-.advice-box.friendly {
-    border-left: 4px solid var(--primary-color);
-}
-
-.advice-box.pest {
-    border-left: 4px solid var(--danger-color);
-}
-
-.advice-box.unknown {
-    border-left: 4px solid var(--warning-color);
-}
-
-.advice-header, .advice-detail, .advice-solution {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.advice-header i, .advice-detail i, .advice-solution i {
-    margin-right: 8px;
-    width: 20px;
-    text-align: center;
-}
-
-.advice-header {
+.insect-type-label {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
-.advice-detail {
-    font-size: 14px;
-    color: #555;
-}
-
-.advice-solution {
-    font-size: 14px;
-    padding: 6px;
+.insect-type-label.beneficial {
     background-color: #e8f5e9;
-    border-radius: 4px;
+    color: var(--primary-dark);
+    border: 2px solid var(--primary-color);
 }
 
-.prediction-header {
-    margin-bottom: 8px;
+.insect-type-label.pest {
+    background-color: #ffebee;
+    color: var(--danger-color);
+    border: 2px solid var(--danger-color);
 }
 
-.prediction-header strong {
-    font-size: 1.1em;
+.insect-details {
+    margin-top: 15px;
 }
 
-.fa-spinner {
-    animation: spin 1s linear infinite;
+.insect-details p {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.insect-details i {
+    margin-right: 10px;
+    margin-top: 3px;
+    min-width: 20px;
+    color: var(--primary-color);
+}
+
+.unknown-result {
+    padding: 15px;
+    background-color: #fff8e1;
+    border-radius: 8px;
+    border-left: 4px solid var(--warning-color);
+    margin-top: 15px;
+}
+
+.unknown-result i {
+    color: var(--warning-color);
+    margin-right: 10px;
 }
 
 .error-message {
+    padding: 15px;
+    background-color: #ffebee;
+    border-radius: 8px;
+    border-left: 44px solid var(--danger-color);
     color: var(--danger-color);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+}
+
+.error-message i {
+    margin-right: 10px;
 }
 
 .features-section {
@@ -368,10 +358,9 @@ canvas {
 .developer-footer {
     background-color: var(--primary-dark);
     color: white;
-    padding: 20px 0;
+    padding: 30px 0;
     text-align: center;
     margin-top: 40px;
-    font-size: 14px;
 }
 
 .footer-content {
@@ -382,22 +371,28 @@ canvas {
 
 .developer-info {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 15px;
-    margin-top: 10px;
 }
 
 .school-logo {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid white;
+    margin-bottom: 10px;
 }
 
-.developer-footer p {
-    margin: 5px 0;
+.developer-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.developer-text p {
+    margin: 3px 0;
     line-height: 1.5;
 }
 
@@ -489,5 +484,15 @@ canvas {
     
     .school-logo {
         margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-display-area {
+        min-height: 280px;
+    }
+    
+    video, #uploadedImage {
+        max-height: 100%; /* ยังคงเป็น 100% */
     }
 }

@@ -1,272 +1,243 @@
 const MODEL_URL = "https://teachablemachine.withgoogle.com/models/gCL-xqZ8C/";
 
-// องค์ประกอบ DOM
-const webcamButton = document.getElementById("webcamButton");
-const uploadButton = document.getElementById("uploadButton");
-const fileUpload = document.getElementById("fileUpload");
-const retakeButton = document.getElementById("retakeButton");
-const analyzeButton = document.getElementById("analyzeButton");
-const webcamElement = document.getElementById("webcam");
-const uploadedImageElement = document.getElementById("uploadedImage");
-const canvasElement = document.getElementById("canvas");
-const ctx = canvasElement.getContext("2d");
-const resultText = document.getElementById("resultText");
-const placeholderImage = document.getElementById("placeholderImage");
-const confidenceBar = document.querySelector(".confidence-level");
-const actionButtons = document.querySelector(".action-buttons");
+// --- DOM Elements ---
+const elements = {
+    webcamButton: document.getElementById("webcamButton"),
+    uploadButton: document.getElementById("uploadButton"),
+    fileUpload: document.getElementById("fileUpload"),
+    retakeButton: document.getElementById("retakeButton"),
+    analyzeButton: document.getElementById("analyzeButton"),
+    webcam: document.getElementById("webcam"),
+    uploadedImage: document.getElementById("uploadedImage"),
+    placeholderImage: document.getElementById("placeholderImage"),
+    actionButtons: document.querySelector(".action-buttons"),
+    predictionResult: document.getElementById("predictionResult"),
+    resultText: document.getElementById("resultText"),
+    additionalInfo: document.getElementById("additionalInfo")
+};
 
-// ตัวแปรสถานะ
-let model, maxPredictions;
-let isWebcamRunning = false;
-let currentImage = null;
+// --- State Management ---
+const state = {
+    model: null,
+    isWebcamActive: false,
+    currentImage: null
+};
 
-// ข้อมูลคำแนะนำสำหรับแมลงแต่ละชนิด
-const insectAdvice = {
+// --- Insect Database ---
+const INSECT_DB = {
     "Lady Beetles - ด้วงเต่าลาย": {
-        type: "friendly",
-        advice: "ด้วงเต่าลายเป็นแมลงมีประโยชน์",
-        detail: "ตัวเต็มวัยกินเพลี้ยวันละ 50-60 ตัว ควรอนุรักษ์ในสวน",
-        solution: "ปลูกพืชดอกสีเหลืองเพื่อดึงดูดด้วงเต่าลาย"
+        type: "beneficial",
+        description: "ด้วงเต่าลาย",
+        details: "เป็นแมลงมีประโยชน์ ตัวเต็มวัยกินเพลี้ยวันละ 50-60 ตัว",
+        recommendation: "ควรอนุรักษ์ในสวน โดยปลูกพืชดอกสีเหลืองเพื่อดึงดูด"
     },
     "Green Lacewing - แมลงช้างปีกใส": {
-        type: "friendly",
-        advice: "แมลงช้างปีกใสเป็นแมลงมีประโยชน์",
-        detail: "ตัวอ่อนกินเพลี้ยและไรศัตรูพืช ช่วยควบคุมประชากรศัตรูพืช",
-        solution: "ปลูกพืชมีดอกเล็กๆ เพื่อดึงดูดตัวเต็มวัย"
+        type: "beneficial",
+        description: "แมลงช้างปีกใส",
+        details: "เป็นแมลงมีประโยชน์ ตัวอ่อนกินเพลี้ยและไรศัตรูพืช",
+        recommendation: "ควรปลูกพืชมีดอกเล็กๆ เพื่อดึงดูดตัวเต็มวัย"
     },
     "Stink Bug - มวนพิฆาต": {
-        type: "friendly",
-        advice: "มวนพิฆาตเป็นแมลงมีประโยชน์",
-        detail: "กินหนอนและไข่ของแมลงศัตรูพืชหลายชนิด",
-        solution: "รักษาสมดุลธรรมชาติในสวน"
+        type: "beneficial",
+        description: "มวนพิฆาต",
+        details: "เป็นแมลงมีประโยชน์ กินหนอนและไข่ของแมลงศัตรูพืชหลายชนิด",
+        recommendation: "ควรรักษาสมดุลธรรมชาติในสวน"
     },
     "Assassin Bug - มวนเพชฌฆาต": {
-        type: "friendly",
-        advice: "มวนเพชฌฆาตเป็นแมลงมีประโยชน์",
-        detail: "ล่าแมลงศัตรูพืชขนาดเล็กด้วยการดูดของเหลว",
-        solution: "ไม่ควรใช้สารเคมีเพราะจะทำลายประชากรมวนชนิดนี้"
+        type: "beneficial",
+        description: "มวนเพชฌฆาต",
+        details: "เป็นแมลงมีประโยชน์ ล่าแมลงศัตรูพืชขนาดเล็ก",
+        recommendation: "ไม่ควรใช้สารเคมีรุนแรงเพราะจะทำลายมวนชนิดนี้"
     },
     "Mealybugs - เพลี้ยแป้ง": {
         type: "pest",
-        advice: "เพลี้ยแป้งศัตรูพืชร้ายแรง",
-        detail: "ดูดน้ำเลี้ยงทำให้พืชแคระแกร็นและผลิตน้ำหวานที่ทำให้เกิดราดำ",
-        solution: "ใช้สารสะเดาหรือเชื้อราบิวเวอร์เรียฉีดพ่น"
+        description: "เพลี้ยแป้ง",
+        details: "เป็นศัตรูพืชร้ายแรง ดูดน้ำเลี้ยงทำให้พืชแคระแกร็น",
+        recommendation: "ควรใช้สารสะเดาหรือเชื้อราบิวเวอร์เรียฉีดพ่น"
     },
     "Cutworm - หนอนกระทู้": {
         type: "pest",
-        advice: "หนอนกระทู้กัดกินใบพืช",
-        detail: "กัดกินใบและลำต้นพืชอ่อนในเวลากลางคืน",
-        solution: "ใช้เชื้อ Bt (Bacillus thuringiensis) ฉีดพ่นตอนเย็น"
+        description: "หนอนกระทู้",
+        details: "เป็นศัตรูพืช กัดกินใบและลำต้นพืชอ่อนในเวลากลางคืน",
+        recommendation: "ควรใช้เชื้อ Bt (Bacillus thuringiensis) ฉีดพ่นตอนเย็น"
     },
     "Striped Flea Beetle - ด้วงหมัดผักแถบลาย": {
         type: "pest",
-        advice: "ด้วงหมัดผักแถบลายทำลายพืช",
-        detail: "กัดกินใบพืชทำให้เป็นรูพรุน โดยเฉพาะพืชตระกูลกะหล่ำ",
-        solution: "ใช้สเปรย์พริกไทยหรือคลุมดินด้วยวัสดุสะท้อนแสง"
+        description: "ด้วงหมัดผักแถบลาย",
+        details: "เป็นศัตรูพืช กัดกินใบพืชทำให้เป็นรูพรุน",
+        recommendation: "ควรใช้สเปรย์พริกไทยหรือคลุมดินด้วยวัสดุสะท้อนแสง"
+    },
+    "unknown": {
+        type: "unknown",
+        description: "ไม่สามารถระบุชนิดได้",
+        details: "ระบบไม่สามารถระบุชนิดแมลงนี้ได้ อาจเป็นเพราะ:",
+        reasons: [
+            "ภาพไม่ชัดเจนหรือมีแสงน้อย/มากเกินไป",
+            "มุมของภาพไม่เหมาะสมสำหรับการระบุชนิด",
+            "แมลงไม่ได้อยู่ในฐานข้อมูลของโมเดล"
+        ],
+        recommendation: "กรุณาถ่ายภาพใหม่อีกครั้งให้ชัดเจน หรือปรึกษาผู้เชี่ยวชาญ"
     }
 };
 
-// ฟังก์ชันเริ่มต้น
-async function init() {
+// --- Main Functions ---
+
+async function initializeApp() {
+    showInfoMessage("กำลังเตรียม AI ให้พร้อมใช้งาน...");
     try {
-        model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
-        maxPredictions = model.getTotalClasses();
-        resultText.innerText = "พร้อมใช้งาน! กรุณาถ่ายภาพแมลง";
+        state.model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+        resetUI();
     } catch (error) {
-        console.error("ข้อผิดพลาดในการโหลดโมเดล:", error);
-        resultText.innerText = "ไม่สามารถโหลดโมเดล AI ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต";
+        console.error("Failed to load model:", error);
+        showErrorMessage("ไม่สามารถโหลดโมเดล AI ได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วรีเฟรชหน้าเว็บ");
     }
 }
 
-// รีเซ็ต UI
 function resetUI() {
-    webcamElement.style.display = 'none';
-    uploadedImageElement.style.display = 'none';
-    canvasElement.style.display = 'none';
-    placeholderImage.style.display = 'none';
-    actionButtons.style.display = 'none';
-    confidenceBar.style.width = '0%';
+    stopWebcam();
+    elements.webcam.style.display = "none";
+    elements.uploadedImage.style.display = "none";
+    elements.placeholderImage.style.display = "flex";
+    elements.actionButtons.style.display = "none";
+    elements.predictionResult.style.display = "none";
+    elements.webcamButton.innerHTML = '<i class="fas fa-camera"></i> เปิดกล้อง';
+    state.currentImage = null;
+    document.getElementById('fileUpload').value = ''; // Reset file input
 }
 
-// เปิด/ปิด กล้องและถ่ายภาพ
-async function toggleWebcamAndCapture() {
-    if (!isWebcamRunning) {
-        try {
-            resetUI();
-            
-            webcamElement.style.display = 'block';
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 400, height: 300, facingMode: "environment" },
-                audio: false
-            });
-            webcamElement.srcObject = stream;
-            isWebcamRunning = true;
-            webcamButton.innerHTML = '<i class="fas fa-camera"></i> ถ่ายภาพ';
-        } catch (error) {
-            console.error("ไม่สามารถเปิดกล้อง:", error);
-            resultText.innerText = "ไม่สามารถเข้าถึงกล้องได้";
-            webcamButton.innerHTML = '<i class="fas fa-camera"></i> เปิดกล้อง';
-        }
-    } else {
-        capturePhoto();
-    }
-}
-
-// ถ่ายภาพจากกล้อง
-function capturePhoto() {
-    if (!isWebcamRunning) return;
-    
+async function startWebcam() {
+    resetUI();
     try {
-        const resizedCanvas = resizeImage(webcamElement);
-        const stream = webcamElement.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-        
-        isWebcamRunning = false;
-        webcamElement.style.display = 'none';
-        webcamElement.srcObject = null;
-        webcamButton.innerHTML = '<i class="fas fa-camera"></i> เปิดกล้อง';
-
-        uploadedImageElement.src = resizedCanvas.toDataURL();
-        uploadedImageElement.style.display = 'block';
-        actionButtons.style.display = 'flex';
-        currentImage = resizedCanvas;
-        resultText.innerText = "พร้อมวิเคราะห์ภาพ";
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" }
+        });
+        elements.webcam.srcObject = stream;
+        elements.webcam.style.display = "block";
+        elements.placeholderImage.style.display = "none";
+        state.isWebcamActive = true;
+        elements.webcamButton.innerHTML = '<i class="fas fa-camera"></i> ถ่ายภาพ';
     } catch (error) {
-        console.error("ข้อผิดพลาดในการถ่ายภาพ:", error);
-        resultText.innerText = "เกิดข้อผิดพลาดในการถ่ายภาพ";
+        console.error("Camera error:", error);
+        showErrorMessage("ไม่สามารถเข้าถึงกล้องได้ โปรดอนุญาตการเข้าถึงในเบราว์เซอร์ของคุณ");
+        resetUI();
     }
 }
 
-// ปรับขนาดรูปภาพ
-function resizeImage(image, width = 224, height = 224) {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0, width, height);
-    return canvas;
+function stopWebcam() {
+    if (state.isWebcamActive && elements.webcam.srcObject) {
+        elements.webcam.srcObject.getTracks().forEach(track => track.stop());
+        state.isWebcamActive = false;
+        elements.webcam.srcObject = null;
+    }
 }
 
-// จัดการอัปโหลดไฟล์
+function captureFromWebcam() {
+    if (!state.isWebcamActive) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = elements.webcam.videoWidth;
+    canvas.height = elements.webcam.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(elements.webcam, 0, 0);
+    stopWebcam();
+    displayCapturedImage(canvas);
+}
+
 function handleFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-
-    resultText.innerText = "กำลังประมวลผลรูปภาพ...";
     resetUI();
-
     const reader = new FileReader();
     reader.onload = (e) => {
         const img = new Image();
-        img.onload = () => {
-            try {
-                const resizedCanvas = resizeImage(img);
-                uploadedImageElement.src = resizedCanvas.toDataURL();
-                uploadedImageElement.style.display = 'block';
-                actionButtons.style.display = 'flex';
-                currentImage = resizedCanvas;
-                resultText.innerText = "พร้อมวิเคราะห์ภาพ";
-            } catch (error) {
-                console.error("ข้อผิดพลาดในการประมวลผลภาพ:", error);
-                resultText.innerText = "ไม่สามารถโหลดรูปภาพได้";
-            }
-        };
-        img.onerror = () => {
-            resultText.innerText = "ไม่สามารถโหลดรูปภาพได้";
-        };
+        img.onload = () => displayCapturedImage(img);
+        img.onerror = () => showError("ไม่สามารถโหลดไฟล์รูปภาพได้");
         img.src = e.target.result;
     };
-    reader.onerror = () => {
-        resultText.innerText = "ไม่สามารถอ่านไฟล์ได้";
-    };
+    reader.onerror = () => showError("ไม่สามารถอ่านไฟล์ได้");
     reader.readAsDataURL(file);
 }
 
-// ทำนายภาพ
-async function predict(image) {
-    if (!model || !image) {
-        resultText.innerText = "ยังไม่ได้โหลดโมเดลหรือไม่มีภาพที่จะวิเคราะห์";
+function displayCapturedImage(imageElement) {
+    state.currentImage = imageElement;
+    elements.uploadedImage.src = imageElement.src || imageElement.toDataURL("image/jpeg");
+    elements.uploadedImage.style.display = "block";
+    elements.placeholderImage.style.display = "none";
+    elements.actionButtons.style.display = "flex";
+    elements.predictionResult.style.display = "none";
+}
+
+async function analyzeImage() {
+    if (!state.currentImage || !state.model) {
+        showErrorMessage("ไม่มีภาพสำหรับวิเคราะห์ หรือโมเดลยังไม่พร้อม");
         return;
     }
+    showInfoMessage('<i class="fas fa-spinner fa-spin"></i> กำลังวิเคราะห์...');
+    
+    // Resize image for model (224x224)
+    const canvas = document.createElement("canvas");
+    canvas.width = 224;
+    canvas.height = 224;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(state.currentImage, 0, 0, 224, 224);
+    
+    const predictions = await state.model.predict(canvas);
+    displayPredictionResults(predictions);
+}
 
-    try {
-        resultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังวิเคราะห์ภาพ...';
-        
-        const prediction = await model.predict(image);
-        let highestProbability = 0;
-        let predictedClass = "ไม่ทราบ";
+function displayPredictionResults(predictions) {
+    let topPrediction = predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current);
+    
+    const isConfident = topPrediction.probability > 0.80;
+    let insectInfo;
 
-        for (let i = 0; i < maxPredictions; i++) {
-            const { className, probability } = prediction[i];
-            if (probability > highestProbability) {
-                highestProbability = probability;
-                predictedClass = className;
-            }
-        }
+    elements.predictionResult.style.display = "block";
 
-        confidenceBar.style.width = `${highestProbability * 100}%`;
-        
-        if (highestProbability > 0.8) {
-            const adviceData = insectAdvice[predictedClass] || {
-                type: "unknown",
-                advice: "ไม่มีข้อมูลคำแนะนำเฉพาะ",
-                detail: "กรุณาตรวจสอบข้อมูลเพิ่มเติมจากแหล่งอื่น",
-                solution: "ปรึกษาผู้เชี่ยวชาญด้านกีฏวิทยา"
-            };
-
-            resultText.innerHTML = `
-                <div class="prediction-header">
-                    <strong>${predictedClass}</strong> 
-                    <span>(${(highestProbability * 100).toFixed(1)}% ความมั่นใจ)</span>
-                </div>
-                <div class="advice-box ${adviceData.type}">
-                    <div class="advice-header">
-                        <span>${adviceData.advice}</span>
-                    </div>
-                    <div class="advice-detail">
-                        <i class="fas fa-info-circle"></i>
-                        <span>${adviceData.detail}</span>
-                    </div>
-                    <div class="advice-solution">
-                        <i class="fas fa-lightbulb"></i>
-                        <span><strong>วิธีแก้ไข:</strong> ${adviceData.solution}</span>
-                    </div>
-                </div>
-            `;
-
-            confidenceBar.style.backgroundColor = 
-                adviceData.type === "friendly" ? "var(--primary-color)" :
-                adviceData.type === "pest" ? "var(--danger-color)" :
-                "var(--warning-color)";
-        } else {
-            resultText.innerHTML = `
-                <div>ไม่สามารถระบุชนิดแมลงได้แน่ชัด (ความมั่นใจต่ำกว่า 80%)</div>
-                <div class="advice-box unknown">
-                    <i class="fas fa-question-circle"></i>
-                    <span>กรุณาถ่ายภาพใหม่อีกครั้งในมุมที่ชัดเจน</span>
-                </div>
-            `;
-            confidenceBar.style.backgroundColor = "var(--warning-color)";
-        }
-    } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการทำนาย:", error);
-        resultText.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                เกิดข้อผิดพลาดในการวิเคราะห์
+    if (isConfident && INSECT_DB[topPrediction.className]) {
+        insectInfo = INSECT_DB[topPrediction.className];
+        elements.resultText.innerHTML = `
+            <div class="insect-type-label ${insectInfo.type}">
+                ${insectInfo.type === "beneficial" ? "แมลงมีประโยชน์" : "แมลงศัตรูพืช"}
+            </div>
+            <h4>${insectInfo.description}</h4>
+        `;
+        elements.additionalInfo.innerHTML = `
+            <p><i class="fas fa-info-circle"></i> ${insectInfo.details}</p>
+            <p><i class="fas fa-lightbulb"></i> <strong>คำแนะนำ:</strong> ${insectInfo.recommendation}</p>
+        `;
+    } else {
+        insectInfo = INSECT_DB.unknown;
+        elements.resultText.innerHTML = `<h4>${insectInfo.description}</h4>`;
+        const reasonsHTML = insectInfo.reasons.map(reason => `<li>${reason}</li>`).join("");
+        elements.additionalInfo.innerHTML = `
+            <div class="unknown-result">
+                <p><i class="fas fa-exclamation-triangle"></i> ${insectInfo.details}</p>
+                <ul>${reasonsHTML}</ul>
+                <p><i class="fas fa-lightbulb"></i> <strong>คำแนะนำ:</strong> ${insectInfo.recommendation}</p>
             </div>
         `;
-        confidenceBar.style.width = '0%';
     }
 }
 
-// Event listeners
-webcamButton.addEventListener("click", toggleWebcamAndCapture);
-uploadButton.addEventListener("click", () => fileUpload.click());
-fileUpload.addEventListener("change", handleFileUpload);
-retakeButton.addEventListener("click", resetUI);
-analyzeButton.addEventListener("click", () => predict(currentImage));
+// --- Helper Functions for UI ---
+function showInfoMessage(message) {
+    elements.predictionResult.style.display = "block";
+    elements.resultText.innerHTML = message;
+    elements.additionalInfo.innerHTML = "";
+}
 
-// เริ่มโหลดโมเดลเมื่อหน้าเว็บโหลดเสร็จ
-window.addEventListener('load', init);
+function showErrorMessage(message) {
+    elements.predictionResult.style.display = "block";
+    elements.resultText.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
+    elements.additionalInfo.innerHTML = "";
+}
+
+// --- Event Listeners ---
+elements.webcamButton.addEventListener("click", () => {
+    state.isWebcamActive ? captureFromWebcam() : startWebcam();
+});
+elements.uploadButton.addEventListener("click", () => elements.fileUpload.click());
+elements.fileUpload.addEventListener("change", handleFileUpload);
+elements.retakeButton.addEventListener("click", resetUI);
+elements.analyzeButton.addEventListener("click", analyzeImage);
+
+window.addEventListener("load", initializeApp);
