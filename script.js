@@ -194,11 +194,15 @@ function displayPredictionResults(predictions) {
 
     if (isConfident && INSECT_DB[topPrediction.className]) {
         insectInfo = INSECT_DB[topPrediction.className];
+        const confidencePercent = Math.round(topPrediction.probability * 100);
         elements.resultText.innerHTML = `
             <div class="insect-type-label ${insectInfo.type}">
                 ${insectInfo.type === "beneficial" ? "แมลงมีประโยชน์" : "แมลงศัตรูพืช"}
             </div>
             <h4>${insectInfo.description}</h4>
+            <div class="confidence-level">
+                <i class="fas fa-chart-line"></i> ระดับความมั่นใจ: ${confidencePercent}%
+            </div>
         `;
         elements.additionalInfo.innerHTML = `
             <p><i class="fas fa-info-circle"></i> ${insectInfo.details}</p>

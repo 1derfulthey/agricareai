@@ -143,6 +143,7 @@ h1 {
     min-height: 350px;
     display: flex;
     flex-direction: column; /* จัดเรียงลูกในแนวตั้ง */
+    /* ลบ justify-content และ align-items ออกจากที่นี่ */
     border: 2px dashed #c8e6c9;
     border-radius: 15px;
     overflow: hidden;
@@ -173,6 +174,7 @@ video, #uploadedImage {
     object-fit: contain;
     border-radius: 10px;
     display: block;
+    /* margin: auto; <-- ลบบรรทัดนี้ออก */
 }
 
 .placeholder-box {
@@ -289,7 +291,7 @@ video, #uploadedImage {
 }
 
 .unknown-result {
-    padding: 15px 15px 15px 25px; /* เพิ่ม padding-left เป็น 25px */
+    padding: 15px;
     background-color: #fff8e1;
     border-radius: 8px;
     border-left: 4px solid var(--warning-color);
@@ -301,21 +303,11 @@ video, #uploadedImage {
     margin-right: 10px;
 }
 
-.unknown-result ul {
-    list-style-position: inside; /* ทำให้ bullet points อยู่ภายใน */
-    margin-left: 0;
-    padding-left: 0;
-}
-
-.unknown-result ul li {
-    margin-bottom: 5px;
-}
-
 .error-message {
     padding: 15px;
     background-color: #ffebee;
     border-radius: 8px;
-    border-left: 4px solid var(--danger-color); 
+    border-left: 44px solid var(--danger-color);
     color: var(--danger-color);
 }
 
@@ -501,6 +493,22 @@ video, #uploadedImage {
     }
     
     video, #uploadedImage {
-        max-height: 100%;
+        max-height: 100%; /* ยังคงเป็น 100% */
     }
+}
+
+.confidence-level {
+    margin: 10px 0;
+    padding: 8px 12px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: #0d47a1;
+}
+
+.confidence-level i {
+    color: #1976d2;
 }
