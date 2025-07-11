@@ -23,6 +23,8 @@ body {
     line-height: 1.6;
     padding-bottom: 40px;
     min-height: 100vh;
+    display: flex; /* ใช้ flexbox เพื่อให้ footer อยู่ด้านล่างสุด */
+    flex-direction: column;
 }
 
 .header {
@@ -59,6 +61,7 @@ body {
     margin: 30px auto;
     position: relative;
     z-index: 1;
+    flex-grow: 1; /* ทำให้ container ขยายเต็มพื้นที่ที่เหลือ */
 }
 
 .hero-section {
@@ -87,7 +90,7 @@ h1 {
     display: flex;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* ทำให้ปุ่มขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
 }
 
 .btn-primary, .btn-secondary, .btn-warning {
@@ -101,6 +104,9 @@ h1 {
     align-items: center;
     gap: 8px;
     font-weight: 500;
+    flex-grow: 1; /* ทำให้ปุ่มขยายเต็มพื้นที่ที่มี */
+    justify-content: center; /* จัดข้อความและไอคอนให้อยู่กึ่งกลาง */
+    max-width: 200px; /* กำหนด max-width เพื่อไม่ให้ปุ่มใหญ่เกินไปบนจอใหญ่ */
 }
 
 .btn-primary {
@@ -116,8 +122,8 @@ h1 {
 
 .btn-secondary {
     background-color: white;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    color: var(--primary-dark);
+    border: 1px solid var(--primary-color);
 }
 
 .btn-secondary:hover {
@@ -140,16 +146,17 @@ h1 {
     margin-bottom: 25px;
     position: relative;
     width: 100%;
-    min-height: 350px;
+    min-height: 300px; /* ลด min-height ลงเล็กน้อยเพื่อความยืดหยุ่นบนมือถือ */
     display: flex;
-    flex-direction: column; /* จัดเรียงลูกในแนวตั้ง */
-    /* ลบ justify-content และ align-items ออกจากที่นี่ */
+    flex-direction: column;
     border: 2px dashed #c8e6c9;
     border-radius: 15px;
     overflow: hidden;
     background-color: #f9f9f9;
     transition: all 0.3s ease;
     padding: 20px;
+    justify-content: center; /* จัดเนื้อหาตรงกลางแนวตั้ง */
+    align-items: center; /* จัดเนื้อหาตรงกลางแนวนอน */
 }
 
 .image-display-area:hover {
@@ -158,23 +165,22 @@ h1 {
 
 .image-container {
     width: 100%;
-    flex-grow: 1; /* ทำให้ image-container ขยายเต็มพื้นที่ว่างที่เหลือในแนวตั้ง */
+    flex-grow: 1;
     display: flex;
-    flex-direction: column; /* จัดเรียงลูกในแนวตั้ง */
-    justify-content: center; /* จัดกลางลูกในแนวตั้ง */
-    align-items: center; /* จัดกลางลูกในแนวนอน */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: relative;
 }
 
 video, #uploadedImage {
     max-width: 100%;
-    max-height: 100%; /* ให้รูปภาพ/วิดีโอขยายได้เต็มความสูงของ container */
-    width: auto;
-    height: auto;
+    max-height: 100%;
+    width: auto; /* ทำให้ภาพปรับขนาดตามเนื้อหา */
+    height: auto; /* ทำให้ภาพปรับขนาดตามเนื้อหา */
     object-fit: contain;
     border-radius: 10px;
     display: block;
-    /* margin: auto; <-- ลบบรรทัดนี้ออก */
 }
 
 .placeholder-box {
@@ -182,9 +188,10 @@ video, #uploadedImage {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%; /* ทำให้ placeholder-box ขยายเต็มความสูงของ image-container */
+    height: 100%;
     width: 100%;
     text-align: center;
+    padding: 20px; /* เพิ่ม padding ให้เนื้อหาไม่ติดขอบ */
 }
 
 .placeholder-box i {
@@ -198,12 +205,20 @@ video, #uploadedImage {
     color: #666;
 }
 
+.placeholder-box small {
+    font-size: 0.85rem; /* ใช้ rem เพื่อให้ปรับขนาดตาม font-size หลัก */
+    color: #888;
+    margin-top: 10px;
+    max-width: 300px; /* จำกัดความกว้างของข้อความ */
+}
+
 .action-buttons {
     display: flex;
     gap: 15px;
     margin-top: 20px;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap; /* ทำให้ปุ่มขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
 }
 
 .result-box {
@@ -307,7 +322,7 @@ video, #uploadedImage {
     padding: 15px;
     background-color: #ffebee;
     border-radius: 8px;
-    border-left: 44px solid var(--danger-color);
+    border-left: 4px solid var(--danger-color); /* แก้ไขจาก 44px เป็น 4px เพื่อให้ดูดีขึ้น */
     color: var(--danger-color);
 }
 
@@ -332,6 +347,7 @@ video, #uploadedImage {
     width: 280px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease;
+    flex-shrink: 0; /* ป้องกันไม่ให้ card หดตัว */
 }
 
 .feature-card:hover {
@@ -361,6 +377,7 @@ video, #uploadedImage {
     padding: 30px 0;
     text-align: center;
     margin-top: 40px;
+    flex-shrink: 0; /* ทำให้ footer ไม่หดตัว */
 }
 
 .footer-content {
@@ -396,55 +413,177 @@ video, #uploadedImage {
     line-height: 1.5;
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* ***** ส่วนที่เพิ่มใหม่สำหรับฟอร์มรายงาน ***** */
+.report-bug-section {
+    background-color: #f0f4f8;
+    border: 1px solid #cce7ff;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 30px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+    border-bottom: 1px solid #cce7ff;
+    padding-bottom: 15px;
 }
 
-.container, .features-section {
-    animation: fadeIn 0.5s ease-out;
+.report-header i {
+    font-size: 28px;
+    color: #42a5f5;
 }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-        width: 95%;
-    }
-    
-    h1 {
-        font-size: 22px;
-    }
-    
-    .btn-primary, .btn-secondary, .btn-warning {
-        padding: 10px 18px;
-        font-size: 14px;
-    }
-    
-    .image-display-area {
-        min-height: 280px;
-    }
-    
-    .result-box {
-        font-size: 16px;
-        padding: 15px;
-    }
-    
-    .features-section {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .feature-card {
-        width: 100%;
-        max-width: 350px;
-    }
+.report-header h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
 }
 
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 16px;
+}
+
+.form-group input[type="date"],
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    font-family: 'Sarabun', 'Kanit', sans-serif;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: #e9eff5;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d0e0f0;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+    font-weight: 400;
+    font-size: 15px;
+    color: #444;
+}
+
+.checkbox-group input[type="checkbox"] {
+    transform: scale(1.2);
+    margin: 0;
+}
+
+.form-button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap; /* ทำให้ปุ่มขึ้นบรรทัดใหม่เมื่อพื้นที่ไม่พอ */
+}
+
+#submitReportButton {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#submitReportButton:hover {
+    background-color: var(--primary-dark);
+}
+
+#cancelReportButton {
+    background-color: #e0e0e0;
+    color: #555;
+    border: 1px solid #ccc;
+}
+
+#cancelReportButton:hover {
+    background-color: #d0d0d0;
+}
+
+#reportStatus {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+#reportStatus.success {
+    background-color: #e8f5e9;
+    color: var(--primary-dark);
+    border: 1px solid var(--primary-color);
+}
+
+#reportStatus.error {
+    background-color: #ffebee;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.date-input-container {
+    position: relative;
+    margin-top: 5px;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Sarabun', 'Kanit', sans-serif;
+    min-height: 50px;
+}
+
+.date-hint {
+    display: block;
+    color: #666;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/*
+    ปรับปรุง: ทำให้ไอคอนปฏิทินมองเห็นได้ มีขนาดใหญ่ขึ้น และอยู่ตรงกลางแนวตั้ง
+*/
+input[type="date"]::-webkit-calendar-picker-indicator {
+    color: currentColor; /* ทำให้ไอคอนมีสีตามข้อความในช่อง input */
+    z-index: 1;
+    width: 30px; /* เพิ่มขนาดความกว้าง */
+    height: 30px; /* เพิ่มขนาดความสูง */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%); /* ทำให้ไอคอนอยู่ตรงกลางแนวตั้ง */
+}
+
+/* Media Queries for Responsiveness */
+
+/* สำหรับหน้าจอขนาดเล็กมาก (เช่น มือถือแนวตั้ง) */
 @media (max-width: 480px) {
     .container {
         padding: 15px;
@@ -461,23 +600,78 @@ video, #uploadedImage {
     }
     
     .camera-upload-section {
-        flex-direction: column;
+        flex-direction: column; /* ทำให้ปุ่มเรียงกันในแนวตั้ง */
         gap: 10px;
     }
     
     .btn-primary, .btn-secondary, .btn-warning {
-        width: 100%;
-        justify-content: center;
+        width: 100%; /* ทำให้ปุ่มเต็มความกว้าง */
+        max-width: none; /* ลบ max-width เพื่อให้เต็มความกว้าง */
+        font-size: 15px;
+        padding: 10px 15px;
     }
     
     .image-display-area {
         min-height: 250px;
+        padding: 15px;
+    }
+
+    .placeholder-box p {
+        font-size: 16px;
+    }
+
+    .placeholder-box small {
+        font-size: 0.75rem;
     }
     
     .action-buttons {
-        flex-direction: column;
+        flex-direction: column; /* ทำให้ปุ่มเรียงกันในแนวตั้ง */
     }
     
+    .result-box {
+        font-size: 15px;
+        padding: 15px;
+    }
+
+    .result-header h3 {
+        font-size: 18px;
+    }
+
+    .insect-type-label {
+        font-size: 14px;
+    }
+    
+    .form-group label {
+        font-size: 15px;
+    }
+
+    .form-group input[type="date"],
+    .form-group input[type="text"],
+    .form-group textarea {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .checkbox-group label {
+        font-size: 14px;
+    }
+
+    .form-button-group {
+        flex-direction: column; /* ทำให้ปุ่มเรียงกันในแนวตั้ง */
+    }
+    
+    .features-section {
+        flex-direction: column; /* ทำให้ card เรียงกันในแนวตั้ง */
+        align-items: center;
+        padding: 0 15px;
+    }
+    
+    .feature-card {
+        width: 100%;
+        max-width: 300px; /* จำกัดความกว้างของ card บนมือถือ */
+        padding: 20px;
+    }
+
     .developer-info {
         flex-direction: column;
     }
@@ -485,30 +679,62 @@ video, #uploadedImage {
     .school-logo {
         margin-bottom: 10px;
     }
+    .developer-text p {
+        font-size: 14px;
+    }
 }
 
-@media (max-width: 768px) {
-    .image-display-area {
-        min-height: 280px;
+/* สำหรับหน้าจอขนาดกลาง (เช่น แท็บเล็ต) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .container {
+        padding: 25px;
+        width: 95%;
     }
     
-    video, #uploadedImage {
-        max-height: 100%; /* ยังคงเป็น 100% */
+    h1 {
+        font-size: 24px;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-warning {
+        padding: 10px 20px;
+        font-size: 15px;
+    }
+    
+    .image-display-area {
+        min-height: 280px;
+        padding: 18px;
+    }
+    
+    .result-box {
+        font-size: 16px;
+        padding: 18px;
+    }
+
+    .result-header h3 {
+        font-size: 19px;
+    }
+
+    .features-section {
+        padding: 0 20px;
+    }
+    
+    .feature-card {
+        width: calc(50% - 15px); /* 2 คอลัมน์ */
+        max-width: none;
     }
 }
 
-.confidence-level {
-    margin: 10px 0;
-    padding: 8px 12px;
-    background-color: #e3f2fd;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    color: #0d47a1;
-}
+/* สำหรับหน้าจอขนาดใหญ่ (PC) */
+@media (min-width: 769px) {
+    .btn-primary, .btn-secondary, .btn-warning {
+        max-width: 200px; /* จำกัดขนาดปุ่มบนจอใหญ่ */
+    }
 
-.confidence-level i {
-    color: #1976d2;
+    .features-section {
+        justify-content: space-around; /* กระจาย card ให้สวยงาม */
+    }
+
+    .feature-card {
+        width: 280px; /* ขนาดคงที่สำหรับ card บนจอใหญ่ */
+    }
 }

@@ -31,7 +31,10 @@
             <button id="uploadButton" type="button" class="btn-secondary">
                 <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
             </button>
-            <!-- แก้ไขตรงนี้: ลบ capture="environment" ออก -->
+            <!-- NEW: ปุ่มสำหรับส่งภาพแมลงโดยตรง -->
+            <button id="directSubmitEntryButton" type="button" class="btn-secondary">
+                <i class="fas fa-plus-circle"></i> ส่งภาพแมลง
+            </button>
             <input type="file" id="fileUpload" accept="image/*" style="display: none;">
         </div>
 
@@ -69,6 +72,66 @@
             <div class="result-content">
                 <div id="resultText"></div>
                 <div id="additionalInfo" class="additional-info"></div>
+            </div>
+        </div>
+
+        <div id="reportBugSection" class="report-bug-section" style="display: none;">
+            <div class="report-header">
+                <i class="fas fa-bug"></i>
+                <h3>รายงานแมลงที่ไม่รู้จัก</h3>
+            </div>
+            <div class="report-content">
+                <form id="reportBugForm">
+                    <div class="form-group">
+                        <label for="insectName">ชื่อแมลง (ถ้ารู้จัก):</label>
+                        <input type="text" id="insectName" name="insect_name" placeholder="เช่น ด้วงเต่าลาย, แมลงช้างปีกใส">
+                    </div>
+                    <div class="form-group">
+                        <label for="reportDate">วันที่พบ:</label>
+                        <div class="date-input-container">
+                            <input type="date" id="reportDate" name="reportDate" required>
+                            <small class="date-hint">(คลิกเพื่อเลือกวันที่)</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reportLocationDistrict">อำเภอ:</label>
+                        <input type="text" id="reportLocationDistrict" name="reportLocationDistrict" placeholder="เช่น แม่สอด" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reportLocationProvince">จังหวัด:</label>
+                        <input type="text" id="reportLocationProvince" name="reportLocationProvince" placeholder="เช่น ตาก" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reportPlantType">พบในพืชชนิดใด:</label>
+                        <input type="text" id="reportPlantType" name="reportPlantType" placeholder="เช่น มะม่วง, กะเพรา" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ความเสียหายที่พบ:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="damage" value="ใบหงิก"> ใบหงิก</label>
+                            <label><input type="checkbox" name="damage" value="รากเน่า"> รากเน่า</label>
+                            <label><input type="checkbox" name="damage" value="ดอกร่วง"> ดอกร่วง</label>
+                            <label><input type="checkbox" name="damage" value="ลำต้นเป็นรู"> ลำต้นเป็นรู</label>
+                            <label><input type="checkbox" name="damage" value="มีคราบเหนียว"> มีคราบเหนียว</label>
+                            <label><input type="checkbox" name="damage" value="ใบเป็นรู/แหว่ง"> ใบเป็นรู/แหว่ง
+                            <label><input type="checkbox" name="damage" value="อื่นๆ"> อื่น ๆ</label>
+                            <label><input type="checkbox" name="damage" value="ไม่มีความเสียหาย"> ไม่มีความเสียหาย</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalComments">ความเห็นเพิ่มเติม:</label>
+                        <textarea id="additionalComments" name="additionalComments" rows="4" placeholder="ข้อมูลเพิ่มเติมเกี่ยวกับแมลงหรือพืชที่พบ..."></textarea>
+                    </div>
+                    <div class="form-button-group">
+                        <button type="submit" class="btn-primary" id="submitReportButton">
+                            <i class="fas fa-paper-plane"></i> ส่งข้อมูล
+                        </button>
+                        <button type="button" class="btn-warning" id="cancelReportButton">
+                            <i class="fas fa-times-circle"></i> ยกเลิก
+                        </button>
+                    </div>
+                </form>
+                <div id="reportStatus" style="margin-top: 15px; font-weight: bold;"></div>
             </div>
         </div>
     </div>
