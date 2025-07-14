@@ -21,24 +21,23 @@
     <div class="container">
         <div class="hero-section">
             <h1><i class="fas fa-magnifying-glass"></i> ตรวจแยกแมลงทางการเกษตร</h1>
-            <p class="subtitle">AI จะช่วยแยกแยะแมลงในแปลงเกษตรของคุณว่า <br> "เป็นมิตรหรือศัตรูพืช"  
+            <p class="subtitle">AI จะช่วยแยกแยะแมลงในแปลงเกษตรของคุณว่า <br> "เป็นมิตรหรือศัตรูพืช" </p>
         </div>
 
-        <div class="camera-upload-section">
+        <div class="main-controls-section" id="mainControlsSection">
             <button id="webcamButton" type="button" class="btn-primary">
                 <i class="fas fa-camera"></i> ถ่ายภาพ
             </button>
             <button id="uploadButton" type="button" class="btn-secondary">
                 <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
             </button>
-            <!-- NEW: ปุ่มสำหรับส่งภาพแมลงโดยตรง -->
-            <button id="directSubmitEntryButton" type="button" class="btn-secondary">
-                <i class="fas fa-plus-circle"></i> ส่งภาพแมลง
+            <button id="reportBugEntryButton" type="button" class="btn-info">
+                <i class="fas fa-file-alt"></i> แจ้งข้อมูลแมลง
             </button>
             <input type="file" id="fileUpload" accept="image/*" style="display: none;">
         </div>
 
-        <div class="image-display-area">
+        <div class="image-display-area" id="mainImageDisplayArea">
             <div class="image-container">
                 <video id="webcam" autoplay playsinline style="display: none;"></video>
                 <img id="uploadedImage" alt="รูปภาพที่อัปโหลด" style="display: none;">
@@ -54,12 +53,26 @@
                 </div>
             </div>
             
-            <div class="action-buttons" style="display: none;">
-                <button id="retakeButton" class="btn-warning">
-                    <i class="fas fa-rotate-left"></i> ถ่ายใหม่
-                </button>
-                <button id="analyzeButton" class="btn-primary">
-                    <i class="fas fa-search"></i> วิเคราะห์
+            <div class="analysis-action-buttons" style="display: none;">
+                <div class="analysis-webcam-controls">
+                    <button id="captureButton" class="btn-primary" style="display: none;">
+                        <i class="fas fa-camera"></i> ถ่ายภาพ
+                    </button>
+                    <button id="cancelWebcamButton" class="btn-warning" style="display: none;">
+                        <i class="fas fa-times-circle"></i> ยกเลิก
+                    </button>
+                </div>
+
+                <div class="analysis-image-controls"> 
+                    <button id="retakeOrSelectNewButton" class="btn-warning" style="display: none;">
+                        <i class="fas fa-rotate-left"></i> ถ่ายใหม่
+                    </button>
+                    <button id="analyzeButton" class="btn-primary" style="display: none;">
+                        <i class="fas fa-search"></i> วิเคราะห์
+                    </button>
+                </div>
+                <button id="backToHomeButton" class="btn-secondary" style="display: none;">
+                    <i class="fas fa-home"></i> กลับหน้าหลัก
                 </button>
             </div>
         </div>
@@ -81,6 +94,39 @@
                 <h3>รายงานแมลงที่ไม่รู้จัก</h3>
             </div>
             <div class="report-content">
+                <div class="report-image-area">
+                    <div class="image-container">
+                        <video id="reportWebcam" autoplay playsinline style="display: none;"></video>
+                        <img id="reportUploadedImage" alt="รูปภาพที่อัปโหลดสำหรับรายงาน" style="display: none;">
+                        <div id="reportPlaceholderImage" class="placeholder-box">
+                            <i class="fas fa-insect fa-2x"></i>
+                            <p>ถ่ายภาพหรืออัปโหลดรูปแมลงที่ต้องการรายงาน</p>
+                        </div>
+                    </div>
+                    <div class="report-initial-capture-upload-buttons">
+                        <button id="reportWebcamButton" type="button" class="btn-primary">
+                            <i class="fas fa-camera"></i> ถ่ายภาพ
+                        </button>
+                        <button id="reportUploadButton" type="button" class="btn-secondary">
+                            <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
+                        </button>
+                        <input type="file" id="reportFileUpload" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="report-webcam-action-buttons" style="display: none;">
+                        <button id="captureButtonReport" class="btn-primary">
+                            <i class="fas fa-camera"></i> ถ่ายภาพ
+                        </button>
+                        <button id="cancelReportWebcamButton" class="btn-warning">
+                            <i class="fas fa-times-circle"></i> ยกเลิก
+                        </button>
+                    </div>
+                    <div class="report-image-action-buttons" style="display: none;">
+                        <button id="retakeOrSelectNewReportButton" class="btn-warning">
+                            <i class="fas fa-rotate-left"></i> ถ่ายใหม่/เลือกภาพใหม่
+                        </button>
+                    </div>
+                </div>
+
                 <form id="reportBugForm">
                     <div class="form-group">
                         <label for="insectName">ชื่อแมลง (ถ้ารู้จัก):</label>
@@ -94,12 +140,21 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="reportLocationDistrict">อำเภอ:</label>
-                        <input type="text" id="reportLocationDistrict" name="reportLocationDistrict" placeholder="เช่น แม่สอด" required>
+                        <label for="reportLocationProvince">จังหวัด:</label>
+                        <select id="reportLocationProvince" name="reportLocationProvince" required>
+                            <option value="">-- กรุณาเลือกจังหวัด --</option>
+                            <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
+                            <option value="ตาก">ตาก</option>
+                            <option value="เชียงใหม่">เชียงใหม่</option>
+                            <option value="นครราชสีมา">นครราชสีมา</option>
+                            <!-- เพิ่มจังหวัดอื่นๆ ตามต้องการ -->
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="reportLocationProvince">จังหวัด:</label>
-                        <input type="text" id="reportLocationProvince" name="reportLocationProvince" placeholder="เช่น ตาก" required>
+                        <label for="reportLocationDistrict">อำเภอ:</label>
+                        <select id="reportLocationDistrict" name="reportLocationDistrict" required disabled>
+                            <option value="">-- กรุณาเลือกอำเภอ --</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="reportPlantType">พบในพืชชนิดใด:</label>
@@ -113,7 +168,7 @@
                             <label><input type="checkbox" name="damage" value="ดอกร่วง"> ดอกร่วง</label>
                             <label><input type="checkbox" name="damage" value="ลำต้นเป็นรู"> ลำต้นเป็นรู</label>
                             <label><input type="checkbox" name="damage" value="มีคราบเหนียว"> มีคราบเหนียว</label>
-                            <label><input type="checkbox" name="damage" value="ใบเป็นรู/แหว่ง"> ใบเป็นรู/แหว่ง
+                            <label><input type="checkbox" name="damage" value="ใบเป็นรู/แหว่ง"> ใบเป็นรู/แหว่ง</label>
                             <label><input type="checkbox" name="damage" value="อื่นๆ"> อื่นๆ</label>
                             <label><input type="checkbox" name="damage" value="ไม่มีความเสียหาย"> ไม่มีความเสียหาย</label>
                         </div>
@@ -126,12 +181,21 @@
                         <button type="submit" class="btn-primary" id="submitReportButton">
                             <i class="fas fa-paper-plane"></i> ส่งข้อมูล
                         </button>
-                        <button type="button" class="btn-warning" id="cancelReportButton">
-                            <i class="fas fa-times-circle"></i> ยกเลิก
+                        <button type="button" class="btn-secondary" id="cancelReportButton">
+                            <i class="fas fa-home"></i> กลับหน้าหลัก
                         </button>
                     </div>
                 </form>
                 <div id="reportStatus" style="margin-top: 15px; font-weight: bold;"></div>
+            </div>
+        </div>
+
+        <div id="thankYouModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3><i class="fas fa-heart"></i> ขอขอบคุณ</h3>
+                <p>ขอขอบคุณที่คุณเป็นส่วนหนึ่งที่ช่วยทำให้ระบบของเรามีประสิทธิภาพมากขึ้น</p>
+                <p>ข้อมูลของคุณจะถูกนำไปพัฒนาระบบเพื่อให้สามารถระบุแมลงได้ดียิ่งขึ้น</p>
+                <button id="closeThankYouModal" class="btn-primary">ปิด</button>
             </div>
         </div>
     </div>
