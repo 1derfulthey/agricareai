@@ -1,23 +1,29 @@
 const MODEL_URL = "https://teachablemachine.withgoogle.com/models/wsSrXpCPW/";
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsgCInGAapb6YWlGyr42VDqtDIX0WgweSFfyzErTKvglGtFWPLdlQe_85xYYfgnaA-/exec"; 
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsgCInGAapb6YWlGyr42VDqtDIX0WgweSFzzyErTKvglGtFWPLdlQe_85xYYfgnaA-/exec"; 
 
-// --- DOM Elements ---
 const elements = {
     webcamButton: document.getElementById("webcamButton"),
     uploadButton: document.getElementById("uploadButton"),
     fileUpload: document.getElementById("fileUpload"),
-    retakeButton: document.getElementById("retakeButton"),
+    analysisWebcamControls: document.querySelector(".analysis-webcam-controls"),
+    captureButton: document.getElementById("captureButton"),
+    cancelWebcamButton: document.getElementById("cancelWebcamButton"),
+    retakeOrSelectNewButton: document.getElementById("retakeOrSelectNewButton"),
+    backToHomeButton: document.getElementById("backToHomeButton"),
     analyzeButton: document.getElementById("analyzeButton"),
     webcam: document.getElementById("webcam"),
     uploadedImage: document.getElementById("uploadedImage"),
     placeholderImage: document.getElementById("placeholderImage"),
-    actionButtons: document.querySelector(".action-buttons"),
+    analysisActionButtons: document.querySelector(".analysis-action-buttons"),
+    analysisImageControls: document.querySelector(".analysis-image-controls"),
     predictionResult: document.getElementById("predictionResult"),
     resultText: document.getElementById("resultText"),
     additionalInfo: document.getElementById("additionalInfo"),
+    mainControlsSection: document.getElementById("mainControlsSection"),
+    mainImageDisplayArea: document.getElementById("mainImageDisplayArea"),
     reportBugSection: document.getElementById("reportBugSection"),
     reportBugForm: document.getElementById("reportBugForm"),
-    insectName: document.getElementById("insectName"), // เพิ่มการอ้างอิงถึง input ชื่อแมลง
+    insectName: document.getElementById("insectName"),
     reportDate: document.getElementById("reportDate"),
     reportLocationDistrict: document.getElementById("reportLocationDistrict"),
     reportLocationProvince: document.getElementById("reportLocationProvince"),
@@ -27,21 +33,34 @@ const elements = {
     submitReportButton: document.getElementById("submitReportButton"),
     cancelReportButton: document.getElementById("cancelReportButton"),
     reportStatus: document.getElementById("reportStatus"),
-    // NEW: อ้างอิงถึงปุ่ม "ส่งภาพแมลง"
-    directSubmitEntryButton: document.getElementById("directSubmitEntryButton")
+    reportBugEntryButton: document.getElementById("reportBugEntryButton"),
+    reportWebcam: document.getElementById("reportWebcam"),
+    reportUploadedImage: document.getElementById("reportUploadedImage"),
+    reportPlaceholderImage: document.getElementById("reportPlaceholderImage"),
+    reportWebcamButton: document.getElementById("reportWebcamButton"),
+    reportUploadButton: document.getElementById("reportUploadButton"),
+    reportFileUpload: document.getElementById("reportFileUpload"),
+    reportImageArea: document.querySelector(".report-image-area"),
+    reportInitialCaptureUploadButtons: document.querySelector(".report-initial-capture-upload-buttons"),
+    reportWebcamActionButtons: document.querySelector(".report-webcam-action-buttons"),
+    captureButtonReport: document.getElementById("captureButtonReport"),
+    cancelReportWebcamButton: document.getElementById("cancelReportWebcamButton"),
+    reportImageActionButtons: document.querySelector(".report-image-action-buttons"),
+    retakeOrSelectNewReportButton: document.getElementById("retakeOrSelectNewReportButton"),
+    thankYouModal: document.getElementById("thankYouModal"),
+    closeThankYouModal: document.getElementById("closeThankYouModal")
 };
 
-// --- State Management ---
 const state = {
     model: null,
     isWebcamActive: false,
+    isReportWebcamActive: false,
     currentImage: null,
     currentImageDataUrl: null,
-    // NEW: สถานะเพื่อระบุว่าผู้ใช้กำลังอยู่ในโหมดใด (idle, analysis, direct_submission)
-    currentFlow: 'idle' // 'idle', 'analysis', 'direct_submission'
+    currentFlow: 'idle',
+    imageSource: null
 };
 
-// --- Insect Database ---
 const INSECT_DB = {
     "Lady Beetles - ด้วงเต่าลาย": {
         type: "beneficial",
@@ -98,12 +117,19 @@ const INSECT_DB = {
     }
 };
 
-// --- Main Functions ---
+const PROVINCES_DISTRICTS = {
+    "กรุงเทพมหานคร": ["คลองสาน", "คลองสามวา", "คลองเตย", "จตุจักร", "ดอนเมือง", "ดินแดง"],
+    "ตาก": ["แม่สอด", "เมืองตาก", "บ้านตาก", "สามเงา", "แม่ระมาด", "ท่าสองยาง"],
+    "เชียงใหม่": ["เมืองเชียงใหม่", "หางดง", "สารภี", "สันทราย", "สันกำแพง", "ดอยสะเก็ด"],
+    "นครราชสีมา": ["เมืองนครราชสีมา", "ปากช่อง", "สีคิ้ว", "สูงเนิน", "ขามทะเลสอ", "ด่านขุนทด"]
+};
 
 async function initializeApp() {
     showInfoMessage("กำลังเตรียม AI ให้พร้อมใช้งาน...");
     try {
         state.model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+        setupEventListeners();
+        initializeLocationDropdowns();
         resetUI();
     } catch (error) {
         console.error("Failed to load model:", error);
@@ -111,73 +137,251 @@ async function initializeApp() {
     }
 }
 
+function setupEventListeners() {
+    elements.webcamButton.addEventListener("click", () => {
+        resetUI();
+        state.currentFlow = 'analysis_webcam';
+        state.imageSource = 'webcam';
+        elements.mainControlsSection.style.display = 'none';
+        startWebcam(elements.webcam, 'isWebcamActive');
+    });
+
+    elements.captureButton.addEventListener("click", () => {
+        captureFromWebcam(elements.webcam, displayCapturedImageForAnalysis);
+    });
+
+    elements.cancelWebcamButton.addEventListener("click", resetUI);
+
+    elements.uploadButton.addEventListener("click", () => {
+        resetUI();
+        state.currentFlow = 'analysis_upload';
+        state.imageSource = 'upload';
+        elements.mainControlsSection.style.display = 'none';
+        elements.fileUpload.click();
+    });
+
+    elements.fileUpload.addEventListener("change", (event) => {
+        handleFileUpload(event, displayCapturedImageForAnalysis);
+    });
+
+    elements.retakeOrSelectNewButton.addEventListener("click", () => {
+        elements.predictionResult.style.display = "none";
+
+        if (state.imageSource === 'webcam') {
+            elements.uploadedImage.style.display = "none";
+            elements.placeholderImage.style.display = "none";
+            startWebcam(elements.webcam, 'isWebcamActive');
+            showAnalysisWebcamActionButtons();
+        } else if (state.imageSource === 'upload') {
+            elements.uploadedImage.style.display = "none";
+            elements.placeholderImage.style.display = "flex";
+            document.getElementById('fileUpload').value = '';
+            elements.fileUpload.click();
+            elements.analysisActionButtons.style.display = "none";
+        }
+    });
+
+    elements.backToHomeButton.addEventListener("click", resetUI);
+    elements.analyzeButton.addEventListener("click", analyzeImage);
+    elements.reportBugEntryButton.addEventListener("click", () => {
+        resetUI();
+        state.currentFlow = 'report_submission';
+        showReportBugForm();
+    });
+
+    elements.reportWebcamButton.addEventListener("click", () => {
+        stopWebcam(elements.reportWebcam, 'isReportWebcamActive');
+        startWebcam(elements.reportWebcam, 'isReportWebcamActive');
+    });
+
+    elements.captureButtonReport.addEventListener("click", () => {
+        captureFromWebcam(elements.reportWebcam, displayCapturedImageForReport);
+    });
+
+    elements.cancelReportWebcamButton.addEventListener("click", () => {
+        stopWebcam(elements.reportWebcam, 'isReportWebcamActive');
+        elements.reportWebcam.style.display = "none";
+        elements.reportPlaceholderImage.style.display = "flex";
+        elements.reportInitialCaptureUploadButtons.style.display = "flex";
+        elements.reportWebcamActionButtons.style.display = "none";
+        elements.reportImageActionButtons.style.display = "none";
+    });
+
+    elements.reportFileUpload.addEventListener("change", (event) => handleFileUpload(event, displayCapturedImageForReport));
+    elements.reportUploadButton.addEventListener("click", () => {
+        elements.reportFileUpload.click();
+        elements.reportInitialCaptureUploadButtons.style.display = 'none';
+        elements.reportWebcamActionButtons.style.display = "none";
+        elements.reportImageActionButtons.style.display = "none";
+    });
+
+    elements.retakeOrSelectNewReportButton.addEventListener("click", () => {
+        elements.reportUploadedImage.style.display = "none";
+        elements.reportPlaceholderImage.style.display = "flex";
+        elements.reportInitialCaptureUploadButtons.style.display = "flex";
+        elements.reportWebcamActionButtons.style.display = "none";
+        elements.reportImageActionButtons.style.display = "none";
+        document.getElementById('reportFileUpload').value = '';
+        state.currentImageDataUrl = null;
+        state.currentImage = null;
+    });
+
+    elements.reportBugForm.addEventListener("submit", submitBugReport);
+    elements.cancelReportButton.addEventListener("click", resetUI);
+    elements.closeThankYouModal.addEventListener("click", () => {
+        elements.thankYouModal.style.display = 'none';
+    });
+}
+
+function initializeLocationDropdowns() {
+    elements.reportLocationProvince.innerHTML = '<option value="">-- กรุณาเลือกจังหวัด --</option>';
+    Object.keys(PROVINCES_DISTRICTS).forEach(province => {
+        const option = document.createElement('option');
+        option.value = province;
+        option.textContent = province;
+        elements.reportLocationProvince.appendChild(option);
+    });
+
+    elements.reportLocationProvince.addEventListener('change', function() {
+        const selectedProvince = this.value;
+        elements.reportLocationDistrict.innerHTML = '<option value="">-- กรุณาเลือกอำเภอ --</option>';
+        elements.reportLocationDistrict.disabled = !selectedProvince;
+        
+        if (selectedProvince) {
+            PROVINCES_DISTRICTS[selectedProvince].forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                elements.reportLocationDistrict.appendChild(option);
+            });
+        }
+    });
+}
+
 function resetUI() {
-    stopWebcam();
+    stopWebcam(elements.webcam, 'isWebcamActive');
+    stopWebcam(elements.reportWebcam, 'isReportWebcamActive');
+
     elements.webcam.style.display = "none";
     elements.uploadedImage.style.display = "none";
     elements.placeholderImage.style.display = "flex";
-    elements.actionButtons.style.display = "none";
+    
+    elements.analysisActionButtons.style.display = "none";
+    elements.analysisWebcamControls.style.display = "none";
+    elements.captureButton.style.display = "none";
+    elements.cancelWebcamButton.style.display = "none";
+    elements.analysisImageControls.style.display = "none"; 
+    elements.retakeOrSelectNewButton.style.display = "none";
+    elements.backToHomeButton.style.display = "none";
+    elements.analyzeButton.style.display = "none";
+
+    elements.reportUploadedImage.style.display = "none";
+    elements.reportPlaceholderImage.style.display = "none"; 
+    elements.reportWebcam.style.display = "none";
+    elements.reportInitialCaptureUploadButtons.style.display = "none";
+    elements.reportWebcamActionButtons.style.display = "none";
+    elements.reportImageActionButtons.style.display = "none";
+
     elements.predictionResult.style.display = "none";
     elements.reportBugSection.style.display = "none";
-    elements.webcamButton.innerHTML = '<i class="fas fa-camera"></i> ถ่ายภาพ';
+    elements.thankYouModal.style.display = "none";
+
     state.currentImage = null;
     state.currentImageDataUrl = null;
-    state.currentFlow = 'idle'; // รีเซ็ต currentFlow กลับไปที่ 'idle' เสมอเมื่อ UI ถูกรีเซ็ต
+    state.currentFlow = 'idle';
+    state.imageSource = null;
+
     document.getElementById('fileUpload').value = '';
     elements.reportBugForm.reset();
     elements.reportStatus.innerHTML = '';
     elements.reportStatus.className = '';
-    // แสดงปุ่มหลักทั้งหมด
+
+    elements.mainControlsSection.style.display = 'flex';
+    elements.mainImageDisplayArea.style.display = 'flex';
     elements.webcamButton.style.display = 'flex';
     elements.uploadButton.style.display = 'flex';
-    elements.directSubmitEntryButton.style.display = 'flex';
+    elements.reportBugEntryButton.style.display = 'flex';
 }
 
-async function startWebcam() {
+async function startWebcam(videoElement, stateFlag) {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: "environment" }
         });
-        elements.webcam.srcObject = stream;
-        elements.webcam.style.display = "block";
-        elements.placeholderImage.style.display = "none";
-        state.isWebcamActive = true;
-        elements.webcamButton.innerHTML = '<i class="fas fa-camera"></i> ถ่ายภาพ';
+        videoElement.srcObject = stream;
+        videoElement.style.display = "block";
+        state[stateFlag] = true;
+        
+        if (videoElement === elements.webcam) {
+            elements.placeholderImage.style.display = "none";
+            showAnalysisWebcamActionButtons();
+        } else if (videoElement === elements.reportWebcam) {
+            elements.reportPlaceholderImage.style.display = "none";
+            showReportWebcamActionButtons();
+        }
     } catch (error) {
         console.error("Camera error:", error);
         showErrorMessage("ไม่สามารถเข้าถึงกล้องได้ โปรดอนุญาตการเข้าถึงในเบราว์เซอร์ของคุณ");
-        resetUI(); // รีเซ็ต UI หากมีข้อผิดพลาด
-        // state.currentFlow ถูกรีเซ็ตใน resetUI() แล้ว
+        
+        if (videoElement === elements.webcam) {
+            resetUI(); 
+        } else if (videoElement === elements.reportWebcam) {
+            stopWebcam(elements.reportWebcam, 'isReportWebcamActive');
+            elements.reportWebcam.style.display = "none";
+            elements.reportPlaceholderImage.style.display = "flex";
+            elements.reportInitialCaptureUploadButtons.style.display = "flex";
+            elements.reportWebcamActionButtons.style.display = "none";
+            elements.reportImageActionButtons.style.display = "none";
+        }
     }
 }
 
-function stopWebcam() {
-    if (state.isWebcamActive && elements.webcam.srcObject) {
-        elements.webcam.srcObject.getTracks().forEach(track => track.stop());
-        state.isWebcamActive = false;
-        elements.webcam.srcObject = null;
+function stopWebcam(videoElement, stateFlag) {
+    if (state[stateFlag] && videoElement.srcObject) {
+        videoElement.srcObject.getTracks().forEach(track => track.stop());
+        state[stateFlag] = false;
+        videoElement.srcObject = null;
     }
 }
 
-function captureFromWebcam() {
-    if (!state.isWebcamActive) return;
+function captureFromWebcam(videoElement, callback) {
+    if (!state.isWebcamActive && !state.isReportWebcamActive) return;
+    
     const canvas = document.createElement("canvas");
-    canvas.width = elements.webcam.videoWidth;
-    canvas.height = elements.webcam.videoHeight;
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(elements.webcam, 0, 0, canvas.width, canvas.height);
-    stopWebcam();
-    displayCapturedImage(canvas);
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    
+    if (videoElement === elements.webcam) {
+        stopWebcam(elements.webcam, 'isWebcamActive');
+    } else if (videoElement === elements.reportWebcam) {
+        stopWebcam(elements.reportWebcam, 'isReportWebcamActive');
+    }
+    
+    callback(canvas);
 }
 
-function handleFileUpload(event) {
+function handleFileUpload(event, callback) {
     const file = event.target.files[0];
-    if (!file) return;
-    // resetUI() ไม่ได้ถูกเรียกโดยตรงที่นี่ แต่ถูกเรียกโดยปุ่มที่เรียก handleFileUpload
+    if (!file) {
+        if (event.target === elements.fileUpload) {
+            resetUI();
+        } else if (event.target === elements.reportFileUpload) {
+            if (!state.currentImageDataUrl) {
+                elements.reportInitialCaptureUploadButtons.style.display = "flex";
+                elements.reportWebcamActionButtons.style.display = "none";
+                elements.reportImageActionButtons.style.display = "none"; 
+                elements.reportPlaceholderImage.style.display = "flex";
+            }
+        }
+        return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
         const img = new Image();
-        img.onload = () => displayCapturedImage(img);
+        img.onload = () => callback(img);
         img.onerror = () => showErrorMessage("ไม่สามารถโหลดไฟล์รูปภาพได้");
         img.src = e.target.result;
     };
@@ -185,7 +389,7 @@ function handleFileUpload(event) {
     reader.readAsDataURL(file);
 }
 
-function displayCapturedImage(imageElement) {
+function displayCapturedImageForAnalysis(imageElement) {
     state.currentImage = imageElement;
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = imageElement.width || imageElement.videoWidth;
@@ -196,22 +400,31 @@ function displayCapturedImage(imageElement) {
 
     elements.uploadedImage.src = state.currentImageDataUrl;
     elements.uploadedImage.style.display = "block";
+    elements.webcam.style.display = "none";
     elements.placeholderImage.style.display = "none";
     
-    elements.predictionResult.style.display = "none"; // ซ่อนผลลัพธ์เดิม
-    elements.reportBugSection.style.display = "none"; // ซ่อนฟอร์มรายงานเดิม
+    elements.predictionResult.style.display = "none";
+    elements.reportBugSection.style.display = "none";
 
-    // ซ่อนปุ่มหลักเมื่อมีการแสดงภาพแล้ว ไม่ว่าจะอยู่ในโหมดใด
-    elements.webcamButton.style.display = 'none';
-    elements.uploadButton.style.display = 'none';
-    elements.directSubmitEntryButton.style.display = 'none';
+    showAnalysisImageActionButtons();
+    elements.mainControlsSection.style.display = 'none';
+}
 
-    if (state.currentFlow === 'direct_submission') {
-        elements.actionButtons.style.display = "none"; // ซ่อนปุ่มวิเคราะห์/ถ่ายใหม่
-        showReportBugForm(); // แสดงฟอร์มรายงานทันที (พร้อมภาพที่เพิ่งจับมา)
-    } else { // โหมด 'analysis'
-        elements.actionButtons.style.display = "flex"; // แสดงปุ่มวิเคราะห์/ถ่ายใหม่
-    }
+function displayCapturedImageForReport(imageElement) {
+    state.currentImage = imageElement;
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = imageElement.width || imageElement.videoWidth;
+    tempCanvas.height = imageElement.videoHeight || imageElement.height;
+    const ctx = tempCanvas.getContext("2d");
+    ctx.drawImage(imageElement, 0, 0, tempCanvas.width, tempCanvas.height);
+    state.currentImageDataUrl = tempCanvas.toDataURL("image/png");
+
+    elements.reportUploadedImage.src = state.currentImageDataUrl;
+    elements.reportUploadedImage.style.display = "block";
+    elements.reportWebcam.style.display = "none";
+    elements.reportPlaceholderImage.style.display = "none";
+
+    showReportImageActionButtons();
 }
 
 async function analyzeImage() {
@@ -233,7 +446,6 @@ async function analyzeImage() {
 
 function displayPredictionResults(predictions) {
     let topPrediction = predictions.reduce((prev, current) => (prev.probability > current.probability) ? prev : current);
-    
     const isConfident = topPrediction.probability > 0.80;
     let insectInfo;
 
@@ -259,20 +471,23 @@ function displayPredictionResults(predictions) {
     } else {
         insectInfo = INSECT_DB.unknown;
         elements.resultText.innerHTML = `<h4>${insectInfo.description}</h4>`;
-        const reasonsHTML = insectInfo.reasons.map(reason => `<li>${reason}</li>`).join("");
+        const reasonsHTML = insectInfo.reasons.map(reason => `<li><i class="fas fa-circle-info custom-bullet-icon"></i> ${reason}</li>`).join("");
         elements.additionalInfo.innerHTML = `
             <div class="unknown-result">
                 <p><i class="fas fa-exclamation-triangle"></i> ${insectInfo.details}</p>
                 <ul>${reasonsHTML}</ul>
                 <p><i class="fas fa-lightbulb"></i> <strong>คำแนะนำ:</strong> ${insectInfo.recommendation}</p>
-                <button id="reportUnknownBugButton" class="btn-secondary" style="margin-top: 15px;">
+                <button id="reportUnknownBugButton" class="btn-info" style="margin-top: 15px;">
                     <i class="fas fa-file-alt"></i> รายงานแมลงนี้
                 </button>
             </div>
         `;
         const reportBtn = document.getElementById("reportUnknownBugButton");
         if (reportBtn) {
-            reportBtn.addEventListener("click", showReportBugForm);
+            reportBtn.addEventListener("click", () => {
+                state.currentFlow = 'report_submission';
+                showReportBugForm();
+            });
         }
     }
 }
@@ -292,40 +507,28 @@ function showErrorMessage(message) {
 }
 
 function showReportBugForm() {
-    elements.predictionResult.style.display = "none"; // ซ่อนผลการวิเคราะห์เสมอ
-    elements.reportBugSection.style.display = "block"; // แสดงส่วนรายงานแมลง
-    elements.reportBugForm.reset(); // รีเซ็ตฟอร์ม
+    elements.mainControlsSection.style.display = 'none';
+    elements.mainImageDisplayArea.style.display = 'none';
+    elements.predictionResult.style.display = "none";
+
+    elements.reportBugSection.style.display = "block";
+    elements.reportBugForm.reset();
     elements.reportStatus.innerHTML = '';
     elements.reportStatus.className = '';
-    elements.reportDate.valueAsDate = new Date(); // กำหนดวันที่ปัจจุบัน
+    elements.reportDate.valueAsDate = new Date();
 
-    // ซ่อนปุ่มหลักทั้งหมดเมื่อฟอร์มรายงานแสดงขึ้น
-    elements.webcamButton.style.display = 'none';
-    elements.uploadButton.style.display = 'none';
-    elements.directSubmitEntryButton.style.display = 'none';
-    elements.actionButtons.style.display = "none"; // ซ่อนปุ่มวิเคราะห์/ถ่ายใหม่
-
-    // จัดการการแสดงผลภาพและปุ่มถ่าย/อัปโหลดภายในฟอร์มรายงาน
-    if (state.currentFlow === 'direct_submission') {
-        if (!state.currentImageDataUrl) {
-            // ในโหมด direct_submission และยังไม่มีภาพ: แสดงปุ่มถ่าย/อัปโหลดในพื้นที่ภาพ
-            elements.webcamButton.style.display = 'flex';
-            elements.uploadButton.style.display = 'flex';
-            elements.placeholderImage.style.display = 'flex'; // แสดง placeholder
-            elements.uploadedImage.style.display = 'none';
-            elements.webcam.style.display = 'none';
-        } else {
-            // ในโหมด direct_submission และมีภาพแล้ว: แสดงภาพที่จับมา
-            elements.webcamButton.style.display = 'none';
-            elements.uploadButton.style.display = 'none';
-            elements.uploadedImage.src = state.currentImageDataUrl;
-            elements.uploadedImage.style.display = "block";
-            elements.placeholderImage.style.display = "none";
-            elements.webcam.style.display = "none";
-        }
+    if (state.currentImageDataUrl) {
+        elements.reportUploadedImage.src = state.currentImageDataUrl;
+        elements.reportUploadedImage.style.display = "block";
+        elements.reportPlaceholderImage.style.display = "none";
+        showReportImageActionButtons();
     } else {
-        // หากมาจากโหมด analysis (เช่น กด "รายงานแมลงนี้"): ภาพจะถูกแสดงอยู่แล้ว
-        // ไม่ต้องทำอะไรกับปุ่มถ่าย/อัปโหลด เพราะถูกซ่อนไปแล้ว
+        elements.reportPlaceholderImage.style.display = "flex";
+        elements.reportUploadedImage.style.display = "none";
+        elements.reportWebcam.style.display = "none";
+        elements.reportInitialCaptureUploadButtons.style.display = "flex";
+        elements.reportWebcamActionButtons.style.display = "none";
+        elements.reportImageActionButtons.style.display = "none";
     }
 }
 
@@ -334,11 +537,8 @@ async function submitBugReport(event) {
 
     if (!state.currentImageDataUrl) {
         showReportStatus("error", "กรุณาถ่ายภาพหรืออัปโหลดรูปแมลงก่อนรายงาน");
-        console.error("submitBugReport: No image data URL found."); // Debug log
         return;
     }
-
-    console.log("submitBugReport: Image data URL present, proceeding with submission."); // Debug log
 
     showReportStatus("info", '<i class="fas fa-spinner fa-spin"></i> กำลังส่งข้อมูล...');
     elements.submitReportButton.disabled = true;
@@ -349,7 +549,7 @@ async function submitBugReport(event) {
 
     const formData = {
         image_data: state.currentImageDataUrl.split(',')[1],
-        insect_name: elements.insectName.value || '', // ใช้ elements.insectName
+        insect_name: elements.insectName.value || '',
         date_found: elements.reportDate.value,
         location_district: elements.reportLocationDistrict.value,
         location_province: elements.reportLocationProvince.value,
@@ -367,10 +567,13 @@ async function submitBugReport(event) {
             body: JSON.stringify(formData)
         });
 
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
         const result = await response.json();
 
         if (result.status === 'success') {
             showReportStatus("success", "ส่งข้อมูลรายงานแมลงสำเร็จ!");
+            elements.thankYouModal.style.display = 'block';
             setTimeout(resetUI, 3000);
         } else {
             showReportStatus("error", `เกิดข้อผิดพลาด: ${result.message}`);
@@ -388,64 +591,45 @@ function showReportStatus(type, message) {
     elements.reportStatus.className = `report-status ${type}`;
 }
 
-// --- Event Listeners ---
-elements.webcamButton.addEventListener("click", () => {
-    // ถ้ากล้องกำลังทำงานอยู่ ให้ถ่ายภาพ
-    if (state.isWebcamActive) {
-        captureFromWebcam();
-    } else {
-        // ถ้ากล้องยังไม่ทำงาน
-        // ตรวจสอบ flow ก่อนที่จะรีเซ็ต UI หรือเปลี่ยนโหมด
-        if (state.currentFlow === 'idle') {
-            resetUI(); // รีเซ็ต UI ก่อนเริ่ม flow ใหม่
-            state.currentFlow = 'analysis'; // กำหนดโหมดเป็น 'analysis'
-        } 
-        // ถ้า currentFlow เป็น 'direct_submission' อยู่แล้ว ไม่ต้องเปลี่ยน state.currentFlow
-        // แต่ต้องเตรียม UI ให้พร้อมสำหรับการถ่ายภาพ (ซ่อนปุ่มหลัก)
-        elements.directSubmitEntryButton.style.display = 'none'; // ซ่อนปุ่ม "ส่งภาพแมลง" หลัก
-        startWebcam();
+function showAnalysisWebcamActionButtons() {
+    elements.analysisActionButtons.style.display = "flex";
+    elements.analysisWebcamControls.style.display = "flex";
+    elements.captureButton.style.display = "flex";
+    elements.cancelWebcamButton.style.display = "flex";
+    elements.analysisImageControls.style.display = "none";
+    elements.backToHomeButton.style.display = "none";
+}
+
+function showAnalysisImageActionButtons() {
+    elements.analysisActionButtons.style.display = "flex";
+    elements.analysisWebcamControls.style.display = "none";
+    elements.captureButton.style.display = "none";
+    elements.cancelWebcamButton.style.display = "none";
+    elements.analysisImageControls.style.display = "flex";
+    elements.retakeOrSelectNewButton.style.display = "flex";
+    elements.backToHomeButton.style.display = "flex";
+    elements.analyzeButton.style.display = "flex";
+
+    if (state.imageSource === 'webcam') {
+        elements.retakeOrSelectNewButton.innerHTML = '<i class="fas fa-rotate-left"></i> ถ่ายใหม่';
+    } else if (state.imageSource === 'upload') {
+        elements.retakeOrSelectNewButton.innerHTML = '<i class="fas fa-image"></i> เลือกภาพใหม่';
     }
-});
+}
 
-elements.uploadButton.addEventListener("click", () => {
-    // ตรวจสอบ flow ก่อนที่จะรีเซ็ต UI หรือเปลี่ยนโหมด
-    if (state.currentFlow === 'idle') {
-        resetUI(); // รีเซ็ต UI ก่อนเริ่ม flow ใหม่
-        state.currentFlow = 'analysis'; // กำหนดโหมดเป็น 'analysis'
-    } 
-    // ถ้า currentFlow เป็น 'direct_submission' อยู่แล้ว ไม่ต้องเปลี่ยน state.currentFlow
-    // แต่ต้องเตรียม UI ให้พร้อมสำหรับการอัปโหลด (ซ่อนปุ่มหลัก)
-    elements.directSubmitEntryButton.style.display = 'none'; // ซ่อนปุ่ม "ส่งภาพแมลง" หลัก
-    elements.fileUpload.click();
-});
+function showReportWebcamActionButtons() {
+    elements.reportInitialCaptureUploadButtons.style.display = "none"; 
+    elements.reportWebcamActionButtons.style.display = "flex"; 
+    elements.captureButtonReport.style.display = "flex";
+    elements.cancelReportWebcamButton.style.display = "flex";
+    elements.reportImageActionButtons.style.display = "none";
+}
 
-elements.fileUpload.addEventListener("change", handleFileUpload);
-
-elements.retakeButton.addEventListener("click", () => {
-    // หากอยู่ในโหมด direct_submission และต้องการถ่ายใหม่
-    if (state.currentFlow === 'direct_submission') {
-        state.currentImage = null;
-        state.currentImageDataUrl = null;
-        showReportBugForm(); // กลับไปที่ฟอร์มพร้อมข้อความให้ถ่ายภาพใหม่
-    } else { // โหมด analysis หรือ idle
-        resetUI(); // รีเซ็ต UI ทั้งหมด
-    }
-});
-
-elements.analyzeButton.addEventListener("click", analyzeImage);
-
-elements.reportBugForm.addEventListener("submit", submitBugReport);
-
-elements.cancelReportButton.addEventListener("click", () => {
-    resetUI(); // รีเซ็ต UI
-    // state.currentFlow ถูกรีเซ็ตใน resetUI() แล้ว
-});
-
-// NEW: Event Listener สำหรับปุ่ม "ส่งภาพแมลง"
-elements.directSubmitEntryButton.addEventListener("click", () => {
-    resetUI(); // รีเซ็ต UI ก่อน
-    state.currentFlow = 'direct_submission'; // กำหนดโหมดเป็น 'direct_submission'
-    showReportBugForm(); // แสดงฟอร์มรายงานทันที
-});
+function showReportImageActionButtons() {
+    elements.reportInitialCaptureUploadButtons.style.display = "none";
+    elements.reportWebcamActionButtons.style.display = "none";
+    elements.reportImageActionButtons.style.display = "flex";
+    elements.retakeOrSelectNewReportButton.style.display = "flex";
+}
 
 window.addEventListener("load", initializeApp);
