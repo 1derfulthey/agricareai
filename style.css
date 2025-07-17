@@ -468,7 +468,7 @@ body {
 
 .date-hint {
     position: absolute;
-    right: 12px;
+    right: 60px; /* Adjusted to move further left */
     top: 50%;
     transform: translateY(-50%);
     color: #888;
@@ -689,7 +689,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero-section h1 {
-        font-size: 2em;
+        font-size: 1.8em; /* Adjusted for mobile */
     }
 
     .subtitle {
@@ -740,7 +740,7 @@ body {
     }
 
     .hero-section h1 {
-        font-size: 1.8em;
+        font-size: 1.5em; /* Further adjusted for smaller mobile screens */
     }
 
     .btn-primary, .btn-secondary, .btn-warning, .btn-info {
