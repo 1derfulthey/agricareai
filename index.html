@@ -135,30 +135,27 @@
                     <div class="form-group">
                         <label for="reportDate">วันที่พบ:</label>
                         <div class="date-input-container">
-                            <input type="date" id="reportDate" name="reportDate" required>
+                            <input type="date" id="reportDate" name="reportDate">
                             <small class="date-hint">(คลิกเพื่อเลือกวันที่)</small>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="reportLocationProvince">จังหวัด:</label>
-                        <select id="reportLocationProvince" name="reportLocationProvince" required>
+                        <select id="reportLocationProvince" name="reportLocationProvince">
                             <option value="">-- กรุณาเลือกจังหวัด --</option>
-                            <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
-                            <option value="ตาก">ตาก</option>
-                            <option value="เชียงใหม่">เชียงใหม่</option>
-                            <option value="นครราชสีมา">นครราชสีมา</option>
-                            <!-- เพิ่มจังหวัดอื่นๆ ตามต้องการ -->
+                            <!-- Provinces will be populated by JavaScript -->
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="reportLocationDistrict">อำเภอ:</label>
-                        <select id="reportLocationDistrict" name="reportLocationDistrict" required disabled>
+                        <select id="reportLocationDistrict" name="reportLocationDistrict" disabled>
                             <option value="">-- กรุณาเลือกอำเภอ --</option>
+                            <!-- Districts will be populated by JavaScript -->
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="reportPlantType">พบในพืชชนิดใด:</label>
-                        <input type="text" id="reportPlantType" name="reportPlantType" placeholder="เช่น มะม่วง, กะเพรา" required>
+                        <input type="text" id="reportPlantType" name="reportPlantType" placeholder="เช่น มะม่วง, กะเพรา">
                     </div>
                     <div class="form-group">
                         <label>ความเสียหายที่พบ:</label>
@@ -169,7 +166,7 @@
                             <label><input type="checkbox" name="damage" value="ลำต้นเป็นรู"> ลำต้นเป็นรู</label>
                             <label><input type="checkbox" name="damage" value="มีคราบเหนียว"> มีคราบเหนียว</label>
                             <label><input type="checkbox" name="damage" value="ใบเป็นรู/แหว่ง"> ใบเป็นรู/แหว่ง</label>
-                            <label><input type="checkbox" name="damage" value="อื่นๆ"> อื่นๆ</label>
+                            <label><input type="checkbox" name="damage" value="อื่นๆ"> อื่น ๆ</label>
                             <label><input type="checkbox" name="damage" value="ไม่มีความเสียหาย"> ไม่มีความเสียหาย</label>
                         </div>
                     </div>
