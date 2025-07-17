@@ -121,13 +121,24 @@ const INSECT_DB = {
     }
 };
 
-// Data for provinces and their corresponding districts in Thailand.
+// Data for provinces and their corresponding districts in Thailand (Northern Provinces).
 const PROVINCES_DISTRICTS = {
-    "กำแพงเพชร": ["เมือง", "พรานกระต่าย", "โกสัมพีนคร", "คลองขลุง", "ไทรงาม", "คลองลาน", "ทรายทองวัฒนา", "ลานกระบือ", "ขาณุวรลักษบุรี", "ปางศิลาทอง", "บึงสามัคคี" ],
-    "เชียงราย": ["เมือง", "เวียงชัย", "แม่ลาว", "แม่จัน", "ดอยหลวง", "พาน", "พญาเม็งราย", "เวียงเชียงรุ้ง", "ป่าแดด", "แม่สรวย", "เชียงแสน", "ขุนตาล", "แม่สาย", "เทิง", "แม่ฟ้าหลวง", "เวียงป่าเป้า", "เวียงแก่น", "เชียงของ"],
-    "ตาก": ["แม่สอด", "เมืองตาก", "บ้านตาก", "สามเงา", "แม่ระมาด", "ท่าสองยาง"],
-    "เชียงใหม่": ["เมืองเชียงใหม่", "หางดง", "สารภี", "สันทราย", "สันกำแพง", "ดอยสะเก็ด"],
-    "นครราชสีมา": ["เมืองนครราชสีมา", "ปากช่อง", "สีคิ้ว", "สูงเนิน", "ขามทะเลสอ", "ด่านขุนทด"]
+    "กำแพงเพชร": ["เมืองกำแพงเพชร", "ไทรงาม", "คลองคลุง", "ขาณุวรลักษบุรี", "คลองลาน", "ไทรงาม", "บึงสามัคคี", "ปางศิลาทอง", "ทรายทองวัฒนา", "โกสัมพีนคร", "พรานกระต่าย"],
+    "เชียงราย": ["เมืองเชียงราย", "เชียงของ", "เทิง", "พาน", "แม่จัน", "แม่สาย", "แม่สรวย", "เวียงป่าเป้า", "พญาเม็งราย", "ขุนตาล", "แม่ฟ้าหลวง", "เวียงชัย", "เวียงเชียงรุ้ง", "ดอยหลวง", "ป่าแดด", "เชียงแสน"],
+    "เชียงใหม่": ["เมืองเชียงใหม่", "จอมทอง", "เชียงดาว", "ดอยสะเก็ด", "ดอยเต่า", "ดอยหล่อ", "ฝาง", "พร้าว", "แม่แจ่ม", "แม่ริม", "แม่วาง", "แม่อาย", "เวียงแหง", "สะเมิง", "สันกำแพง", "สันทราย", "สันป่าตอง", "สารภี", "อมก๋อย", "ฮอด"],
+    "ตาก": ["เมืองตาก", "บ้านตาก", "สามเงา", "แม่ระมาด", "ท่าสองยาง", "แม่สอด", "พบพระ", "อุ้มผาง", "วังเจ้า"],
+    "นครสวรรค์": ["เมืองนครสวรรค์", "โกรกพระ", "ชุมแสง", "ตาคลี", "ท่าตะโก", "บรรพตพิสัย", "พยุหะคีรี", "ไพศาลี", "แม่วงก์", "ลาดยาว", "หนองบัว", "เก้าเลี้ยว", "ตากฟ้า", "ชุมตาบง", "แม่เปิน"],
+    "น่าน": ["เมืองน่าน", "นาน้อย", "ปง", "ปัว", "แม่จริม", "บ้านหลวง", "เวียงสา", "ท่าวังผา", "ทุ่งช้าง", "เชียงกลาง", "นาหมื่น", "สองแคว", "บ่อเกลือ", "เฉลิมพระเกียรติ", "สันติสุข", "ภูเพียง"],
+    "พะเยา": ["เมืองพะเยา", "จุน", "เชียงคำ", "ดอกคำใต้", "ปง", "แม่ใจ", "ภูซาง", "ภูกามยาว", "เชียงม่วน"],
+    "พิจิตร": ["เมืองพิจิตร", "วังทรายพูน", "ตะพานหิน", "บางมูลนาก", "โพทะเล", "สามง่าม", "ทับคล้อ", "สากเหล็ก", "บึงนาราง", "ดงเจริญ", "บึงสามพัน", "โพธิ์ประทับช้าง", "วชิรบารมี"],
+    "พิษณุโลก": ["เมืองพิษณุโลก", "นครไทย", "ชาติตระการ", "บางระกำ", "บางกระทุ่ม", "พรหมพิราม", "วัดโบสถ์", "วังทอง", "เนินมะปราง"],
+    "เพชรบูรณ์": ["เมืองเพชรบูรณ์", "ชนแดน", "หล่มเก่า", "หล่มสัก", "วิเชียรบุรี", "ศรีเทพ", "หนองไผ่", "บึงสามพัน", "น้ำหนาว", "วังโป่ง", "เขาค้อ"],
+    "แพร่": ["เมืองแพร่", "ร้องกวาง", "ลอง", "วังชิ้น", "เด่นชัย", "สอง", "สูงเม่น", "หนองม่วงไข่"],
+    "ลำปาง": ["เมืองลำปาง", "แม่เมาะ", "เกาะคา", "เสริมงาม", "งาว", "แจ้ห่ม", "วังเหนือ", "เถิน", "แม่ทะ", "สบปราบ", "แม่พริก", "เมืองปาน"],
+    "ลำพูน": ["เมืองลำพูน", "แม่ทา", "บ้านโฮ่ง", "ลี้", "ทุ่งหัวช้าง", "ป่าซาง", "บ้านธิ", "เวียงหนองล่อง"],
+    "สุโขทัย": ["เมืองสุโขทัย", "บ้านด่านลานหอย", "คีรีมาศ", "กงไกรลาศ", "ศรีสัชนาลัย", "ศรีสำโรง", "สวรรคโลก", "ศรีนคร", "ทุ่งเสลี่ยม"],
+    "อุตรดิตถ์": ["เมืองอุตรดิตถ์", "ตรอน", "ท่าปลา", "น้ำปาด", "ฟากท่า", "บ้านโคก", "พิชัย", "ลับแล", "ทองแสนขัน"],
+    "อุทัยธานี": ["เมืองอุทัยธานี", "ทัพทัน", "สว่างอารมณ์", "หนองขาหย่าง", "หนองฉาง", "บ้านไร่", "ลานสัก", "ห้วยคต"]
 };
 
 /**
@@ -289,7 +300,7 @@ function initializeLocationDropdowns() {
         elements.reportLocationDistrict.innerHTML = '<option value="">-- กรุณาเลือกอำเภอ --</option>';
         elements.reportLocationDistrict.disabled = !selectedProvince; // Disable district dropdown if no province is selected.
         
-        if (selectedProvince) {
+        if (selectedProvince && PROVINCES_DISTRICTS[selectedProvince]) {
             PROVINCES_DISTRICTS[selectedProvince].forEach(district => {
                 const option = document.createElement('option');
                 option.value = district;
@@ -311,6 +322,7 @@ function resetUI() {
     // Hide all image display elements.
     elements.webcam.style.display = "none";
     elements.uploadedImage.style.display = "none";
+    // FIX: Corrected from .display to .style.display
     elements.placeholderImage.style.display = "flex"; // Show main placeholder.
     
     // Hide all analysis action buttons.
@@ -440,7 +452,7 @@ function captureFromWebcam(videoElement, callback) {
  * Handles file upload events, reads the selected image, and calls a callback with the image.
  * @param {Event} event - The file input change event.
  * @param {function} callback - The callback function to call with the loaded image (HTMLImageElement).
- */
+*/
 function handleFileUpload(event, callback) {
     const file = event.target.files[0];
     if (!file) {
@@ -486,6 +498,7 @@ function displayCapturedImageForAnalysis(imageElement) {
     elements.uploadedImage.src = state.currentImageDataUrl; // Set the src of the display image.
     elements.uploadedImage.style.display = "block"; // Show the display image.
     elements.webcam.style.display = "none"; // Hide the webcam.
+    // FIX: Corrected from .display to .style.display
     elements.placeholderImage.style.display = "none"; // Hide the placeholder.
     
     elements.predictionResult.style.display = "none"; // Hide previous prediction results.
@@ -569,7 +582,7 @@ function displayPredictionResults(predictions) {
             <p><i class="fas fa-lightbulb"></i> <strong>คำแนะนำ:</strong> ${insectInfo.recommendation}</p>
         `;
     } else {
-        // If not confident or unknown, display unknown message and report option.
+        // If not confident or unknown, display unknown message.
         insectInfo = INSECT_DB.unknown;
         elements.resultText.innerHTML = `<h4>${insectInfo.description}</h4>`;
         const reasonsHTML = insectInfo.reasons.map(reason => `<li><i class="fas fa-circle-info custom-bullet-icon"></i> ${reason}</li>`).join("");
@@ -578,19 +591,22 @@ function displayPredictionResults(predictions) {
                 <p><i class="fas fa-exclamation-triangle"></i> ${insectInfo.details}</p>
                 <ul>${reasonsHTML}</ul>
                 <p><i class="fas fa-lightbulb"></i> <strong>คำแนะนำ:</strong> ${insectInfo.recommendation}</p>
-                <button id="reportUnknownBugButton" class="btn-info" style="margin-top: 15px;">
-                    <i class="fas fa-file-alt"></i> รายงานแมลงนี้
-                </button>
             </div>
         `;
-        // Add event listener to the "Report this bug" button.
-        const reportBtn = document.getElementById("reportUnknownBugButton");
-        if (reportBtn) {
-            reportBtn.addEventListener("click", () => {
-                state.currentFlow = 'report_submission'; // Set flow to report submission.
-                showReportBugForm(); // Show the report form.
-            });
-        }
+    }
+
+    // Always add the report button regardless of prediction confidence
+    elements.additionalInfo.insertAdjacentHTML('beforeend', `
+        <button id="reportThisBugAlwaysButton" class="btn-info" style="margin-top: 15px;">
+            <i class="fas fa-file-alt"></i> รายงานแมลงนี้
+        </button>
+    `);
+    const reportBtn = document.getElementById("reportThisBugAlwaysButton");
+    if (reportBtn) {
+        reportBtn.addEventListener("click", () => {
+            state.currentFlow = 'report_submission'; // Set flow to report submission.
+            showReportBugForm(); // Show the report form.
+        });
     }
 }
 
@@ -667,16 +683,16 @@ async function submitBugReport(event) {
                                .filter(checkbox => checkbox.checked)
                                .map(checkbox => checkbox.value);
 
-    // Prepare form data for submission.
+    // Prepare form data for submission. All fields are optional except image.
     const formData = {
         image_data: state.currentImageDataUrl.split(',')[1], // Send only the base64 part of the image.
         insect_name: elements.insectName.value || '',
-        date_found: elements.reportDate.value,
-        location_district: elements.reportLocationDistrict.value,
-        location_province: elements.reportLocationProvince.value,
-        plant_type: elements.reportPlantType.value,
+        date_found: elements.reportDate.value || '', // Made optional
+        location_district: elements.reportLocationDistrict.value || '', // Made optional
+        location_province: elements.reportLocationProvince.value || '', // Made optional
+        plant_type: elements.reportPlantType.value || '', // Made optional
         damage_observed: selectedDamage,
-        additional_comments: elements.additionalComments.value
+        additional_comments: elements.additionalComments.value || '' // Made optional
     };
 
     try {
