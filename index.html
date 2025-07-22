@@ -17,7 +17,7 @@
             <span>AgriBug Ai</span>
         </div>
     </div>
-    
+
     <div class="container">
         <div class="hero-section">
             <h1><i class="fas fa-magnifying-glass"></i> ตรวจแยกแมลงทางการเกษตร</h1>
@@ -40,7 +40,7 @@
         <div class="image-display-area" id="mainImageDisplayArea">
             <div class="image-container">
                 <video id="webcam" autoplay playsinline style="display: none;"></video>
-                <img id="uploadedImage" alt="รูปภาพที่อัปโหลด" style="display: none;">
+                <img id="uploadedImage" alt="ภาพแมลงที่อัปโหลด" style="display: none;">
                 <div id="placeholderImage" class="placeholder-box">
                     <i class="fas fa-insect fa-3x"></i>
                     <p>กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง</p>
@@ -52,26 +52,35 @@
                     </small>
                 </div>
             </div>
+
+            <!-- New: Zoom Controls for Webcam -->
+            <div class="zoom-controls" style="display: none;">
+                <button id="zoomOut" type="button"><i class="fas fa-magnifying-glass-minus"></i></button>
+                <input type="range" id="zoomSlider" min="1" max="3" step="0.1" value="1">
+                <button id="zoomIn" type="button"><i class="fas fa-magnifying-glass-plus"></i></button>
+                <span id="zoomLevelDisplay" class="zoom-level-display">1.0x</span>
+            </div>
+            <!-- End New: Zoom Controls -->
             
             <div class="analysis-action-buttons" style="display: none;">
                 <div class="analysis-webcam-controls">
-                    <button id="captureButton" class="btn-primary" style="display: none;">
+                    <button id="captureButton" class="btn-primary" type="button" style="display: none;">
                         <i class="fas fa-camera"></i> ถ่ายภาพ
                     </button>
-                    <button id="cancelWebcamButton" class="btn-warning" style="display: none;">
+                    <button id="cancelWebcamButton" class="btn-warning" type="button" style="display: none;">
                         <i class="fas fa-times-circle"></i> ยกเลิก
                     </button>
                 </div>
 
                 <div class="analysis-image-controls"> 
-                    <button id="retakeOrSelectNewButton" class="btn-warning" style="display: none;">
+                    <button id="retakeOrSelectNewButton" class="btn-warning" type="button" style="display: none;">
                         <i class="fas fa-rotate-left"></i> ถ่ายใหม่
                     </button>
-                    <button id="analyzeButton" class="btn-primary" style="display: none;">
+                    <button id="analyzeButton" class="btn-primary" type="button" style="display: none;">
                         <i class="fas fa-search"></i> วิเคราะห์
                     </button>
                 </div>
-                <button id="backToHomeButton" class="btn-secondary" style="display: none;">
+                <button id="backToHomeButton" class="btn-secondary" type="button" style="display: none;">
                     <i class="fas fa-home"></i> กลับหน้าหลัก
                 </button>
             </div>
@@ -113,15 +122,15 @@
                         <input type="file" id="reportFileUpload" accept="image/*" style="display: none;">
                     </div>
                     <div class="report-webcam-action-buttons" style="display: none;">
-                        <button id="captureButtonReport" class="btn-primary">
+                        <button id="captureButtonReport" class="btn-primary" type="button">
                             <i class="fas fa-camera"></i> ถ่ายภาพ
                         </button>
-                        <button id="cancelReportWebcamButton" class="btn-warning">
+                        <button id="cancelReportWebcamButton" class="btn-warning" type="button">
                             <i class="fas fa-times-circle"></i> ยกเลิก
                         </button>
                     </div>
                     <div class="report-image-action-buttons" style="display: none;">
-                        <button id="retakeOrSelectNewReportButton" class="btn-warning">
+                        <button id="retakeOrSelectNewReportButton" class="btn-warning" type="button">
                             <i class="fas fa-rotate-left"></i> ถ่ายใหม่/เลือกภาพใหม่
                         </button>
                     </div>
@@ -192,7 +201,7 @@
                 <h3><i class="fas fa-heart"></i> ขอขอบคุณ</h3>
                 <p>ขอขอบคุณที่คุณเป็นส่วนหนึ่งที่ช่วยทำให้ระบบของเรามีประสิทธิภาพมากขึ้น</p>
                 <p>ข้อมูลของคุณจะถูกนำไปพัฒนาระบบเพื่อให้สามารถระบุแมลงได้ดียิ่งขึ้น</p>
-                <button id="closeThankYouModal" class="btn-primary">ปิด</button>
+                <button id="closeThankYouModal" class="btn-primary" type="button">ปิด</button>
             </div>
         </div>
     </div>
