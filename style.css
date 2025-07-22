@@ -175,8 +175,10 @@ body {
 .image-container video, .image-container img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: contain; /* Ensure content fits inside */
     border-radius: 13px;
+    /* Add transition for smooth zoom */
+    transition: transform 0.1s ease-out; 
 }
 
 .placeholder-box {
@@ -207,6 +209,76 @@ body {
     line-height: 1.4;
     max-width: 300px;
 }
+
+/* Zoom Controls */
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #F5F5F5;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 400px;
+}
+
+.zoom-controls button {
+    padding: 8px 15px;
+    font-size: 1.2em;
+    border-radius: 8px;
+    background-color: #B2DFDB; /* Light Teal */
+    color: #004D40; /* Dark Teal */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.zoom-controls button:hover {
+    background-color: #80CBC4; /* Slightly darker teal */
+}
+
+.zoom-controls input[type="range"] {
+    flex-grow: 1;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+.zoom-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00897B; /* Teal */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.zoom-controls input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00897B; /* Teal */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.zoom-level-display {
+    font-weight: bold;
+    color: #555;
+    width: 40px; /* Fixed width for display */
+    text-align: center;
+}
+
 
 /* Action buttons for analysis flow */
 .analysis-action-buttons {
@@ -730,6 +802,17 @@ body {
     .school-logo {
         margin-right: 0;
         margin-bottom: 15px;
+    }
+
+    .zoom-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .zoom-controls button {
+        width: 100%;
+    }
+    .zoom-controls input[type="range"] {
+        margin: 10px 0;
     }
 }
 
