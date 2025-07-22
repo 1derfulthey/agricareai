@@ -1,5 +1,5 @@
 // Define the URL for the Teachable Machine AI model and the Google Apps Script web app.
-const MODEL_URL = "https://teachablemachine.withgoogle.com/models/wsSrXpCPW/";
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/gCL-xqZ8C/";
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsgCInGAapb6YWlGyr42VDqtDIX0WgweSFfyzErTKvglGtFWPLdlQe_85xYYfgnaA-/exec"; 
 
 // Cache all necessary DOM elements for efficient access.
