@@ -45,7 +45,7 @@ body{
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.55rem}
 .brand i{font-size:1.4em}
 
-/* Top nav (big & accessible) */
+/* Top nav */
 .nav{
   max-width:1200px;margin:10px auto 0;display:flex;gap:10px;justify-content:center;
   background:#e8f5e9;border-radius:999px;padding:8px 10px;box-shadow:var(--shadow-sm)
@@ -75,7 +75,7 @@ body{
 }
 .hero p{color:var(--ink-2);text-align:center;margin:0 0 24px}
 
-/* Grid 7 features centered & responsive */
+/* Grid 7 features */
 .grid{
   display:grid;gap:18px;justify-content:center;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -94,7 +94,7 @@ body{
 .page-section.active{display:block}
 @keyframes fade{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 
-/* Analysis section */
+/* Analysis & shared */
 .section-title{display:flex;align-items:center;gap:10px;color:var(--primary-dark)}
 .section-title i{background:#e9f6ea;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem}
 .panel{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px}
@@ -108,7 +108,7 @@ body{
 .placeholder{text-align:center;color:#9aa7a1}
 .placeholder i{font-size:3.2rem;margin-bottom:10px}
 
-/* Big action buttons (touch friendly) */
+/* Big buttons */
 .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
 .btn{
   --bg:var(--primary);--bg2:var(--primary-light);
@@ -124,7 +124,7 @@ body{
 .btn.danger{--bg:#e53935;--bg2:#ef5350}
 .btn.gray{--bg:#90A4AE;--bg2:#B0BEC5}
 
-/* Loading overlay small */
+/* Loading */
 .loading{display:none;align-items:center;gap:10px;justify-content:center;margin:14px 0;color:var(--ink-2)}
 .loading .spin{
   width:28px;height:28px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;
@@ -132,7 +132,7 @@ body{
 }
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* Result page */
+/* Result */
 .result-grid{display:grid;grid-template-columns:1.1fr 1.6fr;gap:24px}
 .result-img{border-radius:16px;overflow:hidden;border:1px solid var(--outline);box-shadow:var(--shadow-sm)}
 .result-img img{display:block;width:100%;height:auto}
@@ -154,11 +154,10 @@ body{
 .list{list-style:none;padding:0;margin:0}
 .list li{display:flex;align-items:center;gap:10px;margin:8px 0}
 .list li i{color:var(--ok)}
-/* near list use outline icon only once to avoid double check issue */
 .near li i{color:#7cb342}
 .near li{margin:6px 0}
 
-/* Unknown advice box */
+/* Unknown box */
 .unknown-box{
   background:#fff7e6;border:1px solid #ffe0b2;padding:16px;border-radius:14px;margin-top:14px;color:#6d4c41
 }
@@ -168,7 +167,7 @@ body{
 /* Footer */
 footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:center}
 
-/* Report page */
+/* Forms */
 .form{max-width:640px;margin:auto}
 .form .group{margin:14px 0}
 .form label{font-weight:700;margin-bottom:6px;display:block}
@@ -177,10 +176,24 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 }
 .form textarea{min-height:110px;resize:vertical}
 
-/* Responsive */
-@media (max-width:1000px){
-  .result-grid{grid-template-columns:1fr}
+/* Sweet-like modal (ใช้เฉพาะ direct contribution) */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
+.modal .box{background:#fff;border-radius:18px;box-shadow:var(--shadow);max-width:460px;width:92%;padding:20px 22px;text-align:center}
+.modal .box h3{margin:8px 0 6px;font-family:'Kanit',sans-serif;color:var(--primary-dark)}
+.modal .box p{margin:0 0 12px;color:#54635c}
+.modal .box .ok{margin-top:6px}
+
+/* --- UI tweaks for Direct Contribution only --- */
+.center-note{ text-align:center; color:#5b6a61; margin:0 0 8px; }
+.upload-wrap{ display:flex; flex-direction:column; align-items:center; }
+#dc-preview{ display:none; max-width:420px; width:100%; border-radius:14px; margin:12px auto; border:1px solid var(--outline) }
+.consent-box{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  background:#e8f5e9; border:1px dashed #a5d6a7; border-radius:14px; padding:12px;
+  color:#1b5e20; font-weight:700;
 }
+
+@media (max-width:1000px){ .result-grid{grid-template-columns:1fr} }
 @media (max-width:640px){
   .brand{font-size:1.3rem}
   .nav{flex-wrap:wrap}
@@ -199,7 +212,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
   </div>
 </header>
 
-<!-- ซ่อนเมนูบนในหน้าแรก -->
+<!-- ซ่อนแถบนำทางบนหน้าแรก -->
 <nav class="nav" id="top-nav" style="display:none">
   <a href="#" data-target="home-page" class="active"><i class="fa-solid fa-house"></i>หน้าหลัก</a>
   <a href="#" data-target="analysis-page"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์</a>
@@ -219,6 +232,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
         <a class="card feature" data-model="corn"><i class="fa-solid fa-seedling" style="color:#f3b300"></i><h3>โรคใบข้าวโพด</h3></a>
         <a class="card feature" data-model="sugarcane"><i class="fa-solid fa-leaf" style="color:#7CB342"></i><h3>โรคใบอ้อย</h3></a>
         <a class="card feature" data-model="cassava"><i class="fa-solid fa-wheat-awn" style="color:#6D4C41"></i><h3>โรคใบมันสำปะหลัง</h3></a>
+        <!-- ปุ่มนี้จะไปหน้า Direct Contribution -->
         <a class="card" id="contribute-data-home"><i class="fa-solid fa-robot" style="color:#0ea5e9"></i><h3>ร่วมพัฒนา AI</h3></a>
         <a class="card" id="usage-btn"><i class="fa-solid fa-circle-question" style="color:#3F51B5"></i><h3>วิธีใช้งาน</h3></a>
         <a class="card" id="about-btn"><i class="fa-solid fa-circle-info" style="color:#8E24AA"></i><h3>เกี่ยวกับเรา</h3></a>
@@ -230,7 +244,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- ANALYSIS -->
+  <!-- ANALYSIS (เดิม) -->
   <section id="analysis-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-camera-retro"></i> <span id="analysis-title">วิเคราะห์</span></h2>
     <div class="panel">
@@ -252,7 +266,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- RESULT -->
+  <!-- RESULT (เดิม) -->
   <section id="result-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> ผลการวิเคราะห์</h2>
     <div class="panel">
@@ -269,9 +283,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
           </div>
           <div class="progress"><span id="conf-fill"></span></div>
 
-          <div class="block" id="result-info" style="margin-top:8px">
-            <!-- populated -->
-          </div>
+          <div class="block" id="result-info" style="margin-top:8px"></div>
 
           <div class="block" id="nearby-block" style="margin-top:10px">
             <h4><i class="fa-solid fa-list-check"></i>ผลลัพธ์ที่ใกล้เคียง</h4>
@@ -287,7 +299,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- REPORT -->
+  <!-- REPORT หลังวิเคราะห์ (เดิม) -->
   <section id="report-feedback-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-heart"></i> ส่งภาพนี้ให้เรา</h2>
     <div class="panel form">
@@ -311,12 +323,76 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
+  <!-- NEW: DIRECT CONTRIBUTION อิสระจากส่วนอื่น -->
+  <section id="direct-contrib-page" class="page-section">
+    <h2 class="section-title"><i class="fa-solid fa-heart-circle-plus"></i> ร่วมพัฒนา AI (ส่งภาพโดยตรง)</h2>
+    <div class="panel form">
+      <p class="center-note">
+        ช่องทางนี้สำหรับส่งภาพโดยตรงจากผู้ใช้ เพื่อนำไปปรับปรุงโมเดล
+      </p>
+
+      <div class="group">
+        <label for="dc-category">ประเภทภาพ</label>
+        <select id="dc-category">
+          <option value="insect">แมลง</option>
+          <option value="corn">โรคใบข้าวโพด</option>
+          <option value="sugarcane">โรคใบอ้อย</option>
+          <option value="cassava">โรคใบมันสำปะหลัง</option>
+          <option value="other">อื่น ๆ</option>
+        </select>
+      </div>
+
+      <div class="group upload-wrap">
+        <label>อัปโหลด/ถ่ายภาพ</label>
+        <div class="actions" style="justify-content:center">
+          <button class="btn secondary" id="dc-upload"><i class="fa-solid fa-upload"></i> อัปโหลดภาพ</button>
+          <input type="file" id="dc-file" accept="image/*" capture="environment" hidden>
+          <button class="btn gray" id="dc-clear" style="display:none"><i class="fa-solid fa-eraser"></i> ล้างรูป</button>
+        </div>
+        <img id="dc-preview"/>
+      </div>
+
+      <div class="group">
+        <label for="dc-true">ชื่อที่ถูกต้อง (ถ้าทราบ)</label>
+        <input id="dc-true" placeholder="เช่น Striped Flea Beetle / Leaf Blight ฯลฯ">
+      </div>
+
+      <div class="group">
+        <label for="dc-note">คำอธิบายเพิ่มเติม</label>
+        <textarea id="dc-note" placeholder="ระบุบริบทของภาพ เช่น พืชที่พบ พื้นที่/อำเภอ เวลา ฉีดสารหรือไม่ ฯลฯ"></textarea>
+      </div>
+
+      <!-- Consent, centered & emphasized -->
+      <div class="group">
+        <div class="consent-box">
+          <input type="checkbox" id="dc-consent">
+          <label for="dc-consent" style="margin:0">ยินยอมให้ใช้ภาพเพื่อพัฒนา AI</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn gray" id="dc-back"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</button>
+        <button class="btn" id="dc-send"><i class="fa-solid fa-paper-plane"></i> ส่งภาพให้เรา</button>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>&copy; 2024 AgriCare AI Project — ใช้ Google Apps Script สำหรับเก็บข้อมูล</footer>
 
+<!-- Success Modal (ใช้กับ Direct Contribution เท่านั้น) -->
+<div class="modal" id="dc-modal">
+  <div class="box">
+    <div style="font-size:2rem;line-height:1">🎉</div>
+    <h3>ส่งข้อมูลสำเร็จ</h3>
+    <p>ขอบคุณที่ร่วมพัฒนา AI! ทีมงานจะนำข้อมูลไปใช้ปรับปรุงโมเดล</p>
+    <button class="btn ok" id="dc-ok"><i class="fa-solid fa-check"></i> ตกลง</button>
+  </div>
+</div>
+
 <script>
-/* ================== MODEL & DATA =================== */
+/* ================== MODEL & DATA (เดิมทั้งหมด) =================== */
 const MODELS_INFO = {
   insect   : { url:'https://teachablemachine.withgoogle.com/models/gCL-xqZ8C/', title:'วิเคราะห์แมลง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง' },
   corn     : { url:'https://teachablemachine.withgoogle.com/models/RfjRGiUuH/', title:'วิเคราะห์โรคใบข้าวโพด', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบข้าวโพด' },
@@ -324,7 +400,6 @@ const MODELS_INFO = {
   cassava  : { url:'https://teachablemachine.withgoogle.com/models/53Vfkzth9/', title:'วิเคราะห์โรคใบมันสำปะหลัง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบมันสำปะหลัง' }
 };
 
-// ====== ข้อมูลอธิบายคลาส (ย่อ) ======
 const RESULTS_DATA = {
   "Lady Beetles - ด้วงเต่าลาย":{ type:"beneficial", label:"แมลงมีประโยชน์",
     info:"ตัวอ่อนและตัวเต็มวัยกินเพลี้ยอ่อนและแมลงศัตรูพืชขนาดเล็กจำนวนมาก ช่วยควบคุมศัตรูพืชตามธรรมชาติ",
@@ -347,50 +422,47 @@ const RESULTS_DATA = {
   "Striped Flea Beetle - ด้วงหมัดผักแถบลาย":{ type:"pest", label:"แมลงศัตรูพืช",
     info:"ตัวเต็มวัยกัดใบพรุน ตัวอ่อนกัดราก กระทบพืชตระกูลกะหล่ำ",
     management:["ตาข่ายกันแมลง","สารสกัดสะเดา/น้ำส้มควันไม้","ปลูกพืชหมุนเวียน"] },
-
   "โรคใบไหม้ - Leaf Blight":{ type:"disease", label:"โรคใบไหม้",
     info:"เชื้อรา Exserohilum turcicum แผลยาวรีสีน้ำตาล ขอบเหลือง พบมากช่วงชื้น",
     management:["ใช้พันธุ์ต้านทาน","ปลูกหมุนเวียนไม่ซ้ำที่","ตัดใบที่เป็นโรค","ฉีดพ่นสารป้องกันกำจัดเชื้อราเมื่อจำเป็น"] },
   "โรคราสนิม - Common Rust":{ type:"disease", label:"โรคราสนิม",
     info:"เชื้อรา Puccinia sorghi จุดน้ำตาลแดงเป็นผงคล้ายสนิมบนใบ",
     management:["ใช้พันธุ์ต้านทาน","ปลูกไม่หนาแน่น","ฉีดพ่นสารป้องกันเมื่อพบการระบาด"] },
-
   "โรคใบเหลือง - Yellow Leaf":{ type:"disease", label:"โรคใบเหลืองอ้อย",
     info:"ไวรัส SCYLV ใบแก่เหลืองจากปลายลงโคน ทำให้ผลผลิตลดลง",
     management:["ใช้ท่อนพันธุ์ปลอดโรค","ควบคุมเพลี้ยอ่อนพาหะ","ทำลายต้นเป็นโรคทิ้ง","ไม่ใช้ท่อนพันธุ์จากแหล่งระบาด"] },
   "โรคเหี่ยวเน่าแดง - Red Rot":{ type:"disease", label:"โรคเหี่ยวเน่าแดง",
     info:"เชื้อรา Colletotrichum falcatum มีเส้นใยสีขาวอมชมพู เนื้ออ้อยเน่าแดง",
     management:["ท่อนพันธุ์สะอาด","ไม่ปลูกซ้ำที่เดิม","ระบายน้ำดี","เผาทำลายต้นเป็นโรค","พ่นสารเมื่อจำเป็น"] },
-
   "โรคใบไหม้ - Cassava Bacterial Blight":{ type:"disease", label:"โรคใบไหม้แบคทีเรีย",
     info:"เชื้อ Xanthomonas ใบเป็นจุดฉ่ำน้ำ สีน้ำตาล ขยายใหญ่ ใบร่วง",
     management:["ใช้ท่อนพันธุ์สะอาด","ตัดส่วนเป็นโรคทิ้ง","หลีกเลี่ยงปลูกในพื้นที่ระบาด","ใช้สารป้องกันแบคทีเรีย"] },
   "โรคใบด่าง - Cassava Mosaic":{ type:"disease", label:"โรคใบด่าง",
     info:"เชื้อไวรัส CMV ใบด่างเหลืองสลับเขียว ใบหดบิดเบี้ยว ต้นแคระแกร็น",
     management:["ใช้พันธุ์ต้านทาน","ควบคุมแมลงหวี่ขาวพาหะ","ถอนทำลายต้นเป็นโรค","ไม่ใช้ท่อนพันธุ์จากพื้นที่ระบาด"] },
-
   "ไม่พบโรคทางใบ - Healthy Leaf":{ type:"healthy", label:"สุขภาพดี",
     info:"พืชมีสุขภาพดี ไม่พบอาการที่เป็นโรคชัดเจน",
     management:["ดูแลบำรุงตามปกติ","ตรวจสุขภาพพืชเป็นประจำ"] },
-
   "ไม่สามารถระบุประเภทได้":{ type:"unknown", label:"ไม่ทราบประเภท",
     info:"ระบบยังไม่มั่นใจเพียงพอหรือภาพนี้อาจไม่อยู่ในชุดข้อมูลของโมเดล",
     management:[] }
 };
 
-/* ================== GLOBAL STATE =================== */
+/* ================== GLOBAL (เดิม + ตัวแปรเฉพาะ direct) =================== */
 let currentModelKey = null;
 let currentModel = null;
-let lastPrediction = null;    // array of {className, probability}
+let lastPrediction = null;
 let capturedImageDataUrl = null;
+
+let dcImageDataUrl = null; // สำหรับ Direct Contribution
+
 const CONF_LIMIT = 0.80;
 const UNKNOWN_NAME = "ไม่สามารถระบุประเภทได้";
 
-/* ================== HELPERS =================== */
+/* Helpers */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 
-// << ใหม่: ควบคุมการมองเห็นเมนูบน — ซ่อนในหน้าแรก
 function updateNavVisibility(activeId){
   const top = document.getElementById('top-nav');
   if (!top) return;
@@ -400,28 +472,26 @@ function updateNavVisibility(activeId){
 function setActivePage(id){
   $$('.page-section').forEach(el=>el.classList.remove('active'));
   $('#'+id).classList.add('active');
-  // nav state
   $$('#top-nav a').forEach(a=>{
     a.classList.toggle('active', a.dataset.target===id);
-    // hide result/report tabs unless relevant
     if(['result-page','report-feedback-page'].includes(a.dataset.target)){
-      a.style.display = (id===a.dataset.target) ? 'inline-flex' : (id==='result-page' && a.dataset.target==='report-feedback-page' ? 'inline-flex' : (id==='report-feedback-page' && a.dataset.target==='result-page' ? 'inline-flex':'none'));
+      a.style.display = (id===a.dataset.target) ? 'inline-flex'
+        : (id==='result-page' && a.dataset.target==='report-feedback-page' ? 'inline-flex'
+        : (id==='report-feedback-page' && a.dataset.target==='result-page' ? 'inline-flex':'none'));
     }
   });
-  // << ใหม่: อัปเดตการแสดงเมนู
   updateNavVisibility(id);
 }
 
-// resize original to 224x224 for model input
+/* Resize to 224×224 for model (เดิม) */
 function toModelCanvasFromImage(img){
   const c=document.createElement('canvas');
   c.width=224; c.height=224;
-  const ctx=c.getContext('2d');
-  ctx.drawImage(img,0,0,224,224);
+  c.getContext('2d').drawImage(img,0,0,224,224);
   return c;
 }
 
-/* ================== MODEL =================== */
+/* ====== MODEL (เดิม) ====== */
 async function loadModel(url){
   $('#loading').style.display='flex';
   try{
@@ -474,11 +544,7 @@ async function analyze(){
 
   $('#loading').style.display='flex';
   try{
-    const tmpImg = new Image();
-    tmpImg.src = capturedImageDataUrl;
-    await tmpImg.decode(); // wait for load
-
-    // resize to 224x224 for prediction
+    const tmpImg = new Image(); tmpImg.src = capturedImageDataUrl; await tmpImg.decode();
     const modelInputCanvas = toModelCanvasFromImage(tmpImg);
     const prediction = await currentModel.predict(modelInputCanvas);
     prediction.sort((a,b)=>b.probability-a.probability);
@@ -491,26 +557,22 @@ async function analyze(){
   }finally{$('#loading').style.display='none'}
 }
 
-/* ================== RENDER RESULT =================== */
+/* ====== RESULT RENDER (เดิม) ====== */
 function renderResult(top){
   $('#result-image').src = capturedImageDataUrl;
-
   const percent = Math.round(top.probability*100);
   const confident = top.probability >= CONF_LIMIT;
   const isUnknown = top.className === UNKNOWN_NAME;
 
-  // ชื่อ / Badge
   let d = RESULTS_DATA[top.className] || {type:'unknown',label:'ไม่ทราบประเภท'};
   const typeEl = $('#result-type');
   typeEl.className = 'badge '+(d.type||'unknown');
   typeEl.innerHTML = `<i class="fa-solid fa-tag"></i><b>${d.label}</b>`;
   $('#result-name').textContent = confident ? top.className : (isUnknown ? UNKNOWN_NAME : top.className);
 
-  // ความมั่นใจ
   $('#conf-fill').style.width = (confident?percent:Math.max(percent,5))+'%';
   $('#result-confidence').textContent = confident ? `${percent}%` : 'ระดับความมั่นใจยังไม่เพียงพอ';
 
-  // ข้อมูลรายละเอียด
   const infoBox = $('#result-info');
   if(isUnknown || !confident){
     infoBox.innerHTML = `
@@ -532,7 +594,6 @@ function renderResult(top){
     `;
   }
 
-  // ใกล้เคียง 3 ลำดับ (ไม่รวม Unknown และไม่รวมตัวท็อปถ้า top≥80)
   const near = lastPrediction
     .filter(p => p.className !== UNKNOWN_NAME && (!confident ? true : p.className !== top.className))
     .slice(0, 3)
@@ -540,12 +601,11 @@ function renderResult(top){
     .join('');
   $('#nearby-list').innerHTML = near;
 
-  // ช่องในหน้ารายงาน
   $('#report-img').src = capturedImageDataUrl;
   $('#ai-summary').textContent = confident && !isUnknown ? top.className : UNKNOWN_NAME;
 }
 
-/* ================== NAV / EVENTS =================== */
+/* ====== NAV / EVENTS (เดิม + ปรับคลิกปุ่มร่วมพัฒนาไปหน้าใหม่) ====== */
 function bindNav(){
   $$('#top-nav a').forEach(a=>{
     a.addEventListener('click',e=>{
@@ -572,7 +632,8 @@ function bindHomeCards(){
     });
   });
 
-  $('#contribute-data-home').addEventListener('click',()=>setActivePage('report-feedback-page'));
+  // ไปหน้า Direct Contribution (อิสระจากการวิเคราะห์)
+  $('#contribute-data-home').addEventListener('click',()=>setActivePage('direct-contrib-page'));
 }
 
 function bindAnalysisButtons(){
@@ -599,8 +660,7 @@ function bindResultButtons(){
   $('#back-to-result').addEventListener('click',()=>setActivePage('result-page'));
 }
 
-/* ================== GOOGLE APPS SCRIPT =================== */
-/* ❗️ห้ามแก้ไขตามที่กำชับ */
+/* ================== GOOGLE APPS SCRIPT (เดิม) =================== */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxMcdkHDEBPv5aspReCHxOW6lh_Y00O3wWQLpeIR43KhKNjV70Cli9z9fuK4GRHNV7/exec';
 
 async function submitData(payload){
@@ -611,12 +671,14 @@ async function submitData(payload){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
-    alert('ส่งข้อมูลสำเร็จ ขอบคุณที่ช่วยพัฒนา AI!');
+    return true;
   }catch(err){
-    console.error(err); alert('ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    console.error(err);
+    return false;
   }
 }
 
+/* ===== ส่งจากหน้า “รายงาน” หลังวิเคราะห์ (เดิม) ===== */
 $('#send-report').addEventListener('click',async ()=>{
   const ai = $('#ai-summary').textContent.trim();
   const fix = $('#fix-name').value.trim();
@@ -630,20 +692,91 @@ $('#send-report').addEventListener('click',async ()=>{
     userCorrection: fix,
     userDescription: desc
   };
-  await submitData(payload);
+  const ok = await submitData(payload);
+  alert(ok ? 'ส่งข้อมูลสำเร็จ ขอบคุณที่ช่วยพัฒนา AI!' : 'ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
   setActivePage('home-page');
 });
 
+/* ===== ใหม่: DIRECT CONTRIBUTION (อิสระจากส่วนอื่น) ===== */
+function bindDirectContribution(){
+  const uploadBtn = $('#dc-upload');
+  const fileInput = $('#dc-file');
+  const preview   = $('#dc-preview');
+  const clearBtn  = $('#dc-clear');
+  const modal     = $('#dc-modal');
+  const modalOk   = $('#dc-ok');
+
+  uploadBtn.addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', (e)=>{
+    if(e.target.files?.length){
+      const f=e.target.files[0];
+      const r=new FileReader();
+      r.onload=ev=>{
+        dcImageDataUrl = ev.target.result;
+        preview.src = dcImageDataUrl;
+        preview.style.display='block';
+        clearBtn.style.display='inline-flex';
+      };
+      r.readAsDataURL(f);
+    }
+  });
+
+  clearBtn.addEventListener('click', ()=>{
+    fileInput.value='';
+    dcImageDataUrl=null;
+    preview.style.display='none';
+    clearBtn.style.display='none';
+  });
+
+  $('#dc-back').addEventListener('click', ()=> setActivePage('home-page'));
+
+  // ส่งแบบเดียวกับ “รายงานหลังวิเคราะห์”
+  $('#dc-send').addEventListener('click', async ()=>{
+    if(!dcImageDataUrl){ alert('โปรดอัปโหลดภาพก่อน'); return; }
+    if(!$('#dc-consent').checked){ alert('โปรดยืนยันการยินยอมให้ใช้ข้อมูล'); return; }
+
+    const note = $('#dc-note').value.trim();
+
+    const payload = {
+      type: 'report',
+      category: $('#dc-category').value,
+      imageData: dcImageDataUrl,
+      aiPrediction: '',
+      aiConfidence: '',
+      userCorrection: $('#dc-true').value.trim(),
+      userDescription: note
+    };
+
+    const ok = await submitData(payload);
+    if(ok){
+      modal.style.display='flex';
+      modalOk.focus();
+      // reset ฟอร์ม
+      $('#dc-true').value=''; $('#dc-note').value='';
+      $('#dc-consent').checked=false;
+      fileInput.value=''; dcImageDataUrl=null; preview.style.display='none'; clearBtn.style.display='none';
+    }else{
+      alert('ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    }
+  });
+
+  modalOk.addEventListener('click', ()=>{
+    $('#dc-modal').style.display='none';
+    setActivePage('home-page');
+  });
+}
+
 /* ================== INIT =================== */
 document.addEventListener('DOMContentLoaded', ()=>{
-  updateNavVisibility('home-page'); // << ใหม่: หน้าแรกซ่อนเมนูบน
+  updateNavVisibility('home-page');
 
   bindNav();
   bindHomeCards();
   bindAnalysisButtons();
   bindResultButtons();
+  bindDirectContribution();  // ใช้งาน Direct Contribution
 
-  // ซ่อนแท็บผลลัพธ์/ส่งภาพนี้ให้เราเมื่อยังไม่มีผล
+  // ซ่อนแท็บผลลัพธ์/ส่งภาพนี้ให้เราเมื่อยังไม่มีผล (เดิม)
   $$('#top-nav a').forEach(a=>{
     if(['result-page','report-feedback-page'].includes(a.dataset.target)) a.style.display='none';
   });
