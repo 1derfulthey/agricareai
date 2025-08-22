@@ -1,244 +1,700 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="แอปพลิเคชันระบุชนิดแมลงทางการเกษตรด้วย AI เทคโนโลยีล้ำสมัย">
-    <title>AgriBug-AI - เครื่องมือตรวจแยกแมลงทางการเกษตร</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+<meta name="description" content="AgriCare AI — ระบุชนิดแมลงและโรคพืชด้วย Teachable Machine" />
+<title>AgriCare AI - เครื่องมือตรวจแยกแมลงและโรคพืช</title>
+
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+
+<!-- Fonts + Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+<!-- TFJS + Teachable Machine -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+<style>
+:root{
+  --primary:#2E7D32;--primary-dark:#1B5E20;--primary-light:#43A047;
+  --accent:#8BC34A;--secondary:#FFB300;--earth:#6D4C41;
+  --bg:#F4F9F4;--surface:#ffffff;--ink:#132018;--ink-2:#5c6c62;
+  --outline:#E3E9E3;--error:#C62828;--ok:#2e7d32;
+  --shadow:0 8px 24px rgba(0,0,0,.08);--shadow-sm:0 3px 12px rgba(0,0,0,.06);
+  --r-sm:10px;--r-md:18px;--r-lg:26px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Sarabun',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,'Kanit',sans-serif;
+  line-height:1.7;
+}
+
+/* Header */
+.header{
+  position:sticky;top:0;z-index:20;
+  background:linear-gradient(0deg,var(--primary-dark),var(--primary));
+  color:#fff;box-shadow:var(--shadow);
+}
+.header-inner{
+  max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:center;
+  gap:16px;padding:14px 18px
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:2rem;letter-spacing:.2px}
+.brand i{font-size:1.6em}
+
+/* Top nav (step-by-step) */
+.nav{
+  max-width:1200px;margin:10px auto 0;display:flex;gap:10px;justify-content:center;
+  background:#e8f5e9;border-radius:999px;padding:8px 10px;box-shadow:var(--shadow-sm)
+}
+.nav a{
+  display:none; /* control by JS */
+  align-items:center;gap:8px;padding:12px 22px;border-radius:999px;
+  text-decoration:none;color:var(--primary-dark);font-weight:800;font-size:1.02rem;
+  transition:.25s;white-space:nowrap
+}
+.nav a i{font-size:1.1rem}
+.nav a.active, .nav a:hover{
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;transform:translateY(-1px)
+}
+
+/* Container */
+.container{max-width:1200px;margin:18px auto;padding:0 16px}
+
+/* Hero */
+.hero{
+  background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:32px 18px 36px;border:1px solid var(--outline);
+}
+.hero h1{
+  font-family:'Kanit',sans-serif;color:var(--primary-dark);
+  text-align:center;font-size:2.8rem;margin:.2rem 0 12px
+}
+.hero p{color:var(--ink-2);text-align:center;margin:0 0 26px}
+
+/* Grid feature (7 tiles) */
+.grid{
+  display:grid;gap:18px;justify-content:center;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+.card{
+  background:var(--surface);border:1px solid var(--outline);border-radius:18px;
+  box-shadow:var(--shadow-sm);padding:22px 16px;text-align:center;cursor:pointer;
+  transition:.25s;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center
+}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card i{font-size:2.2rem;margin-bottom:10px}
+.card h3{margin:0;font-family:'Kanit',sans-serif}
+
+/* Sections */
+.page-section{display:none;animation:fade .35s ease}
+.page-section.active{display:block}
+@keyframes fade{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+
+/* Section Title */
+.section-title{
+  display:flex;align-items:center;gap:14px;color:var(--primary-dark);
+  font-size:1.9rem;font-family:'Kanit',sans-serif;font-weight:800
+}
+.section-title i{
+  background:#e9f6ea;width:48px;height:48px;border-radius:50%;
+  display:grid;place-items:center;font-size:1.2rem;color:var(--primary)
+}
+
+/* Panel / blocks */
+.panel{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px}
+
+/* Analysis */
+.status-chip{
+  margin:8px 0 14px;display:inline-flex;align-items:center;gap:10px;border-radius:999px;
+  padding:8px 14px;border:1px solid var(--outline);background:#f4faf4;color:#205025;font-weight:700
+}
+.status-chip .spin{
+  width:18px;height:18px;border:3px solid #cde6cd;border-top-color:var(--primary);border-radius:50%;
+  animation:rot .9s linear infinite
+}
+.status-chip .ok{color:var(--ok)}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.image-box{
+  width:100%;max-width:720px;height:430px;margin:auto;border:2px dashed #cfe4cf;border-radius:16px;
+  display:grid;place-items:center;overflow:hidden;background:#fbfdfb;position:relative
+}
+.image-box video,.image-box img{width:100%;height:100%;object-fit:cover}
+.placeholder{text-align:center;color:#9aa7a1}
+.placeholder i{font-size:3.2rem;margin-bottom:10px}
+
+/* Big buttons */
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
+.btn{
+  --bg:var(--primary);--bg2:var(--primary-light);
+  background:linear-gradient(135deg,var(--bg),var(--bg2));
+  color:#fff;border:none;border-radius:999px;padding:14px 22px;font-weight:800;
+  font-size:1.05rem;display:inline-flex;gap:10px;align-items:center;cursor:pointer;
+  box-shadow:var(--shadow-sm);transition:.2s;min-width:180px;justify-content:center
+}
+.btn i{font-size:1.05rem}
+.btn:hover{transform:translateY(-2px)}
+.btn.secondary{--bg:#D9822B;--bg2:#F2B153}
+.btn.info{--bg:#1976d2;--bg2:#64B5F6}
+.btn.danger{--bg:#e53935;--bg2:#ef5350}
+.btn.gray{--bg:#90A4AE;--bg2:#B0BEC5}
+
+/* Small working overlay */
+.loading{display:none;align-items:center;gap:10px;justify-content:center;margin:14px 0;color:var(--ink-2)}
+.loading .spin{width:28px;height:28px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;animation:rot .9s linear infinite}
+
+/* Result page */
+.result-grid{display:grid;grid-template-columns:1.1fr 1.6fr;gap:24px}
+.result-img{border-radius:16px;overflow:hidden;border:1px solid var(--outline);box-shadow:var(--shadow-sm)}
+.result-img img{display:block;width:100%;height:auto}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#ffeaea;color:#b71c1c;padding:8px 12px;border-radius:999px;font-weight:800;margin-bottom:8px}
+.badge.beneficial{background:#e8f5e9;color:#1b5e20}
+.badge.healthy{background:#e8f5e9;color:#1b5e20}
+.badge.disease{background:#fff3e0;color:#e65100}
+.badge.unknown{background:#fff8e1;color:#8d6e00}
+
+.result-title{font-family:'Kanit',sans-serif;font-size:2.2rem;margin:.5rem 0 .7rem}
+.conf-row{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
+.conf-row i{color:#2e7d32}
+.conf-label{font-weight:800}
+
+/* Modern confidence bar */
+.progress{
+  height:28px;border-radius:14px;background:linear-gradient(180deg,#ecf3ec,#dde8de);
+  overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)
+}
+.progress>span{
+  display:block;height:100%;width:0;
+  background:linear-gradient(90deg,#8BC34A,#689F38);
+  position:relative;transition:width .9s cubic-bezier(.22,.61,.36,1)
+}
+.progress>span::after{
+  content:"";position:absolute;right:6px;top:50%;translate:0 -50%;
+  width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.45)
+}
+
+/* Blocks & lists */
+.block h4{
+  display:flex;align-items:center;gap:10px;margin:18px 0 10px;
+  color:var(--primary-dark);font-family:'Kanit',sans-serif;font-size:1.35rem
+}
+.block h4 i{color:var(--primary)}
+.list{list-style:none;padding:0;margin:0}
+.list li{display:flex;align-items:center;gap:10px;margin:8px 0}
+.list li i{color:var(--ok)}
+.near li i{color:#7cb342}
+
+/* Unknown advice */
+.unknown-box{
+  background:#fff7e6;border:1px solid #ffe0b2;padding:16px;border-radius:14px;margin-top:14px;color:#6d4c41
+}
+.unknown-box .adv{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
+.unknown-box .adv i{margin-top:3px;color:#ff9800}
+
+/* Footer */
+footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:center}
+
+/* Forms */
+.form{max-width:640px;margin:auto}
+.form .group{margin:14px 0}
+.form label{font-weight:800;margin-bottom:6px;display:block}
+.form input,.form select,.form textarea{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--outline);background:#fafdf9;font-size:1rem
+}
+.form textarea{min-height:110px;resize:vertical}
+
+/* Modal (how-to / about) */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50}
+.modal .box{background:#fff;border-radius:16px;max-width:720px;width:92%;padding:18px 18px 12px;box-shadow:var(--shadow)}
+.modal .box h3{margin:6px 0 10px;font-family:'Kanit',sans-serif}
+.modal .box .close{position:absolute;right:14px;top:10px;background:#eee;border:none;border-radius:999px;width:36px;height:36px;cursor:pointer}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1B5E20;color:#fff;
+  padding:12px 16px;border-radius:999px;display:none;gap:10px;align-items:center;box-shadow:var(--shadow);z-index:60}
+
+/* Responsive */
+@media (max-width:1000px){ .result-grid{grid-template-columns:1fr} }
+@media (max-width:640px){
+  .brand{font-size:1.7rem}
+  .nav{flex-wrap:wrap}
+  .nav a{font-size:1rem;padding:12px 18px}
+  .hero h1{font-size:2.2rem}
+  .image-box{height:360px}
+  .btn{min-width:46%;padding:14px 16px}
+}
+</style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <i class="fas fa-bug"></i>
-            <span>AgriBug Ai</span>
-        </div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand"><i class="fa-solid fa-seedling"></i> AgriCare AI</div>
+  </div>
+</header>
+
+<nav class="nav" id="top-nav">
+  <a href="#" data-target="home-page" id="nav-home"><i class="fa-solid fa-house"></i>หน้าหลัก</a>
+  <a href="#" data-target="analysis-page" id="nav-analysis"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์</a>
+  <a href="#" data-target="result-page" id="nav-result"><i class="fa-solid fa-chart-pie"></i>ผลลัพธ์</a>
+  <a href="#" data-target="report-feedback-page" id="nav-report"><i class="fa-solid fa-heart"></i>ส่งภาพนี้ให้เรา</a>
+</nav>
+
+<main class="container">
+
+  <!-- HOME -->
+  <section id="home-page" class="page-section active">
+    <div class="hero">
+      <h1>ดวงตาอัจฉริยะเพื่อเกษตรกร</h1>
+      <p>วิเคราะห์โรคพืชและแมลงด้วยเทคโนโลยี AI — เพียงถ่ายภาพหรืออัปโหลดภาพเพื่อเริ่มต้น และช่วยร่วมพัฒนา AI ด้วยการส่งภาพให้เราเมื่อผลลัพธ์ยังไม่แม่นยำ</p>
+
+      <div class="grid">
+        <a class="card feature" data-model="insect"><i class="fa-solid fa-bug" style="color:#d6741e"></i><h3>วิเคราะห์แมลง</h3></a>
+        <a class="card feature" data-model="corn"><i class="fa-solid fa-seedling" style="color:#f3b300"></i><h3>โรคใบข้าวโพด</h3></a>
+        <a class="card feature" data-model="sugarcane"><i class="fa-solid fa-leaf" style="color:#7CB342"></i><h3>โรคใบอ้อย</h3></a>
+        <a class="card feature" data-model="cassava"><i class="fa-solid fa-wheat-awn" style="color:#6D4C41"></i><h3>โรคใบมันสำปะหลัง</h3></a>
+        <a class="card" id="contribute-data-home"><i class="fa-solid fa-robot" style="color:#0ea5e9"></i><h3>ร่วมพัฒนา AI</h3></a>
+        <a class="card" id="usage-btn"><i class="fa-solid fa-circle-question" style="color:#3F51B5"></i><h3>วิธีใช้งาน</h3></a>
+        <a class="card" id="about-btn"><i class="fa-solid fa-circle-info" style="color:#8E24AA"></i><h3>เกี่ยวกับเรา</h3></a>
+      </div>
+
+      <div class="panel" style="margin-top:18px;text-align:center;color:#2e7d32">
+        พร้อมใช้งาน : ถ่ายภาพแล้วกด ‘วิเคราะห์ภาพ’ ได้ทันที
+      </div>
     </div>
+  </section>
 
-    <div class="container">
-        <div class="hero-section">
-            <h1><i class="fas fa-magnifying-glass"></i> ตรวจแยกแมลงทางการเกษตร</h1>
-            <p class="subtitle">AI จะช่วยแยกแยะแมลงในแปลงเกษตรของคุณว่า <br> "เป็นมิตรหรือศัตรูพืช" </p>
-        </div>
+  <!-- ANALYSIS -->
+  <section id="analysis-page" class="page-section">
+    <h2 class="section-title"><i class="fa-solid fa-camera-retro"></i> <span id="analysis-title">วิเคราะห์</span></h2>
+    <div class="panel" style="text-align:center">
+      <div id="model-status" class="status-chip" style="display:none">
+        <span class="spin"></span><span id="model-status-text">กำลังเตรียมโมเดล…</span>
+      </div>
 
-        <div class="main-controls-section" id="mainControlsSection">
-            <button id="webcamButton" type="button" class="btn-primary">
-                <i class="fas fa-camera"></i> ถ่ายภาพ
-            </button>
-            <button id="uploadButton" type="button" class="btn-secondary">
-                <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
-            </button>
-            <button id="reportBugEntryButton" type="button" class="btn-info">
-                <i class="fas fa-file-alt"></i> แจ้งข้อมูลแมลง
-            </button>
-            <input type="file" id="fileUpload" accept="image/*" style="display: none;">
-        </div>
+      <div class="image-box" id="image-box">
+        <div class="placeholder" id="placeholder"><i class="fa-regular fa-image"></i><div id="instruction">กรุณาถ่ายภาพหรืออัปโหลดภาพ</div></div>
+        <video id="webcam" autoplay playsinline style="display:none"></video>
+        <img id="preview" alt="" style="display:none" />
+      </div>
 
-        <div class="image-display-area" id="mainImageDisplayArea">
-            <div class="image-container">
-                <video id="webcam" autoplay playsinline style="display: none;"></video>
-                <img id="uploadedImage" alt="ภาพแมลงที่อัปโหลด" style="display: none;">
-                <div id="placeholderImage" class="placeholder-box">
-                    <i class="fas fa-insect fa-3x"></i>
-                    <p>กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง</p>
-                    <small>
-                        เพื่อผลลัพธ์ที่แม่นยำที่สุด : <br>
-                        ถ่ายภาพแมลงให้มีขนาดใหญ่ ชัดเจน เห็นรูปร่างครบถ้วน มีแสงสว่างพอดี และให้แมลงอยู่ตรงกลางภาพ<br>
-                        (วิเคราะห์แมลงได้ 7 ชนิด คือ ด้วงเต่าลาย, <br> แมลงช้างปีกใส, มวนพิฆาต,มวนเพชฌฆาต <br>
-                        เพลี้ยแป้ง, หนอนกระทู้, ด้วงหมัดผักแถบลาย)
-                    </small>
-                </div>
-            </div>
+      <div class="loading" id="loading"><div class="spin"></div>กำลังประมวลผล…</div>
 
-            <!-- New: Zoom Controls for Webcam -->
-            <div class="zoom-controls" style="display: none;">
-                <button id="zoomOut" type="button"><i class="fas fa-magnifying-glass-minus"></i></button>
-                <input type="range" id="zoomSlider" min="1" max="3" step="0.1" value="1">
-                <button id="zoomIn" type="button"><i class="fas fa-magnifying-glass-plus"></i></button>
-                <span id="zoomLevelDisplay" class="zoom-level-display">1.0x</span>
-            </div>
-            <!-- End New: Zoom Controls -->
-            
-            <div class="analysis-action-buttons" style="display: none;">
-                <div class="analysis-webcam-controls">
-                    <button id="captureButton" class="btn-primary" type="button" style="display: none;">
-                        <i class="fas fa-camera"></i> ถ่ายภาพ
-                    </button>
-                    <button id="cancelWebcamButton" class="btn-warning" type="button" style="display: none;">
-                        <i class="fas fa-times-circle"></i> ยกเลิก
-                    </button>
-                </div>
-
-                <div class="analysis-image-controls"> 
-                    <button id="retakeOrSelectNewButton" class="btn-warning" type="button" style="display: none;">
-                        <i class="fas fa-rotate-left"></i> ถ่ายใหม่
-                    </button>
-                    <button id="analyzeButton" class="btn-primary" type="button" style="display: none;">
-                        <i class="fas fa-search"></i> วิเคราะห์
-                    </button>
-                </div>
-                <button id="backToHomeButton" class="btn-secondary" type="button" style="display: none;">
-                    <i class="fas fa-home"></i> กลับหน้าหลัก
-                </button>
-            </div>
-        </div>
-
-        <div id="predictionResult" class="result-box" style="display: none;">
-            <div class="result-header">
-                <i class="fas fa-clipboard-check"></i>
-                <h3>ผลการวิเคราะห์</h3>
-            </div>
-            <div class="result-content">
-                <div id="resultText"></div>
-                <div id="additionalInfo" class="additional-info"></div>
-            </div>
-        </div>
-
-        <div id="reportBugSection" class="report-bug-section" style="display: none;">
-            <div class="report-header">
-                <i class="fas fa-bug"></i>
-                <h3>รายงานแมลงที่ไม่รู้จัก</h3>
-            </div>
-            <div class="report-content">
-                <div class="report-image-area">
-                    <div class="image-container">
-                        <video id="reportWebcam" autoplay playsinline style="display: none;"></video>
-                        <img id="reportUploadedImage" alt="รูปภาพที่อัปโหลดสำหรับรายงาน" style="display: none;">
-                        <div id="reportPlaceholderImage" class="placeholder-box">
-                            <i class="fas fa-insect fa-2x"></i>
-                            <p>ถ่ายภาพหรืออัปโหลดรูปแมลงที่ต้องการรายงาน</p>
-                        </div>
-                    </div>
-                    <div class="report-initial-capture-upload-buttons">
-                        <button id="reportWebcamButton" type="button" class="btn-primary">
-                            <i class="fas fa-camera"></i> ถ่ายภาพ
-                        </button>
-                        <button id="reportUploadButton" type="button" class="btn-secondary">
-                            <i class="fas fa-upload"></i> อัปโหลดรูปภาพ
-                        </button>
-                        <input type="file" id="reportFileUpload" accept="image/*" style="display: none;">
-                    </div>
-                    <div class="report-webcam-action-buttons" style="display: none;">
-                        <button id="captureButtonReport" class="btn-primary" type="button">
-                            <i class="fas fa-camera"></i> ถ่ายภาพ
-                        </button>
-                        <button id="cancelReportWebcamButton" class="btn-warning" type="button">
-                            <i class="fas fa-times-circle"></i> ยกเลิก
-                        </button>
-                    </div>
-                    <div class="report-image-action-buttons" style="display: none;">
-                        <button id="retakeOrSelectNewReportButton" class="btn-warning" type="button">
-                            <i class="fas fa-rotate-left"></i> ถ่ายใหม่/เลือกภาพใหม่
-                        </button>
-                    </div>
-                </div>
-
-                <form id="reportBugForm">
-                    <div class="form-group">
-                        <label for="insectName">ชื่อแมลง (ถ้ารู้จัก):</label>
-                        <input type="text" id="insectName" name="insect_name" placeholder="เช่น ด้วงเต่าลาย, แมลงช้างปีกใส">
-                    </div>
-                    <div class="form-group">
-                        <label for="reportDate">วันที่พบ:</label>
-                        <div class="date-input-container">
-                            <input type="date" id="reportDate" name="reportDate">
-                            <small class="date-hint">(คลิกเพื่อเลือกวันที่)</small>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="reportLocationProvince">จังหวัด:</label>
-                        <select id="reportLocationProvince" name="reportLocationProvince">
-                            <option value="">-- กรุณาเลือกจังหวัด --</option>
-                            <!-- Provinces will be populated by JavaScript -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="reportLocationDistrict">อำเภอ:</label>
-                        <select id="reportLocationDistrict" name="reportLocationDistrict" disabled>
-                            <option value="">-- กรุณาเลือกอำเภอ --</option>
-                            <!-- Districts will be populated by JavaScript -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="reportPlantType">พบในพืชชนิดใด:</label>
-                        <input type="text" id="reportPlantType" name="reportPlantType" placeholder="เช่น มะม่วง, กะเพรา">
-                    </div>
-                    <div class="form-group">
-                        <label>ความเสียหายที่พบ:</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="damage" value="ใบหงิก"> ใบหงิก</label>
-                            <label><input type="checkbox" name="damage" value="รากเน่า"> รากเน่า</label>
-                            <label><input type="checkbox" name="damage" value="ดอกร่วง"> ดอกร่วง</label>
-                            <label><input type="checkbox" name="damage" value="ลำต้นเป็นรู"> ลำต้นเป็นรู</label>
-                            <label><input type="checkbox" name="damage" value="มีคราบเหนียว"> มีคราบเหนียว</label>
-                            <label><input type="checkbox" name="damage" value="ใบเป็นรู/แหว่ง"> ใบเป็นรู/แหว่ง</label>
-                            <label><input type="checkbox" name="damage" value="อื่นๆ"> อื่น ๆ</label>
-                            <label><input type="checkbox" name="damage" value="ไม่มีความเสียหาย"> ไม่มีความเสียหาย</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="additionalComments">ความเห็นเพิ่มเติม:</label>
-                        <textarea id="additionalComments" name="additionalComments" rows="4" placeholder="ข้อมูลเพิ่มเติมเกี่ยวกับแมลงหรือพืชที่พบ..."></textarea>
-                    </div>
-                    <div class="form-button-group">
-                        <button type="submit" class="btn-primary" id="submitReportButton">
-                            <i class="fas fa-paper-plane"></i> ส่งข้อมูล
-                        </button>
-                        <button type="button" class="btn-secondary" id="cancelReportButton">
-                            <i class="fas fa-home"></i> กลับหน้าหลัก
-                        </button>
-                    </div>
-                </form>
-                <div id="reportStatus" style="margin-top: 15px; font-weight: bold;"></div>
-            </div>
-        </div>
-
-        <div id="thankYouModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <h3><i class="fas fa-heart"></i> ขอขอบคุณ</h3>
-                <p>ขอขอบคุณที่คุณเป็นส่วนหนึ่งที่ช่วยทำให้ระบบของเรามีประสิทธิภาพมากขึ้น</p>
-                <p>ข้อมูลของคุณจะถูกนำไปพัฒนาระบบเพื่อให้สามารถระบุแมลงได้ดียิ่งขึ้น</p>
-                <button id="closeThankYouModal" class="btn-primary" type="button">ปิด</button>
-            </div>
-        </div>
+      <div class="actions">
+        <button class="btn" id="capture"><i class="fa-solid fa-camera"></i>ถ่ายภาพ</button>
+        <button class="btn secondary" id="upload"><i class="fa-solid fa-upload"></i>อัปโหลดภาพ</button>
+        <input type="file" id="file-input" accept="image/*" hidden>
+        <button class="btn info" id="analyze" style="display:none"><i class="fa-solid fa-magnifying-glass-chart"></i>วิเคราะห์ภาพ</button>
+        <button class="btn gray" id="recapture" style="display:none"><i class="fa-solid fa-arrows-rotate"></i>ถ่าย/เลือกใหม่</button>
+      </div>
     </div>
+  </section>
 
-    <div class="features-section">
-        <div class="feature-card">
-            <i class="fas fa-bolt"></i>
-            <h3>รวดเร็ว</h3>
-            <p>วิเคราะห์ผลลัพธ์ในเวลาไม่กี่วินาที</p>
+  <!-- RESULT -->
+  <section id="result-page" class="page-section">
+    <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> ผลการวิเคราะห์</h2>
+    <div class="panel">
+      <div class="result-grid">
+        <div class="result-img"><img id="result-image" alt="ภาพที่วิเคราะห์"></div>
+        <div>
+          <span id="result-type" class="badge unknown"><i class="fa-solid fa-tag"></i><b>ไม่ทราบประเภท</b></span>
+          <div class="result-title" id="result-name">—</div>
+
+          <div class="conf-row">
+            <i class="fa-solid fa-chart-line"></i>
+            <span class="conf-label">ระดับความมั่นใจ:</span>
+            <b id="result-confidence">—</b>
+          </div>
+          <div class="progress"><span id="conf-fill"></span></div>
+
+          <div class="block" id="result-info" style="margin-top:10px"></div>
+
+          <div class="block" id="nearby-block" style="margin-top:12px">
+            <h4><i class="fa-solid fa-list-check"></i>ผลลัพธ์ที่ใกล้เคียง</h4>
+            <ul class="list near" id="nearby-list"></ul>
+          </div>
+
+          <div class="actions" style="margin-top:16px">
+            <button class="btn" id="go-report"><i class="fa-solid fa-heart"></i>ส่งภาพนี้ให้เรา</button>
+            <button class="btn danger" id="again"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์ภาพใหม่</button>
+          </div>
         </div>
-        <div class="feature-card">
-            <i class="fas fa-brain"></i>
-            <h3>แม่นยำ</h3>
-            <p>ใช้เทคโนโลยี AI ที่มีความแม่นยำสูง</p>
-        </div>
-        <div class="feature-card">
-            <i class="fas fa-leaf"></i>
-            <h3>เป็นมิตร</h3>
-            <p>ช่วยเกษตรกรลดการใช้สารเคมี</p>
-        </div>
+      </div>
     </div>
+  </section>
 
-    <footer class="developer-footer">
-        <div class="footer-content">
-            <div class="developer-info">
-                <img src="https://i.ibb.co/ynpXskdc/school-logo.jpg" alt="โลโก้โรงเรียนเทศบาลเฉลิมพระเกียรติสมเด็จพระเทพรัตนราชสุดา ฯ สยามบรมราชกุมารี" class="school-logo">
-                <div class="developer-text">
-                    <p>พัฒนาโดย</p>
-                    <p>โรงเรียนเทศบาลเฉลิมพระเกียรติสมเด็จพระเทพ <br> รัตนราชสุดา ฯ สยามบรมราชกุมารี</p>
-                    <p>สังกัดเทศบาลนครแม่สอด อำเภอแม่สอด จังหวัดตาก</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+  <!-- REPORT -->
+  <section id="report-feedback-page" class="page-section">
+    <h2 class="section-title"><i class="fa-solid fa-heart"></i> ส่งภาพนี้ให้เรา</h2>
+    <div class="panel form">
+      <img id="report-img" style="display:block;max-width:360px;width:100%;border-radius:14px;margin:auto 0 14px;border:1px solid var(--outline)"/>
+      <div class="group">
+        <label>สรุปจาก AI</label>
+        <div class="panel" id="ai-summary" style="padding:12px;font-weight:800;color:var(--primary-dark)">—</div>
+      </div>
+      <div class="group">
+        <label for="fix-name">ชื่อที่ถูกต้อง (ถ้าทราบ)</label>
+        <input id="fix-name" placeholder="ระบุชื่อแมลง/โรคพืชที่ถูกต้อง">
+      </div>
+      <div class="group">
+        <label for="desc">คำอธิบายเพิ่มเติม</label>
+        <textarea id="desc" placeholder="เช่น พบที่ใบล่าง ภาพถ่ายตอนเย็น มีรอยกัดบริเวณขอบใบ ฯลฯ"></textarea>
+      </div>
+      <div class="actions">
+        <button class="btn gray" id="back-to-result"><i class="fa-solid fa-arrow-left"></i>กลับไปผลลัพธ์</button>
+        <button class="btn" id="send-report"><i class="fa-solid fa-paper-plane"></i>ยืนยันการส่ง</button>
+      </div>
+    </div>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <script src="script.js"></script>
+  <!-- HOW TO / ABOUT Modals -->
+  <div class="modal" id="modal-how">
+    <div class="box">
+      <button class="close" data-close="#modal-how"><i class="fa-solid fa-xmark"></i></button>
+      <h3><i class="fa-solid fa-circle-question"></i> วิธีใช้งาน</h3>
+      <ol>
+        <li>เลือกโมเดล (แมลง/ข้าวโพด/อ้อย/มันสำปะหลัง)</li>
+        <li>ถ่ายภาพหรืออัปโหลดภาพ จากนั้นกด <b>วิเคราะห์ภาพ</b></li>
+        <li>ดูผลลัพธ์ หากความมั่นใจต่ำ (&lt;80%) ระบบจะแนะนำให้ส่งภาพเพื่อช่วยพัฒนา AI</li>
+      </ol>
+    </div>
+  </div>
+  <div class="modal" id="modal-about">
+    <div class="box">
+      <button class="close" data-close="#modal-about"><i class="fa-solid fa-xmark"></i></button>
+      <h3><i class="fa-solid fa-circle-info"></i> เกี่ยวกับเรา</h3>
+      <p>AgriCare AI เป็นโครงการสาธิตการใช้ <b>Teachable Machine</b> เพื่อช่วยเกษตรกรวิเคราะห์ศัตรูพืชและโรคจากภาพถ่าย</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"><i class="fa-solid fa-check-circle"></i><span id="toast-text">บันทึกสำเร็จ</span></div>
+
+</main>
+
+<footer>&copy; 2024 AgriCare AI Project — ใช้ Google Apps Script สำหรับเก็บข้อมูล</footer>
+
+<script>
+/* ================== MODEL & DATA =================== */
+const MODELS_INFO = {
+  insect   : { url:'https://teachablemachine.withgoogle.com/models/gCL-xqZ8C/', title:'วิเคราะห์แมลง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง' },
+  corn     : { url:'https://teachablemachine.withgoogle.com/models/RfjRGiUuH/', title:'วิเคราะห์โรคใบข้าวโพด', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบข้าวโพด' },
+  sugarcane: { url:'https://teachablemachine.withgoogle.com/models/dkwga_Se1/', title:'วิเคราะห์โรคใบอ้อย', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบอ้อย' },
+  cassava  : { url:'https://teachablemachine.withgoogle.com/models/53Vfkzth9/', title:'วิเคราะห์โรคใบมันสำปะหลัง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบมันสำปะหลัง' }
+};
+
+// ====== ข้อมูลคลาส (รวม Unknown) ======
+const RESULTS_DATA = {
+  "Lady Beetles - ด้วงเต่าลาย":{type:"beneficial",label:"แมลงมีประโยชน์",info:"ตัวอ่อน/ตัวเต็มวัยกินเพลี้ยอ่อนและแมลงขนาดเล็ก",management:["อนุรักษ์แหล่งอาศัย","หลีกเลี่ยงสารเคมีออกฤทธิ์กว้าง","ปลูกพืชดอกล่อแมลงที่เป็นประโยชน์"]},
+  "Green Lacewing - แมลงช้างปีกใส":{type:"beneficial",label:"แมลงมีประโยชน์",info:"ตัวอ่อนล่าเพลี้ย ไรแดง และไข่แมลง",management:["ลดการฉีดพ่นสาร","ปลูกพืชหลากหลาย","ปล่อยตัวห้ำเสริม"]},
+  "Stink Bug - มวนพิฆาต":{type:"beneficial",label:"แมลงมีประโยชน์",info:"กินหนอนผีเสื้อและไข่ศัตรูพืช",management:["รักษาความหลากหลาย","หลีกเลี่ยงสารเคมีไม่จำเป็น","ปลูกแนวกันชน"]},
+  "Assassin Bug - มวนเพชฌฆาต":{type:"beneficial",label:"แมลงมีประโยชน์",info:"ใช้ปากแทงดูดเหยื่อ กินแมลงหลายชนิด",management:["ลดการใช้สารเคมี","ปลูกคลุมดิน/แปลงดอก","ปล่อยตัวห้ำเสริม"]},
+  "Mealybugs - เพลี้ยแป้ง":{type:"pest",label:"แมลงศัตรูพืช",info:"ดูดกินน้ำเลี้ยง ทำให้แคระแกร็น ใบหงิก เกิดราดำ",management:["บิวเวอร์เรีย/เมธาไรเซียม","น้ำส้มควันไม้/สะเดา","ส่งเสริมด้วงเต่าลาย/แตนเบียน"]},
+  "Cutworm - หนอนกระทู้":{type:"pest",label:"แมลงศัตรูพืช",info:"กัดกินใบ/ยอดอ่อน ความเสียหายรุนแรง",management:["ใช้ Bt","กับดักฟีโรโมน","เก็บกลุ่มไข่/ตัวหนอนทำลาย"]},
+  "Striped Flea Beetle - ด้วงหมัดผักแถบลาย":{type:"pest",label:"แมลงศัตรูพืช",info:"ตัวเต็มวัยกัดใบพรุน ตัวอ่อนกัดราก",management:["ตาข่ายกันแมลง","สะเดา/น้ำส้มควันไม้","ปลูกพืชหมุนเวียน"]},
+
+  "โรคใบไหม้ - Leaf Blight":{type:"disease",label:"โรคใบไหม้",info:"แผลยาวรีสีน้ำตาล ขอบเหลือง จากเชื้อรา E. turcicum",management:["พันธุ์ต้านทาน","หมุนเวียนพืช","ตัดใบที่เป็นโรค","พ่นสารเมื่อจำเป็น"]},
+  "โรคราสนิม - Common Rust":{type:"disease",label:"โรคราสนิม",info:"จุดน้ำตาลแดงผงคล้ายสนิมบนใบ (Puccinia sorghi)",management:["พันธุ์ต้านทาน","ไม่ปลูกหนาแน่น","พ่นสารป้องกันเมื่อพบ"]},
+
+  "โรคใบเหลือง - Yellow Leaf":{type:"disease",label:"โรคใบเหลืองอ้อย",info:"ไวรัส SCYLV ใบเหลืองจากปลายลงโคน",management:["ท่อนพันธุ์ปลอดโรค","ควบคุมเพลี้ยอ่อนพาหะ","ทำลายต้นเป็นโรค"]},
+  "โรคเหี่ยวเน่าแดง - Red Rot":{type:"disease",label:"โรคเหี่ยวเน่าแดง",info:"เชื้อรา C. falcatum เนื้ออ้อยเน่าแดง",management:["ท่อนพันธุ์สะอาด","ไม่ปลูกซ้ำที่เดิม","ระบายน้ำดี","เผาทำลายต้นเป็นโรค"]},
+
+  "โรคใบไหม้ - Cassava Bacterial Blight":{type:"disease",label:"ใบไหม้แบคทีเรีย",info:"เชื้อ Xanthomonas ใบเป็นจุดฉ่ำน้ำ/สีน้ำตาล",management:["ท่อนพันธุ์สะอาด","ตัดส่วนเป็นโรค","หลีกเลี่ยงพื้นที่ระบาด","สารป้องกันแบคทีเรีย"]},
+  "โรคใบด่าง - Cassava Mosaic":{type:"disease",label:"โรคใบด่าง",info:"ไวรัส CMV ใบด่างเหลืองสลับเขียว ใบหดบิด",management:["พันธุ์ต้านทาน","ควบคุมแมลงหวี่ขาว","ถอนทำลายต้นเป็นโรค"]},
+
+  "ไม่พบโรคทางใบ - Healthy Leaf":{type:"healthy",label:"สุขภาพดี",info:"พืชสุขภาพดี ไม่พบอาการโรคชัดเจน",management:["ดูแลบำรุงตามปกติ","ตรวจสุขภาพพืชสม่ำเสมอ"]},
+
+  "ไม่สามารถระบุประเภทได้":{type:"unknown",label:"ไม่ทราบประเภท",info:"ภาพอาจไม่อยู่ในชุดข้อมูล/ระบบยังไม่มั่นใจ",management:[]}
+};
+
+/* ================== GLOBAL STATE =================== */
+let currentModelKey = null;
+let currentModel = null;
+let lastPrediction = null;    // array of {className, probability}
+let capturedImageDataUrl = null;
+const CONF_LIMIT = 0.80;
+const UNKNOWN_NAME = "ไม่สามารถระบุประเภทได้";
+
+/* ================== HELPERS =================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function setActivePage(id){
+  $$('.page-section').forEach(el=>el.classList.remove('active'));
+  $('#'+id).classList.add('active');
+  updateNav(id);
+}
+
+function updateNav(activeId){
+  // step-by-step visibility
+  $('#nav-home').style.display = 'inline-flex';  // always
+  $('#nav-analysis').style.display = currentModelKey ? 'inline-flex':'none';
+  const hasResult = !!(lastPrediction && lastPrediction.length);
+  $('#nav-result').style.display = hasResult ? 'inline-flex':'none';
+  $('#nav-report').style.display = hasResult ? 'inline-flex':'none';
+
+  // active state
+  $$('#top-nav a').forEach(a=>a.classList.toggle('active', a.dataset.target===activeId));
+}
+
+// resize to 224x224 for model input
+function toModelCanvasFromImage(img){
+  const c=document.createElement('canvas'); c.width=224; c.height=224;
+  const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,224,224); return c;
+}
+
+function showToast(msg){
+  const t=$('#toast'); $('#toast-text').textContent = msg; t.style.display='inline-flex';
+  setTimeout(()=>{t.style.display='none'}, 2200);
+}
+
+/* ================== MODEL =================== */
+async function loadModel(url){
+  // status chip: loading
+  const chip = $('#model-status'); const txt = $('#model-status-text');
+  chip.style.display='inline-flex'; chip.querySelector('.spin').style.display='inline-block';
+  chip.classList.remove('ok'); txt.textContent='กำลังโหลดโมเดล…';
+
+  try{
+    const m = await tmImage.load(url+'model.json', url+'metadata.json');
+    // status ready
+    chip.querySelector('.spin').style.display='none';
+    chip.classList.add('ok');
+    chip.innerHTML = `<i class="fa-solid fa-circle-check ok"></i> <span>โหลดโมเดลสำเร็จ พร้อมใช้งาน</span>`;
+    return m;
+  }catch(e){
+    chip.querySelector('.spin').style.display='none';
+    chip.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:#C62828"></i> <span>โหลดโมเดลล้มเหลว โปรดลองใหม่</span>`;
+    console.error(e);
+    return null;
+  }
+}
+
+async function initWebcam(){
+  const v = $('#webcam');
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
+    v.srcObject = stream;
+    v.style.display='block';
+    $('#placeholder').style.display='none';
+  }catch(e){
+    console.warn(e);
+    alert('ไม่สามารถเปิดกล้องได้ โปรดอนุญาตการเข้าถึงกล้องหรือใช้อัปโหลดภาพแทน');
+  }
+}
+
+function captureFromWebcam(){
+  const v = $('#webcam');
+  const c = document.createElement('canvas');
+  c.width=v.videoWidth; c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+  capturedImageDataUrl = c.toDataURL('image/jpeg');
+  showPreview(capturedImageDataUrl);
+}
+
+function showPreview(dataURL){
+  const img = $('#preview');
+  img.src=dataURL; img.style.display='block';
+  $('#webcam').style.display='none';
+  $('#placeholder').style.display='none';
+  $('#analyze').style.display='inline-flex';
+  $('#recapture').style.display='inline-flex';
+}
+
+async function analyze(){
+  if(!capturedImageDataUrl){ alert('กรุณาถ่ายหรืออัปโหลดภาพก่อน'); return; }
+  if(!currentModel){ alert('โมเดลไม่พร้อม โปรดเลือกประเภทใหม่'); return; }
+
+  $('#loading').style.display='flex';
+  try{
+    const tmpImg = new Image(); tmpImg.src = capturedImageDataUrl; await tmpImg.decode();
+    const modelInputCanvas = toModelCanvasFromImage(tmpImg);
+    const prediction = await currentModel.predict(modelInputCanvas);
+    prediction.sort((a,b)=>b.probability-a.probability);
+    lastPrediction = prediction;
+
+    renderResult(prediction[0]);
+    setActivePage('result-page');
+  }catch(e){
+    console.error(e); alert('เกิดข้อผิดพลาดในการวิเคราะห์ภาพ');
+  }finally{$('#loading').style.display='none'}
+}
+
+/* ================== RENDER RESULT =================== */
+function renderResult(top){
+  $('#result-image').src = capturedImageDataUrl;
+
+  const percent = Math.round(top.probability*100);
+  const confident = top.probability >= CONF_LIMIT;
+  const isUnknown = top.className === UNKNOWN_NAME;
+
+  const d = RESULTS_DATA[top.className] || {type:'unknown',label:'ไม่ทราบประเภท'};
+  const typeEl = $('#result-type');
+  typeEl.className = 'badge '+(d.type||'unknown');
+  typeEl.innerHTML = `<i class="fa-solid fa-tag"></i><b>${d.label}</b>`;
+
+  // Title: ถ้า <80% หรือเป็น Unknown ให้แสดง "ไม่สามารถระบุประเภทได้"
+  $('#result-name').textContent = (confident && !isUnknown) ? top.className : UNKNOWN_NAME;
+
+  // ความมั่นใจ
+  $('#conf-fill').style.width = (confident?percent:Math.max(percent,5))+'%';
+  $('#result-confidence').textContent = confident ? `${percent}%` : 'ระดับความมั่นใจต่ำเกินไป';
+
+  // รายละเอียด
+  const infoBox = $('#result-info');
+  if(isUnknown || !confident){
+    infoBox.innerHTML = `
+      <div class="unknown-box">
+        <div class="adv"><i class="fa-solid fa-circle-exclamation"></i> ภาพไม่ชัดเจนหรือมีแสงน้อย/มากเกินไป</div>
+        <div class="adv"><i class="fa-solid fa-image"></i> มุมภาพไม่เหมาะสมสำหรับการระบุชนิด</div>
+        <div class="adv"><i class="fa-solid fa-database"></i> ภาพนี้อาจไม่ได้อยู่ในฐานข้อมูลของโมเดล</div>
+      </div>`;
+  }else{
+    infoBox.innerHTML = `
+      <div class="block">
+        <h4><i class="fa-solid fa-circle-info"></i>ข้อมูลเบื้องต้น</h4>
+        <p>${d.info || '-'}</p>
+        <h4><i class="fa-solid fa-clipboard-check"></i>แนวทางการจัดการ</h4>
+        <ul class="list">
+          ${(d.management||[]).map(t=>`<li><i class="fa-solid fa-check-circle"></i>${t}</li>`).join('')}
+        </ul>
+      </div>`;
+  }
+
+  // ใกล้เคียง 3 ลำดับ (ไม่เอา Unknown และไม่เอาตัวท็อปถ้า top≥80)
+  const near = lastPrediction
+    .filter(p => p.className !== UNKNOWN_NAME && (!confident ? true : p.className !== top.className))
+    .slice(0, 3)
+    .map(p => `<li><i class="fa-regular fa-circle-check"></i> ${p.className} – ${Math.round(p.probability*100)}%</li>`)
+    .join('');
+  $('#nearby-list').innerHTML = near;
+
+  // สำหรับหน้า "ส่งภาพนี้ให้เรา"
+  $('#report-img').src = capturedImageDataUrl;
+  $('#ai-summary').textContent = confident && !isUnknown ? top.className : UNKNOWN_NAME;
+
+  updateNav('result-page');
+}
+
+/* ================== NAV / EVENTS =================== */
+function bindNav(){
+  $$('#top-nav a').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      setActivePage(a.dataset.target);
+    });
+  });
+}
+
+function bindHomeCards(){
+  $$('.feature').forEach(card=>{
+    card.addEventListener('click', async ()=>{
+      const key = card.dataset.model;
+      currentModelKey = key;
+      const mInfo = MODELS_INFO[key];
+      $('#analysis-title').textContent = mInfo.title;
+      $('#instruction').textContent = mInfo.instruction;
+
+      updateNav('analysis-page'); // show วิเคราะห์
+      setActivePage('analysis-page');
+
+      // แสดงสถานะโหลดโมเดล
+      currentModel = await loadModel(mInfo.url);
+      if(currentModel){
+        await initWebcam();
+      }
+    });
+  });
+
+  $('#contribute-data-home').addEventListener('click',()=>$('#modal-how').style.display='flex');
+}
+
+function bindAnalysisButtons(){
+  $('#capture').addEventListener('click',captureFromWebcam);
+  $('#upload').addEventListener('click',()=>$('#file-input').click());
+  $('#file-input').addEventListener('change',e=>{
+    if(e.target.files?.length){
+      const file=e.target.files[0];
+      const r=new FileReader();
+      r.onload=ev=>{ capturedImageDataUrl=ev.target.result; showPreview(capturedImageDataUrl); };
+      r.readAsDataURL(file);
+    }
+  });
+  $('#analyze').addEventListener('click',analyze);
+  $('#recapture').addEventListener('click',()=>{
+    $('#preview').style.display='none'; $('#webcam').style.display='block';
+    $('#analyze').style.display='none'; $('#recapture').style.display='none';
+  });
+}
+
+function bindResultButtons(){
+  $('#again').addEventListener('click',()=>setActivePage('analysis-page'));
+  $('#go-report').addEventListener('click',()=>setActivePage('report-feedback-page'));
+  $('#back-to-result').addEventListener('click',()=>setActivePage('result-page'));
+}
+
+/* Modals */
+$('#usage-btn').addEventListener('click',()=>$('#modal-how').style.display='flex');
+$('#about-btn').addEventListener('click',()=>$('#modal-about').style.display='flex');
+$$('.modal .close').forEach(btn=>{
+  btn.addEventListener('click',()=>{ const sel=btn.getAttribute('data-close'); if(sel) $(sel).style.display='none'; })
+});
+window.addEventListener('click',e=>{
+  if(e.target.classList?.contains('modal')) e.target.style.display='none';
+});
+
+/* ================== GOOGLE APPS SCRIPT =================== */
+/* ❗️ห้ามแก้ไขตามที่กำชับ */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxMcdkHDEBPv5aspReCHxOW6lh_Y00O3wWQLpeIR43KhKNjV70Cli9z9fuK4GRHNV7/exec';
+
+async function submitData(payload){
+  try{
+    payload.timestamp = new Date().toISOString();
+    await fetch(GAS_URL,{ method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    showToast('ส่งข้อมูลสำเร็จ ขอบคุณที่ช่วยพัฒนา AI!');
+  }catch(err){
+    console.error(err); showToast('ส่งข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');
+  }
+}
+
+$('#send-report').addEventListener('click',async ()=>{
+  const ai = $('#ai-summary').textContent.trim();
+  const fix = $('#fix-name').value.trim();
+  const desc= $('#desc').value.trim();
+  const payload = {
+    type:'report',
+    category: currentModelKey,
+    imageData: capturedImageDataUrl,
+    aiPrediction: ai,
+    aiConfidence: (lastPrediction && lastPrediction[0]) ? lastPrediction[0].probability.toFixed(4) : '',
+    userCorrection: fix,
+    userDescription: desc
+  };
+  await submitData(payload);
+  setActivePage('home-page');
+  // reset quick toast view
+  updateNav('home-page');
+});
+
+/* ================== INIT =================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  bindNav();
+  bindHomeCards();
+  bindAnalysisButtons();
+  bindResultButtons();
+  updateNav('home-page'); // โชว์เฉพาะ "หน้าหลัก" ตอนเริ่มต้น
+});
+</script>
 </body>
 </html>
