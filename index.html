@@ -20,10 +20,10 @@
 <style>
 :root{
   --primary:#2E7D32;--primary-dark:#1B5E20;--primary-light:#43A047;
-  --accent:#8BC34A;--secondary:#FFB300;--earth:#6D4C41;
-  --bg:#F4F9F4;--surface:#ffffff;--ink:#132018;--ink-2:#5c6c62;
-  --outline:#E3E9E3;--error:#C62828;--ok:#2e7d32;
-  --shadow:0 8px 24px rgba(0,0,0,.08);--shadow-sm:0 3px 12px rgba(0,0,0,.06);
+  --accent:#8BC34A;--secondary:#FF9800;
+  --bg:#F6FBF6;--surface:#fff;--ink:#1d1d1d;--ink-2:#596166;
+  --outline:#E5EAE5;--error:#D32F2F;--ok:#2e7d32;
+  --shadow:0 6px 18px rgba(0,0,0,.08);--shadow-sm:0 3px 10px rgba(0,0,0,.06);
   --r-sm:10px;--r-md:18px;--r-lg:26px;
 }
 
@@ -41,29 +41,39 @@ body{
   background:linear-gradient(0deg,var(--primary-dark),var(--primary));
   color:#fff;box-shadow:var(--shadow);
 }
-.header-inner{
-  max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:center;
-  gap:16px;padding:14px 18px
-}
-.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:2rem;letter-spacing:.2px}
-.brand i{font-size:1.6em}
+.header-inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:16px;padding:14px 18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.55rem}
+.brand i{font-size:1.4em}
 
-/* Top nav (step-by-step) */
+/* Top nav (desktop/tablet) */
 .nav{
   max-width:1200px;margin:10px auto 0;display:flex;gap:10px;justify-content:center;
   background:#e8f5e9;border-radius:999px;padding:8px 10px;box-shadow:var(--shadow-sm)
 }
 .nav a{
-  display:none; /* control by JS */
-  align-items:center;gap:8px;padding:12px 22px;border-radius:999px;
-  text-decoration:none;color:var(--primary-dark);font-weight:800;font-size:1.02rem;
-  transition:.25s;white-space:nowrap
+  display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;
+  text-decoration:none;color:var(--primary-dark);font-weight:700;font-size:1.02rem;
+  transition:.25s;white-space:nowrap;border-bottom:3px solid transparent
 }
 .nav a i{font-size:1.1rem}
 .nav a.active, .nav a:hover{
   background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;transform:translateY(-1px)
+  color:#fff;transform:translateY(-1px);border-bottom-color:#ffffffcc
 }
+
+/* Bottom nav (mobile only) — NEW */
+.bottom-nav{
+  position:fixed;bottom:10px;left:50%;transform:translateX(-50%);
+  background:#e8f5e9;border-radius:999px;box-shadow:var(--shadow);padding:8px 10px;
+  display:none;gap:8px;z-index:25
+}
+.bottom-nav a{
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:10px 14px;border-radius:14px;text-decoration:none;color:var(--primary-dark);
+  font-weight:700;font-size:.85rem;min-width:74px;border:2px solid transparent
+}
+.bottom-nav a i{font-size:1.05rem}
+.bottom-nav a.active{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-color:#ffffff33}
 
 /* Container */
 .container{max-width:1200px;margin:18px auto;padding:0 16px}
@@ -71,15 +81,15 @@ body{
 /* Hero */
 .hero{
   background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);
-  padding:32px 18px 36px;border:1px solid var(--outline);
+  padding:28px 18px 32px;border:1px solid var(--outline);
 }
 .hero h1{
   font-family:'Kanit',sans-serif;color:var(--primary-dark);
-  text-align:center;font-size:2.8rem;margin:.2rem 0 12px
+  text-align:center;font-size:2.4rem;margin:.3rem 0 10px
 }
-.hero p{color:var(--ink-2);text-align:center;margin:0 0 26px}
+.hero p{color:var(--ink-2);text-align:center;margin:0 0 24px}
 
-/* Grid feature (7 tiles) */
+/* Grid 7 features centered & responsive */
 .grid{
   display:grid;gap:18px;justify-content:center;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -98,31 +108,15 @@ body{
 .page-section.active{display:block}
 @keyframes fade{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 
-/* Section Title */
+/* Analysis & Result section titles */
 .section-title{
-  display:flex;align-items:center;gap:14px;color:var(--primary-dark);
-  font-size:1.9rem;font-family:'Kanit',sans-serif;font-weight:800
+  display:flex;align-items:center;gap:10px;color:var(--primary-dark);
+  font-family:'Kanit',sans-serif;font-weight:800;font-size:1.8rem; /* NEW: emphasize */
 }
-.section-title i{
-  background:#e9f6ea;width:48px;height:48px;border-radius:50%;
-  display:grid;place-items:center;font-size:1.2rem;color:var(--primary)
-}
-
-/* Panel / blocks */
+.section-title i{background:#e9f6ea;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem}
 .panel{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px}
 
-/* Analysis */
-.status-chip{
-  margin:8px 0 14px;display:inline-flex;align-items:center;gap:10px;border-radius:999px;
-  padding:8px 14px;border:1px solid var(--outline);background:#f4faf4;color:#205025;font-weight:700
-}
-.status-chip .spin{
-  width:18px;height:18px;border:3px solid #cde6cd;border-top-color:var(--primary);border-radius:50%;
-  animation:rot .9s linear infinite
-}
-.status-chip .ok{color:var(--ok)}
-@keyframes rot{to{transform:rotate(360deg)}}
-
+/* Image box */
 .image-box{
   width:100%;max-width:720px;height:430px;margin:auto;border:2px dashed #cfe4cf;border-radius:16px;
   display:grid;place-items:center;overflow:hidden;background:#fbfdfb;position:relative
@@ -131,68 +125,69 @@ body{
 .placeholder{text-align:center;color:#9aa7a1}
 .placeholder i{font-size:3.2rem;margin-bottom:10px}
 
-/* Big buttons */
+/* Big action buttons (touch friendly) */
 .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
 .btn{
   --bg:var(--primary);--bg2:var(--primary-light);
   background:linear-gradient(135deg,var(--bg),var(--bg2));
-  color:#fff;border:none;border-radius:999px;padding:14px 22px;font-weight:800;
+  color:#fff;border:none;border-radius:999px;padding:14px 22px;font-weight:700;
   font-size:1.05rem;display:inline-flex;gap:10px;align-items:center;cursor:pointer;
   box-shadow:var(--shadow-sm);transition:.2s;min-width:180px;justify-content:center
 }
 .btn i{font-size:1.05rem}
 .btn:hover{transform:translateY(-2px)}
-.btn.secondary{--bg:#D9822B;--bg2:#F2B153}
+.btn.secondary{--bg:#FF9800;--bg2:#FFB74D}
 .btn.info{--bg:#1976d2;--bg2:#64B5F6}
 .btn.danger{--bg:#e53935;--bg2:#ef5350}
 .btn.gray{--bg:#90A4AE;--bg2:#B0BEC5}
 
-/* Small working overlay */
-.loading{display:none;align-items:center;gap:10px;justify-content:center;margin:14px 0;color:var(--ink-2)}
-.loading .spin{width:28px;height:28px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;animation:rot .9s linear infinite}
+/* Loading / Status chip — UPDATED spacing + chip look */
+.loading{
+  display:none;align-items:center;gap:10px;justify-content:center;
+  margin:14px auto;color:var(--ink-2);padding:10px 14px;border-radius:999px;
+  background:#e8f5e9;border:1px solid #cfe8d1;box-shadow:var(--shadow-sm);width:max-content
+}
+.loading .spin{
+  width:24px;height:24px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;
+  animation:rot .9s linear infinite
+}
+@keyframes rot{to{transform:rotate(360deg)}}
 
 /* Result page */
 .result-grid{display:grid;grid-template-columns:1.1fr 1.6fr;gap:24px}
 .result-img{border-radius:16px;overflow:hidden;border:1px solid var(--outline);box-shadow:var(--shadow-sm)}
 .result-img img{display:block;width:100%;height:auto}
-.badge{display:inline-flex;align-items:center;gap:8px;background:#ffeaea;color:#b71c1c;padding:8px 12px;border-radius:999px;font-weight:800;margin-bottom:8px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#ffeaea;color:#b71c1c;padding:8px 12px;border-radius:999px;font-weight:700;margin-bottom:8px}
 .badge.beneficial{background:#e8f5e9;color:#1b5e20}
 .badge.healthy{background:#e8f5e9;color:#1b5e20}
 .badge.disease{background:#fff3e0;color:#e65100}
 .badge.unknown{background:#fff8e1;color:#8d6e00}
 
-.result-title{font-family:'Kanit',sans-serif;font-size:2.2rem;margin:.5rem 0 .7rem}
+.result-title{font-family:'Kanit',sans-serif;font-size:2rem;margin:.4rem 0 .6rem}
 .conf-row{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
 .conf-row i{color:#2e7d32}
-.conf-label{font-weight:800}
+.conf-label{font-weight:700}
 
-/* Modern confidence bar */
+/* Confidence bar — refined look */
 .progress{
-  height:28px;border-radius:14px;background:linear-gradient(180deg,#ecf3ec,#dde8de);
-  overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)
+  height:26px;border-radius:13px;background:linear-gradient(180deg,#eef5ee,#dde8de);overflow:hidden;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.10);border:1px solid #d5e3d6
 }
 .progress>span{
   display:block;height:100%;width:0;
-  background:linear-gradient(90deg,#8BC34A,#689F38);
-  position:relative;transition:width .9s cubic-bezier(.22,.61,.36,1)
-}
-.progress>span::after{
-  content:"";position:absolute;right:6px;top:50%;translate:0 -50%;
-  width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.45)
+  background:linear-gradient(90deg,#9CD17C,#5AA33D);
+  mask-image:linear-gradient(90deg,rgba(0,0,0,.9),rgba(0,0,0,1));transition:width .9s cubic-bezier(.22,.61,.36,1)
 }
 
-/* Blocks & lists */
-.block h4{
-  display:flex;align-items:center;gap:10px;margin:18px 0 10px;
-  color:var(--primary-dark);font-family:'Kanit',sans-serif;font-size:1.35rem
-}
+.block h4{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--primary-dark)}
 .block h4 i{color:var(--primary)}
 .list{list-style:none;padding:0;margin:0}
 .list li{display:flex;align-items:center;gap:10px;margin:8px 0}
 .list li i{color:var(--ok)}
 .near li i{color:#7cb342}
+.near li{margin:6px 0}
 
-/* Unknown advice */
+/* Unknown advice box */
 .unknown-box{
   background:#fff7e6;border:1px solid #ffe0b2;padding:16px;border-radius:14px;margin-top:14px;color:#6d4c41
 }
@@ -202,34 +197,38 @@ body{
 /* Footer */
 footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:center}
 
-/* Forms */
+/* Report page */
 .form{max-width:640px;margin:auto}
 .form .group{margin:14px 0}
-.form label{font-weight:800;margin-bottom:6px;display:block}
+.form label{font-weight:700;margin-bottom:6px;display:block}
 .form input,.form select,.form textarea{
   width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--outline);background:#fafdf9;font-size:1rem
 }
 .form textarea{min-height:110px;resize:vertical}
 
-/* Modal (how-to / about) */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50}
-.modal .box{background:#fff;border-radius:16px;max-width:720px;width:92%;padding:18px 18px 12px;box-shadow:var(--shadow)}
-.modal .box h3{margin:6px 0 10px;font-family:'Kanit',sans-serif}
-.modal .box .close{position:absolute;right:14px;top:10px;background:#eee;border:none;border-radius:999px;width:36px;height:36px;cursor:pointer}
-
-/* Toast */
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1B5E20;color:#fff;
-  padding:12px 16px;border-radius:999px;display:none;gap:10px;align-items:center;box-shadow:var(--shadow);z-index:60}
+/* FAB (mobile only) — NEW */
+.fab{position:fixed;right:18px;bottom:86px;width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:none;
+  box-shadow:var(--shadow);z-index:26;display:none;align-items:center;justify-content:center;cursor:pointer}
+.fab i{font-size:1.2rem}
+.fab-menu{position:fixed;right:18px;bottom:150px;display:none;flex-direction:column;gap:10px;z-index:26}
+.fab-item{width:46px;height:46px;border-radius:50%;border:none;box-shadow:var(--shadow);cursor:pointer;color:#fff}
+#fab-camera{background:#43A047}
+#fab-upload{background:#FF9800}
 
 /* Responsive */
-@media (max-width:1000px){ .result-grid{grid-template-columns:1fr} }
+@media (max-width:1000px){
+  .result-grid{grid-template-columns:1fr}
+}
 @media (max-width:640px){
-  .brand{font-size:1.7rem}
-  .nav{flex-wrap:wrap}
-  .nav a{font-size:1rem;padding:12px 18px}
+  .brand{font-size:1.3rem}
+  .nav{display:none}                 /* hide top nav on mobile */
+  .bottom-nav{display:flex}          /* show bottom nav on mobile */
+  .section-title{font-size:1.35rem}  /* clearer hierarchy on mobile */
   .hero h1{font-size:2.2rem}
   .image-box{height:360px}
   .btn{min-width:46%;padding:14px 16px}
+  .fab{display:flex}                 /* show FAB on mobile */
 }
 </style>
 </head>
@@ -241,11 +240,12 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
   </div>
 </header>
 
+<!-- TOP NAV (เดิม) -->
 <nav class="nav" id="top-nav">
-  <a href="#" data-target="home-page" id="nav-home"><i class="fa-solid fa-house"></i>หน้าหลัก</a>
-  <a href="#" data-target="analysis-page" id="nav-analysis"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์</a>
-  <a href="#" data-target="result-page" id="nav-result"><i class="fa-solid fa-chart-pie"></i>ผลลัพธ์</a>
-  <a href="#" data-target="report-feedback-page" id="nav-report"><i class="fa-solid fa-heart"></i>ส่งภาพนี้ให้เรา</a>
+  <a href="#" data-target="home-page" class="active"><i class="fa-solid fa-house"></i>หน้าหลัก</a>
+  <a href="#" data-target="analysis-page"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์</a>
+  <a href="#" data-target="result-page"><i class="fa-solid fa-chart-pie"></i>ผลลัพธ์</a>
+  <a href="#" data-target="report-feedback-page"><i class="fa-solid fa-heart"></i>ส่งภาพนี้ให้เรา</a>
 </nav>
 
 <main class="container">
@@ -255,7 +255,6 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     <div class="hero">
       <h1>ดวงตาอัจฉริยะเพื่อเกษตรกร</h1>
       <p>วิเคราะห์โรคพืชและแมลงด้วยเทคโนโลยี AI — เพียงถ่ายภาพหรืออัปโหลดภาพเพื่อเริ่มต้น และช่วยร่วมพัฒนา AI ด้วยการส่งภาพให้เราเมื่อผลลัพธ์ยังไม่แม่นยำ</p>
-
       <div class="grid">
         <a class="card feature" data-model="insect"><i class="fa-solid fa-bug" style="color:#d6741e"></i><h3>วิเคราะห์แมลง</h3></a>
         <a class="card feature" data-model="corn"><i class="fa-solid fa-seedling" style="color:#f3b300"></i><h3>โรคใบข้าวโพด</h3></a>
@@ -275,18 +274,15 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
   <!-- ANALYSIS -->
   <section id="analysis-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-camera-retro"></i> <span id="analysis-title">วิเคราะห์</span></h2>
-    <div class="panel" style="text-align:center">
-      <div id="model-status" class="status-chip" style="display:none">
-        <span class="spin"></span><span id="model-status-text">กำลังเตรียมโมเดล…</span>
-      </div>
-
+    <div class="panel">
       <div class="image-box" id="image-box">
         <div class="placeholder" id="placeholder"><i class="fa-regular fa-image"></i><div id="instruction">กรุณาถ่ายภาพหรืออัปโหลดภาพ</div></div>
         <video id="webcam" autoplay playsinline style="display:none"></video>
         <img id="preview" alt="" style="display:none" />
       </div>
 
-      <div class="loading" id="loading"><div class="spin"></div>กำลังประมวลผล…</div>
+      <!-- status chip (เดิม ปรับสไตล์ให้เป็นชิปและเว้นระยะ) -->
+      <div class="loading" id="loading"><div class="spin"></div>กำลังโหลดโมเดล/เตรียมกล้อง…</div>
 
       <div class="actions">
         <button class="btn" id="capture"><i class="fa-solid fa-camera"></i>ถ่ายภาพ</button>
@@ -315,9 +311,11 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
           </div>
           <div class="progress"><span id="conf-fill"></span></div>
 
-          <div class="block" id="result-info" style="margin-top:10px"></div>
+          <div class="block" id="result-info" style="margin-top:8px">
+            <!-- populated -->
+          </div>
 
-          <div class="block" id="nearby-block" style="margin-top:12px">
+          <div class="block" id="nearby-block" style="margin-top:10px">
             <h4><i class="fa-solid fa-list-check"></i>ผลลัพธ์ที่ใกล้เคียง</h4>
             <ul class="list near" id="nearby-list"></ul>
           </div>
@@ -338,7 +336,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
       <img id="report-img" style="display:block;max-width:360px;width:100%;border-radius:14px;margin:auto 0 14px;border:1px solid var(--outline)"/>
       <div class="group">
         <label>สรุปจาก AI</label>
-        <div class="panel" id="ai-summary" style="padding:12px;font-weight:800;color:var(--primary-dark)">—</div>
+        <div class="panel" id="ai-summary" style="padding:12px;font-weight:700;color:var(--primary-dark)">—</div>
       </div>
       <div class="group">
         <label for="fix-name">ชื่อที่ถูกต้อง (ถ้าทราบ)</label>
@@ -355,30 +353,22 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- HOW TO / ABOUT Modals -->
-  <div class="modal" id="modal-how">
-    <div class="box">
-      <button class="close" data-close="#modal-how"><i class="fa-solid fa-xmark"></i></button>
-      <h3><i class="fa-solid fa-circle-question"></i> วิธีใช้งาน</h3>
-      <ol>
-        <li>เลือกโมเดล (แมลง/ข้าวโพด/อ้อย/มันสำปะหลัง)</li>
-        <li>ถ่ายภาพหรืออัปโหลดภาพ จากนั้นกด <b>วิเคราะห์ภาพ</b></li>
-        <li>ดูผลลัพธ์ หากความมั่นใจต่ำ (&lt;80%) ระบบจะแนะนำให้ส่งภาพเพื่อช่วยพัฒนา AI</li>
-      </ol>
-    </div>
-  </div>
-  <div class="modal" id="modal-about">
-    <div class="box">
-      <button class="close" data-close="#modal-about"><i class="fa-solid fa-xmark"></i></button>
-      <h3><i class="fa-solid fa-circle-info"></i> เกี่ยวกับเรา</h3>
-      <p>AgriCare AI เป็นโครงการสาธิตการใช้ <b>Teachable Machine</b> เพื่อช่วยเกษตรกรวิเคราะห์ศัตรูพืชและโรคจากภาพถ่าย</p>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast"><i class="fa-solid fa-check-circle"></i><span id="toast-text">บันทึกสำเร็จ</span></div>
-
 </main>
+
+<!-- BOTTOM NAV (mobile) — NEW -->
+<nav class="bottom-nav" id="bottom-nav">
+  <a href="#" data-target="home-page" class="active"><i class="fa-solid fa-house"></i><span>หน้าหลัก</span></a>
+  <a href="#" data-target="analysis-page"><i class="fa-solid fa-magnifying-glass"></i><span>วิเคราะห์</span></a>
+  <a href="#" data-target="result-page"><i class="fa-solid fa-chart-pie"></i><span>ผลลัพธ์</span></a>
+  <a href="#" data-target="report-feedback-page"><i class="fa-solid fa-heart"></i><span>ส่งภาพนี้ให้เรา</span></a>
+</nav>
+
+<!-- FAB (mobile) — NEW -->
+<div class="fab" id="fab-main" title="เครื่องมือเร็ว"><i class="fa-solid fa-plus"></i></div>
+<div class="fab-menu" id="fab-menu">
+  <button class="fab-item" id="fab-camera" title="ถ่ายภาพ"><i class="fa-solid fa-camera"></i></button>
+  <button class="fab-item" id="fab-upload" title="อัปโหลด"><i class="fa-solid fa-upload"></i></button>
+</div>
 
 <footer>&copy; 2024 AgriCare AI Project — ใช้ Google Apps Script สำหรับเก็บข้อมูล</footer>
 
@@ -391,28 +381,23 @@ const MODELS_INFO = {
   cassava  : { url:'https://teachablemachine.withgoogle.com/models/53Vfkzth9/', title:'วิเคราะห์โรคใบมันสำปะหลัง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบมันสำปะหลัง' }
 };
 
-// ====== ข้อมูลคลาส (รวม Unknown) ======
+// ====== ข้อมูลอธิบายคลาส (เดิม) ======
 const RESULTS_DATA = {
-  "Lady Beetles - ด้วงเต่าลาย":{type:"beneficial",label:"แมลงมีประโยชน์",info:"ตัวอ่อน/ตัวเต็มวัยกินเพลี้ยอ่อนและแมลงขนาดเล็ก",management:["อนุรักษ์แหล่งอาศัย","หลีกเลี่ยงสารเคมีออกฤทธิ์กว้าง","ปลูกพืชดอกล่อแมลงที่เป็นประโยชน์"]},
-  "Green Lacewing - แมลงช้างปีกใส":{type:"beneficial",label:"แมลงมีประโยชน์",info:"ตัวอ่อนล่าเพลี้ย ไรแดง และไข่แมลง",management:["ลดการฉีดพ่นสาร","ปลูกพืชหลากหลาย","ปล่อยตัวห้ำเสริม"]},
-  "Stink Bug - มวนพิฆาต":{type:"beneficial",label:"แมลงมีประโยชน์",info:"กินหนอนผีเสื้อและไข่ศัตรูพืช",management:["รักษาความหลากหลาย","หลีกเลี่ยงสารเคมีไม่จำเป็น","ปลูกแนวกันชน"]},
-  "Assassin Bug - มวนเพชฌฆาต":{type:"beneficial",label:"แมลงมีประโยชน์",info:"ใช้ปากแทงดูดเหยื่อ กินแมลงหลายชนิด",management:["ลดการใช้สารเคมี","ปลูกคลุมดิน/แปลงดอก","ปล่อยตัวห้ำเสริม"]},
-  "Mealybugs - เพลี้ยแป้ง":{type:"pest",label:"แมลงศัตรูพืช",info:"ดูดกินน้ำเลี้ยง ทำให้แคระแกร็น ใบหงิก เกิดราดำ",management:["บิวเวอร์เรีย/เมธาไรเซียม","น้ำส้มควันไม้/สะเดา","ส่งเสริมด้วงเต่าลาย/แตนเบียน"]},
-  "Cutworm - หนอนกระทู้":{type:"pest",label:"แมลงศัตรูพืช",info:"กัดกินใบ/ยอดอ่อน ความเสียหายรุนแรง",management:["ใช้ Bt","กับดักฟีโรโมน","เก็บกลุ่มไข่/ตัวหนอนทำลาย"]},
-  "Striped Flea Beetle - ด้วงหมัดผักแถบลาย":{type:"pest",label:"แมลงศัตรูพืช",info:"ตัวเต็มวัยกัดใบพรุน ตัวอ่อนกัดราก",management:["ตาข่ายกันแมลง","สะเดา/น้ำส้มควันไม้","ปลูกพืชหมุนเวียน"]},
-
-  "โรคใบไหม้ - Leaf Blight":{type:"disease",label:"โรคใบไหม้",info:"แผลยาวรีสีน้ำตาล ขอบเหลือง จากเชื้อรา E. turcicum",management:["พันธุ์ต้านทาน","หมุนเวียนพืช","ตัดใบที่เป็นโรค","พ่นสารเมื่อจำเป็น"]},
-  "โรคราสนิม - Common Rust":{type:"disease",label:"โรคราสนิม",info:"จุดน้ำตาลแดงผงคล้ายสนิมบนใบ (Puccinia sorghi)",management:["พันธุ์ต้านทาน","ไม่ปลูกหนาแน่น","พ่นสารป้องกันเมื่อพบ"]},
-
-  "โรคใบเหลือง - Yellow Leaf":{type:"disease",label:"โรคใบเหลืองอ้อย",info:"ไวรัส SCYLV ใบเหลืองจากปลายลงโคน",management:["ท่อนพันธุ์ปลอดโรค","ควบคุมเพลี้ยอ่อนพาหะ","ทำลายต้นเป็นโรค"]},
-  "โรคเหี่ยวเน่าแดง - Red Rot":{type:"disease",label:"โรคเหี่ยวเน่าแดง",info:"เชื้อรา C. falcatum เนื้ออ้อยเน่าแดง",management:["ท่อนพันธุ์สะอาด","ไม่ปลูกซ้ำที่เดิม","ระบายน้ำดี","เผาทำลายต้นเป็นโรค"]},
-
-  "โรคใบไหม้ - Cassava Bacterial Blight":{type:"disease",label:"ใบไหม้แบคทีเรีย",info:"เชื้อ Xanthomonas ใบเป็นจุดฉ่ำน้ำ/สีน้ำตาล",management:["ท่อนพันธุ์สะอาด","ตัดส่วนเป็นโรค","หลีกเลี่ยงพื้นที่ระบาด","สารป้องกันแบคทีเรีย"]},
-  "โรคใบด่าง - Cassava Mosaic":{type:"disease",label:"โรคใบด่าง",info:"ไวรัส CMV ใบด่างเหลืองสลับเขียว ใบหดบิด",management:["พันธุ์ต้านทาน","ควบคุมแมลงหวี่ขาว","ถอนทำลายต้นเป็นโรค"]},
-
-  "ไม่พบโรคทางใบ - Healthy Leaf":{type:"healthy",label:"สุขภาพดี",info:"พืชสุขภาพดี ไม่พบอาการโรคชัดเจน",management:["ดูแลบำรุงตามปกติ","ตรวจสุขภาพพืชสม่ำเสมอ"]},
-
-  "ไม่สามารถระบุประเภทได้":{type:"unknown",label:"ไม่ทราบประเภท",info:"ภาพอาจไม่อยู่ในชุดข้อมูล/ระบบยังไม่มั่นใจ",management:[]}
+  "Lady Beetles - ด้วงเต่าลาย":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ตัวอ่อนและตัวเต็มวัยกินเพลี้ยอ่อนและแมลงศัตรูพืชขนาดเล็กจำนวนมาก ช่วยควบคุมศัตรูพืชตามธรรมชาติ",management:["อนุรักษ์แหล่งอาศัย","หลีกเลี่ยงการใช้สารเคมีแบบครอบคลุม","ปลูกพืชดอกล่อแมลงที่เป็นประโยชน์"]},
+  "Green Lacewing - แมลงช้างปีกใส":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ตัวอ่อนเป็นนักล่าที่สำคัญของเพลี้ยอ่อน ไรแดง และแมลงขนาดเล็ก",management:["ลดการฉีดพ่นสารออกฤทธิ์กว้าง","ปลูกพืชหลากหลายให้มีที่หลบซ่อน","ปล่อยตัวห้ำเสริมในระบบ IPM"]},
+  "Stink Bug - มวนพิฆาต":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ตัวเต็มวัยและตัวอ่อนกินหนอนผีเสื้อและไข่ของแมลงศัตรูพืชหลายชนิด",management:["รักษาความหลากหลายทางชีวภาพในแปลง","หลีกเลี่ยงสารเคมีไม่จำเป็น","ปลูกพืชเป็นแนวกันชน"]},
+  "Assassin Bug - มวนเพชฌฆาต":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ใช้ปากแทงดูดของเหลวจากเหยื่อ กินแมลงได้หลากหลายชนิด",management:["ลดการใช้สารเคมี","ปลูกพืชคลุมดิน/แปลงดอก","ปล่อยตัวห้ำเสริมในบางกรณี"]},
+  "Mealybugs - เพลี้ยแป้ง":{type:"pest", label:"แมลงศัตรูพืช",info:"ดูดกินน้ำเลี้ยง ทำให้พืชแคระแกร็น ใบหงิก และเกิดราดำจากน้ำหวาน (ฮันนีดิว)",management:["ชีวภัณฑ์บิวเวอร์เรีย/เมธาไรเซียม","ใช้น้ำส้มควันไม้หรือสารสกัดสะเดา","ส่งเสริมตัวห้ำเช่นด้วงเต่าลาย/แตนเบียน"]},
+  "Cutworm - หนอนกระทู้":{type:"pest", label:"แมลงศัตรูพืช",info:"กัดกินใบ ยอดอ่อน ดอกและผล ความเสียหายรุนแรง ขยายพันธุ์เร็ว",management:["ใช้ Bt ฉีดพ่น","กับดักฟีโรโมนล่อตัวเต็มวัย","ตรวจแปลง เก็บกลุ่มไข่/ตัวหนอนทำลาย"]},
+  "Striped Flea Beetle - ด้วงหมัดผักแถบลาย":{type:"pest", label:"แมลงศัตรูพืช",info:"ตัวเต็มวัยกัดใบพรุน ตัวอ่อนกัดราก กระทบพืชตระกูลกะหล่ำ",management:["ตาข่ายกันแมลง","สารสกัดสะเดา/น้ำส้มควันไม้","ปลูกพืชหมุนเวียน"]},
+  "โรคใบไหม้ - Leaf Blight":{type:"disease", label:"โรคใบไหม้",info:"เชื้อรา Exserohilum turcicum แผลยาวรีสีน้ำตาล ขอบเหลือง พบมากช่วงชื้น",management:["ใช้พันธุ์ต้านทาน","ปลูกหมุนเวียนไม่ซ้ำที่","ตัดใบที่เป็นโรค","ฉีดพ่นสารป้องกันกำจัดเชื้อราเมื่อจำเป็น"]},
+  "โรคราสนิม - Common Rust":{type:"disease", label:"โรคราสนิม",info:"เชื้อรา Puccinia sorghi จุดน้ำตาลแดงเป็นผงคล้ายสนิมบนใบ",management:["ใช้พันธุ์ต้านทาน","ปลูกไม่หนาแน่น","ฉีดพ่นสารป้องกันเมื่อพบการระบาด"]},
+  "โรคใบเหลือง - Yellow Leaf":{type:"disease", label:"โรคใบเหลืองอ้อย",info:"ไวรัส SCYLV ใบแก่เหลืองจากปลายลงโคน ทำให้ผลผลิตลดลง",management:["ใช้ท่อนพันธุ์ปลอดโรค","ควบคุมเพลี้ยอ่อนพาหะ","ทำลายต้นเป็นโรคทิ้ง","ไม่ใช้ท่อนพันธุ์จากแหล่งระบาด"]},
+  "โรคเหี่ยวเน่าแดง - Red Rot":{type:"disease", label:"โรคเหี่ยวเน่าแดง",info:"เชื้อรา Colletotrichum falcatum มีเส้นใยสีขาวอมชมพู เนื้ออ้อยเน่าแดง",management:["ท่อนพันธุ์สะอาด","ไม่ปลูกซ้ำที่เดิม","ระบายน้ำดี","เผาทำลายต้นเป็นโรค","พ่นสารเมื่อจำเป็น"]},
+  "โรคใบไหม้ - Cassava Bacterial Blight":{type:"disease", label:"โรคใบไหม้แบคทีเรีย",info:"เชื้อ Xanthomonas ใบเป็นจุดฉ่ำน้ำ สีน้ำตาล ขยายใหญ่ ใบร่วง",management:["ใช้ท่อนพันธุ์สะอาด","ตัดส่วนเป็นโรคทิ้ง","หลีกเลี่ยงปลูกในพื้นที่ระบาด","ใช้สารป้องกันแบคทีเรีย"]},
+  "โรคใบด่าง - Cassava Mosaic":{type:"disease", label:"โรคใบด่าง",info:"เชื้อไวรัส CMV ใบด่างเหลืองสลับเขียว ใบหดบิดเบี้ยว ต้นแคระแกร็น",management:["ใช้พันธุ์ต้านทาน","ควบคุมแมลงหวี่ขาวพาหะ","ถอนทำลายต้นเป็นโรค","ไม่ใช้ท่อนพันธุ์จากพื้นที่ระบาด"]},
+  "ไม่พบโรคทางใบ - Healthy Leaf":{type:"healthy", label:"สุขภาพดี",info:"พืชมีสุขภาพดี ไม่พบอาการที่เป็นโรคชัดเจน",management:["ดูแลบำรุงตามปกติ","ตรวจสุขภาพพืชเป็นประจำ"]},
+  "ไม่สามารถระบุประเภทได้":{type:"unknown", label:"ไม่ทราบประเภท",info:"ระบบยังไม่มั่นใจเพียงพอหรือภาพนี้อาจไม่อยู่ในชุดข้อมูลของโมเดล",management:[]}
 };
 
 /* ================== GLOBAL STATE =================== */
@@ -426,59 +411,49 @@ const UNKNOWN_NAME = "ไม่สามารถระบุประเภท�
 /* ================== HELPERS =================== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
+const navLinks = () => Array.from(document.querySelectorAll('#top-nav a, #bottom-nav a')); // NEW
 
 function setActivePage(id){
   $$('.page-section').forEach(el=>el.classList.remove('active'));
   $('#'+id).classList.add('active');
-  updateNav(id);
+  // nav state (top + bottom)
+  navLinks().forEach(a=>{
+    a.classList.toggle('active', a.dataset.target===id);
+    // hide result/report tabs unless relevant (เดิม แต่อ้างถึงทั้งสอง nav)
+    if(['result-page','report-feedback-page'].includes(a.dataset.target)){
+      a.style.display = (id===a.dataset.target) ? 'inline-flex' :
+        (id==='result-page' && a.dataset.target==='report-feedback-page' ? 'inline-flex' :
+        (id==='report-feedback-page' && a.dataset.target==='result-page' ? 'inline-flex':'none'));
+    }
+  });
 }
 
-function updateNav(activeId){
-  // step-by-step visibility
-  $('#nav-home').style.display = 'inline-flex';  // always
-  $('#nav-analysis').style.display = currentModelKey ? 'inline-flex':'none';
-  const hasResult = !!(lastPrediction && lastPrediction.length);
-  $('#nav-result').style.display = hasResult ? 'inline-flex':'none';
-  $('#nav-report').style.display = hasResult ? 'inline-flex':'none';
-
-  // active state
-  $$('#top-nav a').forEach(a=>a.classList.toggle('active', a.dataset.target===activeId));
-}
-
-// resize to 224x224 for model input
+// resize original to 224x224 for model input
 function toModelCanvasFromImage(img){
-  const c=document.createElement('canvas'); c.width=224; c.height=224;
-  const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,224,224); return c;
-}
-
-function showToast(msg){
-  const t=$('#toast'); $('#toast-text').textContent = msg; t.style.display='inline-flex';
-  setTimeout(()=>{t.style.display='none'}, 2200);
+  const c=document.createElement('canvas');
+  c.width=224; c.height=224;
+  const ctx=c.getContext('2d');
+  ctx.drawImage(img,0,0,224,224);
+  return c;
 }
 
 /* ================== MODEL =================== */
 async function loadModel(url){
-  // status chip: loading
-  const chip = $('#model-status'); const txt = $('#model-status-text');
-  chip.style.display='inline-flex'; chip.querySelector('.spin').style.display='inline-block';
-  chip.classList.remove('ok'); txt.textContent='กำลังโหลดโมเดล…';
-
+  $('#loading').style.display='flex';
   try{
     const m = await tmImage.load(url+'model.json', url+'metadata.json');
-    // status ready
-    chip.querySelector('.spin').style.display='none';
-    chip.classList.add('ok');
-    chip.innerHTML = `<i class="fa-solid fa-circle-check ok"></i> <span>โหลดโมเดลสำเร็จ พร้อมใช้งาน</span>`;
     return m;
   }catch(e){
-    chip.querySelector('.spin').style.display='none';
-    chip.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:#C62828"></i> <span>โหลดโมเดลล้มเหลว โปรดลองใหม่</span>`;
+    alert('ไม่สามารถโหลดโมเดลได้');
     console.error(e);
     return null;
+  }finally{
+    $('#loading').style.display='none';
   }
 }
 
 async function initWebcam(){
+  $('#loading').style.display='flex';
   const v = $('#webcam');
   try{
     const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
@@ -488,7 +463,7 @@ async function initWebcam(){
   }catch(e){
     console.warn(e);
     alert('ไม่สามารถเปิดกล้องได้ โปรดอนุญาตการเข้าถึงกล้องหรือใช้อัปโหลดภาพแทน');
-  }
+  }finally{$('#loading').style.display='none';}
 }
 
 function captureFromWebcam(){
@@ -515,7 +490,11 @@ async function analyze(){
 
   $('#loading').style.display='flex';
   try{
-    const tmpImg = new Image(); tmpImg.src = capturedImageDataUrl; await tmpImg.decode();
+    const tmpImg = new Image();
+    tmpImg.src = capturedImageDataUrl;
+    await tmpImg.decode(); // wait for load
+
+    // resize to 224x224 for prediction
     const modelInputCanvas = toModelCanvasFromImage(tmpImg);
     const prediction = await currentModel.predict(modelInputCanvas);
     prediction.sort((a,b)=>b.probability-a.probability);
@@ -536,24 +515,23 @@ function renderResult(top){
   const confident = top.probability >= CONF_LIMIT;
   const isUnknown = top.className === UNKNOWN_NAME;
 
-  const d = RESULTS_DATA[top.className] || {type:'unknown',label:'ไม่ทราบประเภท'};
+  // ชื่อ / Badge
+  let d = RESULTS_DATA[top.className] || {type:'unknown',label:'ไม่ทราบประเภท'};
   const typeEl = $('#result-type');
   typeEl.className = 'badge '+(d.type||'unknown');
   typeEl.innerHTML = `<i class="fa-solid fa-tag"></i><b>${d.label}</b>`;
-
-  // Title: ถ้า <80% หรือเป็น Unknown ให้แสดง "ไม่สามารถระบุประเภทได้"
-  $('#result-name').textContent = (confident && !isUnknown) ? top.className : UNKNOWN_NAME;
+  $('#result-name').textContent = confident ? top.className : (isUnknown ? UNKNOWN_NAME : top.className);
 
   // ความมั่นใจ
   $('#conf-fill').style.width = (confident?percent:Math.max(percent,5))+'%';
-  $('#result-confidence').textContent = confident ? `${percent}%` : 'ระดับความมั่นใจต่ำเกินไป';
+  $('#result-confidence').textContent = confident ? `${percent}%` : 'ระดับความมั่นใจยังไม่เพียงพอ';
 
-  // รายละเอียด
+  // ข้อมูลรายละเอียด
   const infoBox = $('#result-info');
   if(isUnknown || !confident){
     infoBox.innerHTML = `
       <div class="unknown-box">
-        <div class="adv"><i class="fa-solid fa-circle-exclamation"></i> ภาพไม่ชัดเจนหรือมีแสงน้อย/มากเกินไป</div>
+        <div class="adv"><i class="fa-solid fa-eye-slash"></i> ภาพไม่ชัดเจนหรือมีแสงน้อย/มากเกินไป</div>
         <div class="adv"><i class="fa-solid fa-image"></i> มุมภาพไม่เหมาะสมสำหรับการระบุชนิด</div>
         <div class="adv"><i class="fa-solid fa-database"></i> ภาพนี้อาจไม่ได้อยู่ในฐานข้อมูลของโมเดล</div>
       </div>`;
@@ -566,10 +544,11 @@ function renderResult(top){
         <ul class="list">
           ${(d.management||[]).map(t=>`<li><i class="fa-solid fa-check-circle"></i>${t}</li>`).join('')}
         </ul>
-      </div>`;
+      </div>
+    `;
   }
 
-  // ใกล้เคียง 3 ลำดับ (ไม่เอา Unknown และไม่เอาตัวท็อปถ้า top≥80)
+  // ใกล้เคียง 3 ลำดับ (ไม่รวม Unknown และไม่รวมตัวท็อปถ้า top≥80)
   const near = lastPrediction
     .filter(p => p.className !== UNKNOWN_NAME && (!confident ? true : p.className !== top.className))
     .slice(0, 3)
@@ -577,16 +556,14 @@ function renderResult(top){
     .join('');
   $('#nearby-list').innerHTML = near;
 
-  // สำหรับหน้า "ส่งภาพนี้ให้เรา"
+  // ช่องในหน้ารายงาน
   $('#report-img').src = capturedImageDataUrl;
   $('#ai-summary').textContent = confident && !isUnknown ? top.className : UNKNOWN_NAME;
-
-  updateNav('result-page');
 }
 
 /* ================== NAV / EVENTS =================== */
 function bindNav(){
-  $$('#top-nav a').forEach(a=>{
+  navLinks().forEach(a=>{
     a.addEventListener('click',e=>{
       e.preventDefault();
       setActivePage(a.dataset.target);
@@ -603,18 +580,20 @@ function bindHomeCards(){
       $('#analysis-title').textContent = mInfo.title;
       $('#instruction').textContent = mInfo.instruction;
 
-      updateNav('analysis-page'); // show วิเคราะห์
-      setActivePage('analysis-page');
-
-      // แสดงสถานะโหลดโมเดล
-      currentModel = await loadModel(mInfo.url);
-      if(currentModel){
-        await initWebcam();
+      if(!currentModel || currentModel.url !== mInfo.url){
+        $('#loading').style.display='flex';                 // show loading chip
+        currentModel = await loadModel(mInfo.url);
+        $('#loading').style.display='none';                 // hide when done
+        // แสดงชิปบอก “โหลดโมเดลสำเร็จ พร้อมใช้งาน”
+        const chip = $('#loading'); chip.innerHTML = '<i class="fa-solid fa-circle-check"></i> โหลดโมเดลสำเร็จ พร้อมใช้งาน'; chip.style.display='inline-flex';
+        setTimeout(()=>{ chip.style.display='none'; }, 2000);
       }
+      await initWebcam();
+      setActivePage('analysis-page');
     });
   });
 
-  $('#contribute-data-home').addEventListener('click',()=>$('#modal-how').style.display='flex');
+  $('#contribute-data-home').addEventListener('click',()=>setActivePage('report-feedback-page'));
 }
 
 function bindAnalysisButtons(){
@@ -633,6 +612,16 @@ function bindAnalysisButtons(){
     $('#preview').style.display='none'; $('#webcam').style.display='block';
     $('#analyze').style.display='none'; $('#recapture').style.display='none';
   });
+
+  /* FAB behaviors — NEW (ยิงไปที่ปุ่มเดิม) */
+  const fabMain = $('#fab-main'), fabMenu = $('#fab-menu');
+  if(fabMain){
+    fabMain.addEventListener('click',()=>{
+      fabMenu.style.display = (fabMenu.style.display==='flex') ? 'none' : 'flex';
+    });
+    $('#fab-camera').addEventListener('click',()=>{ fabMenu.style.display='none'; $('#capture').click(); });
+    $('#fab-upload').addEventListener('click',()=>{ fabMenu.style.display='none'; $('#upload').click(); });
+  }
 }
 
 function bindResultButtons(){
@@ -641,16 +630,6 @@ function bindResultButtons(){
   $('#back-to-result').addEventListener('click',()=>setActivePage('result-page'));
 }
 
-/* Modals */
-$('#usage-btn').addEventListener('click',()=>$('#modal-how').style.display='flex');
-$('#about-btn').addEventListener('click',()=>$('#modal-about').style.display='flex');
-$$('.modal .close').forEach(btn=>{
-  btn.addEventListener('click',()=>{ const sel=btn.getAttribute('data-close'); if(sel) $(sel).style.display='none'; })
-});
-window.addEventListener('click',e=>{
-  if(e.target.classList?.contains('modal')) e.target.style.display='none';
-});
-
 /* ================== GOOGLE APPS SCRIPT =================== */
 /* ❗️ห้ามแก้ไขตามที่กำชับ */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxMcdkHDEBPv5aspReCHxOW6lh_Y00O3wWQLpeIR43KhKNjV70Cli9z9fuK4GRHNV7/exec';
@@ -658,13 +637,14 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxMcdkHDEBPv5aspReCHxO
 async function submitData(payload){
   try{
     payload.timestamp = new Date().toISOString();
-    await fetch(GAS_URL,{ method:'POST', mode:'no-cors',
+    await fetch(GAS_URL,{
+      method:'POST',mode:'no-cors',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
-    showToast('ส่งข้อมูลสำเร็จ ขอบคุณที่ช่วยพัฒนา AI!');
+    alert('ส่งข้อมูลสำเร็จ ขอบคุณที่ช่วยพัฒนา AI!');
   }catch(err){
-    console.error(err); showToast('ส่งข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง');
+    console.error(err); alert('ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
   }
 }
 
@@ -683,8 +663,6 @@ $('#send-report').addEventListener('click',async ()=>{
   };
   await submitData(payload);
   setActivePage('home-page');
-  // reset quick toast view
-  updateNav('home-page');
 });
 
 /* ================== INIT =================== */
@@ -693,7 +671,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   bindHomeCards();
   bindAnalysisButtons();
   bindResultButtons();
-  updateNav('home-page'); // โชว์เฉพาะ "หน้าหลัก" ตอนเริ่มต้น
+
+  // ซ่อนแท็บผลลัพธ์/ส่งภาพนี้ให้เราเมื่อยังไม่มีผล (ทั้ง top และ bottom nav)
+  navLinks().forEach(a=>{
+    if(['result-page','report-feedback-page'].includes(a.dataset.target)) a.style.display='none';
+  });
 });
 </script>
 </body>
