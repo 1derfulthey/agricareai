@@ -45,7 +45,7 @@ body{
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.55rem}
 .brand i{font-size:1.4em}
 
-/* Top nav (desktop/tablet) */
+/* Top nav (big & accessible) */
 .nav{
   max-width:1200px;margin:10px auto 0;display:flex;gap:10px;justify-content:center;
   background:#e8f5e9;border-radius:999px;padding:8px 10px;box-shadow:var(--shadow-sm)
@@ -53,27 +53,13 @@ body{
 .nav a{
   display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;
   text-decoration:none;color:var(--primary-dark);font-weight:700;font-size:1.02rem;
-  transition:.25s;white-space:nowrap;border-bottom:3px solid transparent
+  transition:.25s;white-space:nowrap
 }
 .nav a i{font-size:1.1rem}
 .nav a.active, .nav a:hover{
   background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;transform:translateY(-1px);border-bottom-color:#ffffffcc
+  color:#fff;transform:translateY(-1px)
 }
-
-/* Bottom nav (mobile only) — NEW */
-.bottom-nav{
-  position:fixed;bottom:10px;left:50%;transform:translateX(-50%);
-  background:#e8f5e9;border-radius:999px;box-shadow:var(--shadow);padding:8px 10px;
-  display:none;gap:8px;z-index:25
-}
-.bottom-nav a{
-  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;padding:10px 14px;border-radius:14px;text-decoration:none;color:var(--primary-dark);
-  font-weight:700;font-size:.85rem;min-width:74px;border:2px solid transparent
-}
-.bottom-nav a i{font-size:1.05rem}
-.bottom-nav a.active{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-color:#ffffff33}
 
 /* Container */
 .container{max-width:1200px;margin:18px auto;padding:0 16px}
@@ -108,11 +94,8 @@ body{
 .page-section.active{display:block}
 @keyframes fade{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 
-/* Analysis & Result section titles */
-.section-title{
-  display:flex;align-items:center;gap:10px;color:var(--primary-dark);
-  font-family:'Kanit',sans-serif;font-weight:800;font-size:1.8rem; /* NEW: emphasize */
-}
+/* Analysis section */
+.section-title{display:flex;align-items:center;gap:10px;color:var(--primary-dark)}
 .section-title i{background:#e9f6ea;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem}
 .panel{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px}
 
@@ -141,14 +124,10 @@ body{
 .btn.danger{--bg:#e53935;--bg2:#ef5350}
 .btn.gray{--bg:#90A4AE;--bg2:#B0BEC5}
 
-/* Loading / Status chip — UPDATED spacing + chip look */
-.loading{
-  display:none;align-items:center;gap:10px;justify-content:center;
-  margin:14px auto;color:var(--ink-2);padding:10px 14px;border-radius:999px;
-  background:#e8f5e9;border:1px solid #cfe8d1;box-shadow:var(--shadow-sm);width:max-content
-}
+/* Loading overlay small */
+.loading{display:none;align-items:center;gap:10px;justify-content:center;margin:14px 0;color:var(--ink-2)}
 .loading .spin{
-  width:24px;height:24px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;
+  width:28px;height:28px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;
   animation:rot .9s linear infinite
 }
 @keyframes rot{to{transform:rotate(360deg)}}
@@ -167,23 +146,15 @@ body{
 .conf-row{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
 .conf-row i{color:#2e7d32}
 .conf-label{font-weight:700}
-
-/* Confidence bar — refined look */
-.progress{
-  height:26px;border-radius:13px;background:linear-gradient(180deg,#eef5ee,#dde8de);overflow:hidden;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,.10);border:1px solid #d5e3d6
-}
-.progress>span{
-  display:block;height:100%;width:0;
-  background:linear-gradient(90deg,#9CD17C,#5AA33D);
-  mask-image:linear-gradient(90deg,rgba(0,0,0,.9),rgba(0,0,0,1));transition:width .9s cubic-bezier(.22,.61,.36,1)
-}
+.progress{height:26px;border-radius:13px;background:#e9ecef;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.12)}
+.progress>span{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,#9CCC65,#689F38 15px,#7CB342 15px,#7CB342 30px);transition:width .9s cubic-bezier(.22,.61,.36,1)}
 
 .block h4{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--primary-dark)}
 .block h4 i{color:var(--primary)}
 .list{list-style:none;padding:0;margin:0}
 .list li{display:flex;align-items:center;gap:10px;margin:8px 0}
 .list li i{color:var(--ok)}
+/* near list use outline icon only once to avoid double check issue */
 .near li i{color:#7cb342}
 .near li{margin:6px 0}
 
@@ -206,29 +177,17 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 }
 .form textarea{min-height:110px;resize:vertical}
 
-/* FAB (mobile only) — NEW */
-.fab{position:fixed;right:18px;bottom:86px;width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:none;
-  box-shadow:var(--shadow);z-index:26;display:none;align-items:center;justify-content:center;cursor:pointer}
-.fab i{font-size:1.2rem}
-.fab-menu{position:fixed;right:18px;bottom:150px;display:none;flex-direction:column;gap:10px;z-index:26}
-.fab-item{width:46px;height:46px;border-radius:50%;border:none;box-shadow:var(--shadow);cursor:pointer;color:#fff}
-#fab-camera{background:#43A047}
-#fab-upload{background:#FF9800}
-
 /* Responsive */
 @media (max-width:1000px){
   .result-grid{grid-template-columns:1fr}
 }
 @media (max-width:640px){
   .brand{font-size:1.3rem}
-  .nav{display:none}                 /* hide top nav on mobile */
-  .bottom-nav{display:flex}          /* show bottom nav on mobile */
-  .section-title{font-size:1.35rem}  /* clearer hierarchy on mobile */
-  .hero h1{font-size:2.2rem}
+  .nav{flex-wrap:wrap}
+  .nav a{font-size:1rem;padding:12px 18px}
+  .hero h1{font-size:2rem}
   .image-box{height:360px}
   .btn{min-width:46%;padding:14px 16px}
-  .fab{display:flex}                 /* show FAB on mobile */
 }
 </style>
 </head>
@@ -240,8 +199,8 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
   </div>
 </header>
 
-<!-- TOP NAV (เดิม) -->
-<nav class="nav" id="top-nav">
+<!-- ซ่อนเมนูบนในหน้าแรก -->
+<nav class="nav" id="top-nav" style="display:none">
   <a href="#" data-target="home-page" class="active"><i class="fa-solid fa-house"></i>หน้าหลัก</a>
   <a href="#" data-target="analysis-page"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์</a>
   <a href="#" data-target="result-page"><i class="fa-solid fa-chart-pie"></i>ผลลัพธ์</a>
@@ -281,7 +240,6 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
         <img id="preview" alt="" style="display:none" />
       </div>
 
-      <!-- status chip (เดิม ปรับสไตล์ให้เป็นชิปและเว้นระยะ) -->
       <div class="loading" id="loading"><div class="spin"></div>กำลังโหลดโมเดล/เตรียมกล้อง…</div>
 
       <div class="actions">
@@ -355,21 +313,6 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 
 </main>
 
-<!-- BOTTOM NAV (mobile) — NEW -->
-<nav class="bottom-nav" id="bottom-nav">
-  <a href="#" data-target="home-page" class="active"><i class="fa-solid fa-house"></i><span>หน้าหลัก</span></a>
-  <a href="#" data-target="analysis-page"><i class="fa-solid fa-magnifying-glass"></i><span>วิเคราะห์</span></a>
-  <a href="#" data-target="result-page"><i class="fa-solid fa-chart-pie"></i><span>ผลลัพธ์</span></a>
-  <a href="#" data-target="report-feedback-page"><i class="fa-solid fa-heart"></i><span>ส่งภาพนี้ให้เรา</span></a>
-</nav>
-
-<!-- FAB (mobile) — NEW -->
-<div class="fab" id="fab-main" title="เครื่องมือเร็ว"><i class="fa-solid fa-plus"></i></div>
-<div class="fab-menu" id="fab-menu">
-  <button class="fab-item" id="fab-camera" title="ถ่ายภาพ"><i class="fa-solid fa-camera"></i></button>
-  <button class="fab-item" id="fab-upload" title="อัปโหลด"><i class="fa-solid fa-upload"></i></button>
-</div>
-
 <footer>&copy; 2024 AgriCare AI Project — ใช้ Google Apps Script สำหรับเก็บข้อมูล</footer>
 
 <script>
@@ -381,23 +324,58 @@ const MODELS_INFO = {
   cassava  : { url:'https://teachablemachine.withgoogle.com/models/53Vfkzth9/', title:'วิเคราะห์โรคใบมันสำปะหลัง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบมันสำปะหลัง' }
 };
 
-// ====== ข้อมูลอธิบายคลาส (เดิม) ======
+// ====== ข้อมูลอธิบายคลาส (ย่อ) ======
 const RESULTS_DATA = {
-  "Lady Beetles - ด้วงเต่าลาย":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ตัวอ่อนและตัวเต็มวัยกินเพลี้ยอ่อนและแมลงศัตรูพืชขนาดเล็กจำนวนมาก ช่วยควบคุมศัตรูพืชตามธรรมชาติ",management:["อนุรักษ์แหล่งอาศัย","หลีกเลี่ยงการใช้สารเคมีแบบครอบคลุม","ปลูกพืชดอกล่อแมลงที่เป็นประโยชน์"]},
-  "Green Lacewing - แมลงช้างปีกใส":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ตัวอ่อนเป็นนักล่าที่สำคัญของเพลี้ยอ่อน ไรแดง และแมลงขนาดเล็ก",management:["ลดการฉีดพ่นสารออกฤทธิ์กว้าง","ปลูกพืชหลากหลายให้มีที่หลบซ่อน","ปล่อยตัวห้ำเสริมในระบบ IPM"]},
-  "Stink Bug - มวนพิฆาต":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ตัวเต็มวัยและตัวอ่อนกินหนอนผีเสื้อและไข่ของแมลงศัตรูพืชหลายชนิด",management:["รักษาความหลากหลายทางชีวภาพในแปลง","หลีกเลี่ยงสารเคมีไม่จำเป็น","ปลูกพืชเป็นแนวกันชน"]},
-  "Assassin Bug - มวนเพชฌฆาต":{type:"beneficial", label:"แมลงมีประโยชน์",info:"ใช้ปากแทงดูดของเหลวจากเหยื่อ กินแมลงได้หลากหลายชนิด",management:["ลดการใช้สารเคมี","ปลูกพืชคลุมดิน/แปลงดอก","ปล่อยตัวห้ำเสริมในบางกรณี"]},
-  "Mealybugs - เพลี้ยแป้ง":{type:"pest", label:"แมลงศัตรูพืช",info:"ดูดกินน้ำเลี้ยง ทำให้พืชแคระแกร็น ใบหงิก และเกิดราดำจากน้ำหวาน (ฮันนีดิว)",management:["ชีวภัณฑ์บิวเวอร์เรีย/เมธาไรเซียม","ใช้น้ำส้มควันไม้หรือสารสกัดสะเดา","ส่งเสริมตัวห้ำเช่นด้วงเต่าลาย/แตนเบียน"]},
-  "Cutworm - หนอนกระทู้":{type:"pest", label:"แมลงศัตรูพืช",info:"กัดกินใบ ยอดอ่อน ดอกและผล ความเสียหายรุนแรง ขยายพันธุ์เร็ว",management:["ใช้ Bt ฉีดพ่น","กับดักฟีโรโมนล่อตัวเต็มวัย","ตรวจแปลง เก็บกลุ่มไข่/ตัวหนอนทำลาย"]},
-  "Striped Flea Beetle - ด้วงหมัดผักแถบลาย":{type:"pest", label:"แมลงศัตรูพืช",info:"ตัวเต็มวัยกัดใบพรุน ตัวอ่อนกัดราก กระทบพืชตระกูลกะหล่ำ",management:["ตาข่ายกันแมลง","สารสกัดสะเดา/น้ำส้มควันไม้","ปลูกพืชหมุนเวียน"]},
-  "โรคใบไหม้ - Leaf Blight":{type:"disease", label:"โรคใบไหม้",info:"เชื้อรา Exserohilum turcicum แผลยาวรีสีน้ำตาล ขอบเหลือง พบมากช่วงชื้น",management:["ใช้พันธุ์ต้านทาน","ปลูกหมุนเวียนไม่ซ้ำที่","ตัดใบที่เป็นโรค","ฉีดพ่นสารป้องกันกำจัดเชื้อราเมื่อจำเป็น"]},
-  "โรคราสนิม - Common Rust":{type:"disease", label:"โรคราสนิม",info:"เชื้อรา Puccinia sorghi จุดน้ำตาลแดงเป็นผงคล้ายสนิมบนใบ",management:["ใช้พันธุ์ต้านทาน","ปลูกไม่หนาแน่น","ฉีดพ่นสารป้องกันเมื่อพบการระบาด"]},
-  "โรคใบเหลือง - Yellow Leaf":{type:"disease", label:"โรคใบเหลืองอ้อย",info:"ไวรัส SCYLV ใบแก่เหลืองจากปลายลงโคน ทำให้ผลผลิตลดลง",management:["ใช้ท่อนพันธุ์ปลอดโรค","ควบคุมเพลี้ยอ่อนพาหะ","ทำลายต้นเป็นโรคทิ้ง","ไม่ใช้ท่อนพันธุ์จากแหล่งระบาด"]},
-  "โรคเหี่ยวเน่าแดง - Red Rot":{type:"disease", label:"โรคเหี่ยวเน่าแดง",info:"เชื้อรา Colletotrichum falcatum มีเส้นใยสีขาวอมชมพู เนื้ออ้อยเน่าแดง",management:["ท่อนพันธุ์สะอาด","ไม่ปลูกซ้ำที่เดิม","ระบายน้ำดี","เผาทำลายต้นเป็นโรค","พ่นสารเมื่อจำเป็น"]},
-  "โรคใบไหม้ - Cassava Bacterial Blight":{type:"disease", label:"โรคใบไหม้แบคทีเรีย",info:"เชื้อ Xanthomonas ใบเป็นจุดฉ่ำน้ำ สีน้ำตาล ขยายใหญ่ ใบร่วง",management:["ใช้ท่อนพันธุ์สะอาด","ตัดส่วนเป็นโรคทิ้ง","หลีกเลี่ยงปลูกในพื้นที่ระบาด","ใช้สารป้องกันแบคทีเรีย"]},
-  "โรคใบด่าง - Cassava Mosaic":{type:"disease", label:"โรคใบด่าง",info:"เชื้อไวรัส CMV ใบด่างเหลืองสลับเขียว ใบหดบิดเบี้ยว ต้นแคระแกร็น",management:["ใช้พันธุ์ต้านทาน","ควบคุมแมลงหวี่ขาวพาหะ","ถอนทำลายต้นเป็นโรค","ไม่ใช้ท่อนพันธุ์จากพื้นที่ระบาด"]},
-  "ไม่พบโรคทางใบ - Healthy Leaf":{type:"healthy", label:"สุขภาพดี",info:"พืชมีสุขภาพดี ไม่พบอาการที่เป็นโรคชัดเจน",management:["ดูแลบำรุงตามปกติ","ตรวจสุขภาพพืชเป็นประจำ"]},
-  "ไม่สามารถระบุประเภทได้":{type:"unknown", label:"ไม่ทราบประเภท",info:"ระบบยังไม่มั่นใจเพียงพอหรือภาพนี้อาจไม่อยู่ในชุดข้อมูลของโมเดล",management:[]}
+  "Lady Beetles - ด้วงเต่าลาย":{ type:"beneficial", label:"แมลงมีประโยชน์",
+    info:"ตัวอ่อนและตัวเต็มวัยกินเพลี้ยอ่อนและแมลงศัตรูพืชขนาดเล็กจำนวนมาก ช่วยควบคุมศัตรูพืชตามธรรมชาติ",
+    management:["อนุรักษ์แหล่งอาศัย","หลีกเลี่ยงการใช้สารเคมีแบบครอบคลุม","ปลูกพืชดอกล่อแมลงที่เป็นประโยชน์"] },
+  "Green Lacewing - แมลงช้างปีกใส":{ type:"beneficial", label:"แมลงมีประโยชน์",
+    info:"ตัวอ่อนเป็นนักล่าที่สำคัญของเพลี้ยอ่อน ไรแดง และแมลงขนาดเล็ก",
+    management:["ลดการฉีดพ่นสารออกฤทธิ์กว้าง","ปลูกพืชหลากหลายให้มีที่หลบซ่อน","ปล่อยตัวห้ำเสริมในระบบ IPM"] },
+  "Stink Bug - มวนพิฆาต":{ type:"beneficial", label:"แมลงมีประโยชน์",
+    info:"ตัวเต็มวัยและตัวอ่อนกินหนอนผีเสื้อและไข่ของแมลงศัตรูพืชหลายชนิด",
+    management:["รักษาความหลากหลายทางชีวภาพในแปลง","หลีกเลี่ยงสารเคมีไม่จำเป็น","ปลูกพืชเป็นแนวกันชน"] },
+  "Assassin Bug - มวนเพชฌฆาต":{ type:"beneficial", label:"แมลงมีประโยชน์",
+    info:"ใช้ปากแทงดูดของเหลวจากเหยื่อ กินแมลงได้หลากหลายชนิด",
+    management:["ลดการใช้สารเคมี","ปลูกพืชคลุมดิน/แปลงดอก","ปล่อยตัวห้ำเสริมในบางกรณี"] },
+  "Mealybugs - เพลี้ยแป้ง":{ type:"pest", label:"แมลงศัตรูพืช",
+    info:"ดูดกินน้ำเลี้ยง ทำให้พืชแคระแกร็น ใบหงิก และเกิดราดำจากน้ำหวาน (ฮันนีดิว)",
+    management:["ชีวภัณฑ์บิวเวอร์เรีย/เมธาไรเซียม","ใช้น้ำส้มควันไม้หรือสารสกัดสะเดา","ส่งเสริมตัวห้ำเช่นด้วงเต่าลาย/แตนเบียน"] },
+  "Cutworm - หนอนกระทู้":{ type:"pest", label:"แมลงศัตรูพืช",
+    info:"กัดกินใบ ยอดอ่อน ดอกและผล ความเสียหายรุนแรง ขยายพันธุ์เร็ว",
+    management:["ใช้ Bt ฉีดพ่น","กับดักฟีโรโมนล่อตัวเต็มวัย","ตรวจแปลง เก็บกลุ่มไข่/ตัวหนอนทำลาย"] },
+  "Striped Flea Beetle - ด้วงหมัดผักแถบลาย":{ type:"pest", label:"แมลงศัตรูพืช",
+    info:"ตัวเต็มวัยกัดใบพรุน ตัวอ่อนกัดราก กระทบพืชตระกูลกะหล่ำ",
+    management:["ตาข่ายกันแมลง","สารสกัดสะเดา/น้ำส้มควันไม้","ปลูกพืชหมุนเวียน"] },
+
+  "โรคใบไหม้ - Leaf Blight":{ type:"disease", label:"โรคใบไหม้",
+    info:"เชื้อรา Exserohilum turcicum แผลยาวรีสีน้ำตาล ขอบเหลือง พบมากช่วงชื้น",
+    management:["ใช้พันธุ์ต้านทาน","ปลูกหมุนเวียนไม่ซ้ำที่","ตัดใบที่เป็นโรค","ฉีดพ่นสารป้องกันกำจัดเชื้อราเมื่อจำเป็น"] },
+  "โรคราสนิม - Common Rust":{ type:"disease", label:"โรคราสนิม",
+    info:"เชื้อรา Puccinia sorghi จุดน้ำตาลแดงเป็นผงคล้ายสนิมบนใบ",
+    management:["ใช้พันธุ์ต้านทาน","ปลูกไม่หนาแน่น","ฉีดพ่นสารป้องกันเมื่อพบการระบาด"] },
+
+  "โรคใบเหลือง - Yellow Leaf":{ type:"disease", label:"โรคใบเหลืองอ้อย",
+    info:"ไวรัส SCYLV ใบแก่เหลืองจากปลายลงโคน ทำให้ผลผลิตลดลง",
+    management:["ใช้ท่อนพันธุ์ปลอดโรค","ควบคุมเพลี้ยอ่อนพาหะ","ทำลายต้นเป็นโรคทิ้ง","ไม่ใช้ท่อนพันธุ์จากแหล่งระบาด"] },
+  "โรคเหี่ยวเน่าแดง - Red Rot":{ type:"disease", label:"โรคเหี่ยวเน่าแดง",
+    info:"เชื้อรา Colletotrichum falcatum มีเส้นใยสีขาวอมชมพู เนื้ออ้อยเน่าแดง",
+    management:["ท่อนพันธุ์สะอาด","ไม่ปลูกซ้ำที่เดิม","ระบายน้ำดี","เผาทำลายต้นเป็นโรค","พ่นสารเมื่อจำเป็น"] },
+
+  "โรคใบไหม้ - Cassava Bacterial Blight":{ type:"disease", label:"โรคใบไหม้แบคทีเรีย",
+    info:"เชื้อ Xanthomonas ใบเป็นจุดฉ่ำน้ำ สีน้ำตาล ขยายใหญ่ ใบร่วง",
+    management:["ใช้ท่อนพันธุ์สะอาด","ตัดส่วนเป็นโรคทิ้ง","หลีกเลี่ยงปลูกในพื้นที่ระบาด","ใช้สารป้องกันแบคทีเรีย"] },
+  "โรคใบด่าง - Cassava Mosaic":{ type:"disease", label:"โรคใบด่าง",
+    info:"เชื้อไวรัส CMV ใบด่างเหลืองสลับเขียว ใบหดบิดเบี้ยว ต้นแคระแกร็น",
+    management:["ใช้พันธุ์ต้านทาน","ควบคุมแมลงหวี่ขาวพาหะ","ถอนทำลายต้นเป็นโรค","ไม่ใช้ท่อนพันธุ์จากพื้นที่ระบาด"] },
+
+  "ไม่พบโรคทางใบ - Healthy Leaf":{ type:"healthy", label:"สุขภาพดี",
+    info:"พืชมีสุขภาพดี ไม่พบอาการที่เป็นโรคชัดเจน",
+    management:["ดูแลบำรุงตามปกติ","ตรวจสุขภาพพืชเป็นประจำ"] },
+
+  "ไม่สามารถระบุประเภทได้":{ type:"unknown", label:"ไม่ทราบประเภท",
+    info:"ระบบยังไม่มั่นใจเพียงพอหรือภาพนี้อาจไม่อยู่ในชุดข้อมูลของโมเดล",
+    management:[] }
 };
 
 /* ================== GLOBAL STATE =================== */
@@ -411,21 +389,27 @@ const UNKNOWN_NAME = "ไม่สามารถระบุประเภท�
 /* ================== HELPERS =================== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
-const navLinks = () => Array.from(document.querySelectorAll('#top-nav a, #bottom-nav a')); // NEW
+
+// << ใหม่: ควบคุมการมองเห็นเมนูบน — ซ่อนในหน้าแรก
+function updateNavVisibility(activeId){
+  const top = document.getElementById('top-nav');
+  if (!top) return;
+  top.style.display = (activeId === 'home-page') ? 'none' : '';
+}
 
 function setActivePage(id){
   $$('.page-section').forEach(el=>el.classList.remove('active'));
   $('#'+id).classList.add('active');
-  // nav state (top + bottom)
-  navLinks().forEach(a=>{
+  // nav state
+  $$('#top-nav a').forEach(a=>{
     a.classList.toggle('active', a.dataset.target===id);
-    // hide result/report tabs unless relevant (เดิม แต่อ้างถึงทั้งสอง nav)
+    // hide result/report tabs unless relevant
     if(['result-page','report-feedback-page'].includes(a.dataset.target)){
-      a.style.display = (id===a.dataset.target) ? 'inline-flex' :
-        (id==='result-page' && a.dataset.target==='report-feedback-page' ? 'inline-flex' :
-        (id==='report-feedback-page' && a.dataset.target==='result-page' ? 'inline-flex':'none'));
+      a.style.display = (id===a.dataset.target) ? 'inline-flex' : (id==='result-page' && a.dataset.target==='report-feedback-page' ? 'inline-flex' : (id==='report-feedback-page' && a.dataset.target==='result-page' ? 'inline-flex':'none'));
     }
   });
+  // << ใหม่: อัปเดตการแสดงเมนู
+  updateNavVisibility(id);
 }
 
 // resize original to 224x224 for model input
@@ -563,7 +547,7 @@ function renderResult(top){
 
 /* ================== NAV / EVENTS =================== */
 function bindNav(){
-  navLinks().forEach(a=>{
+  $$('#top-nav a').forEach(a=>{
     a.addEventListener('click',e=>{
       e.preventDefault();
       setActivePage(a.dataset.target);
@@ -581,12 +565,7 @@ function bindHomeCards(){
       $('#instruction').textContent = mInfo.instruction;
 
       if(!currentModel || currentModel.url !== mInfo.url){
-        $('#loading').style.display='flex';                 // show loading chip
         currentModel = await loadModel(mInfo.url);
-        $('#loading').style.display='none';                 // hide when done
-        // แสดงชิปบอก “โหลดโมเดลสำเร็จ พร้อมใช้งาน”
-        const chip = $('#loading'); chip.innerHTML = '<i class="fa-solid fa-circle-check"></i> โหลดโมเดลสำเร็จ พร้อมใช้งาน'; chip.style.display='inline-flex';
-        setTimeout(()=>{ chip.style.display='none'; }, 2000);
       }
       await initWebcam();
       setActivePage('analysis-page');
@@ -612,16 +591,6 @@ function bindAnalysisButtons(){
     $('#preview').style.display='none'; $('#webcam').style.display='block';
     $('#analyze').style.display='none'; $('#recapture').style.display='none';
   });
-
-  /* FAB behaviors — NEW (ยิงไปที่ปุ่มเดิม) */
-  const fabMain = $('#fab-main'), fabMenu = $('#fab-menu');
-  if(fabMain){
-    fabMain.addEventListener('click',()=>{
-      fabMenu.style.display = (fabMenu.style.display==='flex') ? 'none' : 'flex';
-    });
-    $('#fab-camera').addEventListener('click',()=>{ fabMenu.style.display='none'; $('#capture').click(); });
-    $('#fab-upload').addEventListener('click',()=>{ fabMenu.style.display='none'; $('#upload').click(); });
-  }
 }
 
 function bindResultButtons(){
@@ -667,13 +636,15 @@ $('#send-report').addEventListener('click',async ()=>{
 
 /* ================== INIT =================== */
 document.addEventListener('DOMContentLoaded', ()=>{
+  updateNavVisibility('home-page'); // << ใหม่: หน้าแรกซ่อนเมนูบน
+
   bindNav();
   bindHomeCards();
   bindAnalysisButtons();
   bindResultButtons();
 
-  // ซ่อนแท็บผลลัพธ์/ส่งภาพนี้ให้เราเมื่อยังไม่มีผล (ทั้ง top และ bottom nav)
-  navLinks().forEach(a=>{
+  // ซ่อนแท็บผลลัพธ์/ส่งภาพนี้ให้เราเมื่อยังไม่มีผล
+  $$('#top-nav a').forEach(a=>{
     if(['result-page','report-feedback-page'].includes(a.dataset.target)) a.style.display='none';
   });
 });
