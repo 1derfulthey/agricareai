@@ -73,7 +73,7 @@ body{
 /* Container */
 .container{max-width:1200px;margin:18px auto;padding:0 16px}
 
-/* ---------- Steps: แนวเส้นตรงพร้อมจุด ---------- */
+/* ---------- Steps: line + dots ---------- */
 .steps{
   position:relative;
   max-width:1000px;
@@ -95,14 +95,8 @@ body{
   width:var(--progress-pct,0%);
   transition:width .4s ease;
 }
-.step{
-  position:relative; display:flex; flex-direction:column; align-items:center; gap:8px;
-  font-weight:700; color:#42534d; background:none; border:none; box-shadow:none; padding:0; flex:1 1 0; text-align:center
-}
-.step .dot{
-  width:14px;height:14px;border-radius:50%;
-  background:#cfd9cf;border:3px solid #fff;z-index:1;box-shadow:0 0 0 3px #e9f6ea
-}
+.step{ position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; font-weight:700; color:#42534d; background:none; border:none; box-shadow:none; padding:0; flex:1 1 0; text-align:center }
+.step .dot{ width:14px;height:14px;border-radius:50%; background:#cfd9cf;border:3px solid #fff;z-index:1;box-shadow:0 0 0 3px #e9f6ea }
 .step .lbl{ font-size:.95rem; background:#f6fbf6; padding:2px 8px; border-radius:8px }
 .step.active .dot{background:#43A047}
 .step.done .dot{background:#2E7D32}
@@ -118,20 +112,17 @@ body{
 }
 .hero p{color:var(--ink-2);text-align:center;margin:0 0 24px}
 
-/* Grid 7 features */
+/* Grid */
 .grid{
   display:flex;flex-wrap:wrap;gap:18px;
-  justify-content:center;
-  align-items:stretch;
-  max-width:1000px;
-  margin-inline:auto;
+  justify-content:center; align-items:stretch;
+  max-width:1000px; margin-inline:auto;
 }
 .card{
   background:var(--surface);border:1px solid var(--outline);border-radius:18px;
   box-shadow:var(--shadow-sm);padding:22px 16px;text-align:center;cursor:pointer;
   transition:.25s;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  width:100%;max-width:320px;
-  flex:0 1 260px;
+  width:100%;max-width:320px; flex:0 1 260px;
 }
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
 .card i{font-size:2.2rem;margin-bottom:10px}
@@ -147,70 +138,51 @@ body{
 .section-title i{background:#e9f6ea;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem}
 .panel{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px}
 
-/* ========== Image box (analysis) ========== */
+/* ====== Image box (analysis) ====== */
 .image-box{
-  width:100%;
-  max-width:720px;
-  height:430px;
-  margin:auto;
-  position:relative;
-  border-radius:22px;
-  background:linear-gradient(180deg,#ffffff,#fbfdfb);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
+  width:100%; max-width:720px; height:430px; margin:auto; position:relative;
+  border-radius:22px; background:linear-gradient(180deg,#ffffff,#fbfdfb);
+  display:flex;align-items:center;justify-content:center; overflow:hidden;
   box-shadow:0 12px 24px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.7);
 }
 .image-box::before{
-  content:"";
-  position:absolute; inset:0;
-  border:4px dashed #b8d9b9;
-  border-radius:22px;
-  pointer-events:none;
+  content:""; position:absolute; inset:0; border:4px dashed #b8d9b9; border-radius:22px; pointer-events:none;
 }
 .image-box::after{
-  content:"";
-  position:absolute; inset:12px;
-  border:3px dashed #c9e4c8;
-  border-radius:18px;
-  pointer-events:none;
+  content:""; position:absolute; inset:12px; border:3px dashed #c9e4c8; border-radius:18px; pointer-events:none;
 }
 .image-box.fit-cover video,
 .image-box.fit-cover img{object-fit:cover}
 .image-box video,
 .image-box img{
-  width:100%;           /* ✅ ไม่เกินกรอบ */
-  height:100%;          /* ✅ ไม่เกินกรอบ */
-  object-fit:contain;   /* ✅ พอดีกรอบ */
-  border-radius:18px;
-  z-index:1;
+  width:100%; height:100%; object-fit:contain;
+  border-radius:18px; z-index:1; transition:transform .15s ease-out;
 }
-.placeholder{
-  position:absolute; inset:0;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center;color:#9aa7a1; z-index:2;
-}
+.placeholder{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;color:#9aa7a1; z-index:2 }
 .placeholder i{font-size:3.2rem;margin-bottom:10px}
 
-/* Chip & fit toggle */
-.img-chip{
-  position:absolute;left:12px;top:12px;z-index:3;
-  background:#1b5e20;color:#fff;border-radius:999px;padding:6px 10px;font-weight:800;font-size:.9rem;box-shadow:var(--shadow-sm)
-}
-.fit-toggle{
-  position:absolute;right:12px;top:12px;z-index:3;
-  background:#ffffffd9;border:1px solid #dfe9df;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;gap:6px;box-shadow:var(--shadow-sm);color:#1b5e20
-}
+/* Source & fit buttons */
+.img-chip{ position:absolute;left:12px;top:12px;z-index:3; background:#1b5e20;color:#fff;border-radius:999px;padding:6px 10px;font-weight:800;font-size:.9rem;box-shadow:var(--shadow-sm) }
+.fit-toggle{ position:absolute;right:12px;top:12px;z-index:3; background:#ffffffd9;border:1px solid #dfe9df;border-radius:999px;padding:6px 10px;font-weight:700;cursor:pointer; display:flex;align-items:center;gap:6px;box-shadow:var(--shadow-sm);color:#1b5e20 }
 
-/* ======= Action buttons ======= */
+/* Zoom control */
+.zoom-wrap{
+  position:absolute; right:12px; bottom:12px; z-index:3;
+  display:none; align-items:center; gap:8px;
+  background:#ffffffd9; border:1px solid #dfe9df; border-radius:999px; padding:6px 10px;
+  box-shadow:var(--shadow-sm); color:#1b5e20;
+}
+.zoom-wrap input[type="range"]{ width:140px }
+.zoom-wrap .zbtn{ background:#e9f6ea; border:none; border-radius:50%; width:28px; height:28px; display:grid; place-items:center; cursor:pointer; color:#1b5e20 }
+
+/* Action buttons */
 .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
 .btn{
   --bg:var(--primary);--bg2:var(--primary-light);
   background:linear-gradient(135deg,var(--bg),var(--bg2));
   color:#fff;border:none;border-radius:999px;padding:14px 22px;font-weight:700;
   font-size:1.05rem;display:inline-flex;gap:10px;align-items:center;cursor:pointer;
-  box-shadow:var(--shadow-sm);transition:.18s ease;min-width:180px;justify-content:center;
-  position:relative;
+  box-shadow:var(--shadow-sm);transition:.18s ease;min-width:180px;justify-content:center; position:relative;
 }
 .btn i{font-size:1.05rem}
 .btn:hover{transform:translateY(-2px)}
@@ -227,7 +199,7 @@ body{
   animation:rot .9s linear infinite;
 }
 
-/* Sticky bottom action bar — เฉพาะหน้า “วิเคราะห์” */
+/* Sticky action bar */
 .analysis-bar{
   position:sticky;bottom:-8px;
   background:rgba(255,255,255,.85);
@@ -240,34 +212,17 @@ body{
 
 /* Loading */
 .loading{display:none;align-items:center;gap:10px;justify-content:center;margin:14px 0;color:var(--ink-2)}
-.loading .spin{
-  width:28px;height:28px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%;
-  animation:rot .9s linear infinite
-}
+.loading .spin{ width:28px;height:28px;border:4px solid #e8f1e8;border-top-color:var(--primary);border-radius:50%; animation:rot .9s linear infinite }
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* ===== Result page ===== */
+/* Result */
 .result-grid{display:grid;grid-template-columns:1.05fr 1.6fr;gap:24px}
-.result-img{
-  background:linear-gradient(135deg,#f3faf3,#eaf5ea);
-  border-radius:22px;padding:14px;border:1px solid #dfe9df;
-  box-shadow:0 10px 24px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.6);
-}
-.result-img .frame{
-  position:relative;
-  border-radius:18px;overflow:hidden;background:#fff;
-  aspect-ratio: 4/3; display:flex;align-items:center;justify-content:center;
-  box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);
-}
-.result-img .frame::after{
-  content:"";position:absolute;inset:10px;border:2px dashed #c9dfc9;border-radius:14px;pointer-events:none;
-}
-.result-img img{width:100%;height:100%;object-fit:contain;display:block;border-radius:14px} /* ✅ ลบ decoding:async ที่เป็นบัก */
+.result-img{ background:linear-gradient(135deg,#f3faf3,#eaf5ea); border-radius:22px;padding:14px;border:1px solid #dfe9df; box-shadow:0 10px 24px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.6) }
+.result-img .frame{ position:relative; border-radius:18px;overflow:hidden;background:#fff; aspect-ratio: 4/3; display:flex;align-items:center;justify-content:center; box-shadow:inset 0 0 0 1px rgba(0,0,0,.03) }
+.result-img .frame::after{ content:"";position:absolute;inset:10px;border:2px dashed #c9dfc9;border-radius:14px;pointer-events:none }
+.result-img img{width:100%;height:100%;object-fit:contain;display:block;border-radius:14px}
 
-.tip-card{
-  margin-top:14px;background:#F4FAF3;border:1px solid #d6ead6;border-radius:16px;
-  padding:14px 16px;box-shadow:var(--shadow-sm)
-}
+.tip-card{ margin-top:14px;background:#F4FAF3;border:1px solid #d6ead6;border-radius:16px; padding:14px 16px;box-shadow:var(--shadow-sm) }
 .tip-title{display:flex;align-items:center;gap:10px;color:#1b5e20;font-weight:800;margin:0 0 6px}
 .tip-title i{color:#2E7D32}
 .tip-list{list-style:none;padding:0;margin:8px 0 0}
@@ -310,7 +265,7 @@ body{
 /* Footer */
 footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:center}
 
-/* Forms (direct/report) */
+/* Forms */
 .form{max-width:640px;margin:auto}
 .form .group{margin:14px 0}
 .form label{font-weight:700;margin-bottom:6px;display:block}
@@ -323,7 +278,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 .upload-progress .bar span{display:block;height:100%;width:0%;background:linear-gradient(90deg,#a5d6a7,#66bb6a,#43a047);transition:width .3s ease}
 .upload-progress .txt{font-size:.92rem;color:#42534d;margin-top:6px;text-align:center}
 
-/* Direct Contribution modal */
+/* Modals */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
 .modal .box{background:#fff;border-radius:18px;box-shadow:var(--shadow);max-width:460px;width:92%;padding:20px 22px;text-align:center}
 .modal .box h3{margin:8px 0 6px;font-family:'Kanit',sans-serif;color:#1b5e20}
@@ -347,7 +302,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 .toast-item.error{background:#c62828}
 .toast-item.success{background:#2e7d32}
 
-/* Accessibility helper */
+/* A11y helper */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 /* Responsive */
@@ -380,7 +335,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 
 <main class="container">
 
-  <!-- Steps indicator (เส้นตรง + จุด) -->
+  <!-- Steps -->
   <div id="steps" class="steps" style="display:none">
     <div class="step" data-step="home"><span class="dot"></span><span class="lbl">เลือกหมวด</span></div>
     <div class="step" data-step="analysis"><span class="dot"></span><span class="lbl">วิเคราะห์</span></div>
@@ -417,6 +372,14 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
         <button class="fit-toggle" id="fit-toggle" type="button" aria-pressed="false" title="สลับระหว่างพอดีกรอบ/ครอปภาพ">
           <i class="fa-solid fa-crop"></i><span id="fit-toggle-text">พอดี</span>
         </button>
+
+        <!-- Zoom control -->
+        <div id="zoom-wrap" class="zoom-wrap" aria-label="ซูมกล้อง">
+          <button class="zbtn" id="zoom-out" title="ซูมออก"><i class="fa-solid fa-minus"></i></button>
+          <input type="range" id="zoom-range" min="1" max="3" step="0.1" value="1" />
+          <button class="zbtn" id="zoom-in" title="ซูมเข้า"><i class="fa-solid fa-plus"></i></button>
+        </div>
+
         <div class="placeholder" id="placeholder"><i class="fa-regular fa-image"></i><div id="instruction">กรุณาถ่ายภาพหรืออัปโหลดภาพ</div></div>
         <video id="webcam" autoplay playsinline style="display:none"></video>
         <img id="preview" alt="" style="display:none" />
@@ -765,7 +728,6 @@ function updateSteps(activeId){
     if(idxKey === idxCur) node.classList.add('active');
   });
 
-  // กำหนดความยาวเส้นความคืบหน้า
   const pct = idxCur<=0 ? '0%' : idxCur===1 ? '33.33%' : idxCur===2 ? '66.66%' : '100%';
   steps.style.setProperty('--progress-pct', pct);
 }
@@ -802,9 +764,7 @@ async function setActivePage(id){
     const btnAnalyze = $('#analyze'); if(btnAnalyze){ btnAnalyze.style.display='none'; btnAnalyze.disabled = true; btnAnalyze.title='ต้องมีภาพก่อนจึงจะวิเคราะห์ได้'; }
     const btnRecap  = $('#recapture'); if(btnRecap) btnRecap.style.display='none';
 
-    const hasActiveStream = !!(v && v.srcObject && typeof v.srcObject.getTracks==='function' &&
-      v.srcObject.getTracks().some(t=>t.readyState==='live'));
-
+    const hasActiveStream = hasLiveStream();
     if(currentModel && !hasActiveStream){
       await initWebcam();
       try{ await v.play?.(); }catch(e){}
@@ -852,7 +812,166 @@ function showToast(msg, type='info', timeout=3000){
   setTimeout(()=>{ wrap.removeChild(el); }, timeout);
 }
 
-/* MODEL */
+/* ====== CAMERA (init/stop + Zoom + Background handling) ====== */
+let trackZoomSupported = false;
+let zoomCaps = {min:1, max:3, step:0.1};
+let currentZoom = 1;
+function hasLiveStream(){
+  const v = $('#webcam');
+  return !!(v && v.srcObject && typeof v.srcObject.getTracks==='function' &&
+            v.srcObject.getTracks().some(t=>t.readyState==='live'));
+}
+async function initWebcam(){
+  $('#loading').style.display='flex';
+  $('#analysis-page').setAttribute('aria-busy','true');
+  const v = $('#webcam');
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
+    v.srcObject = stream;
+    v.style.display='block';
+    $('#placeholder').style.display='none';
+    const chip = $('#img-source'); if(chip){ chip.style.display=''; chip.textContent='แหล่งภาพ: กล้อง (สด)'; }
+
+    setupZoomControls(stream);
+    bindPinchToZoom();
+  }catch(e){
+    console.warn(e);
+    showToast('เปิดกล้องไม่สำเร็จ โปรดอนุญาตการเข้าถึงกล้องหรือใช้อัปโหลดภาพแทน', 'error');
+  }finally{
+    $('#analysis-page').removeAttribute('aria-busy');
+    $('#loading').style.display='none';
+  }
+}
+function stopWebcam(){
+  const v = $('#webcam');
+  const stream = v && v.srcObject;
+  if(stream && typeof stream.getTracks === 'function'){
+    stream.getTracks().forEach(t => t.stop());
+  }
+  if(v){ v.srcObject = null; v.style.display='none'; v.style.transform='none'; }
+  const ph = $('#placeholder'); if(ph){ ph.style.display=''; }
+  const chip = $('#img-source'); if(chip){ chip.style.display='none'; }
+  hideZoomControls();
+  unbindPinchToZoom();
+}
+
+/* Zoom – capability detection + UI */
+function setupZoomControls(stream){
+  const wrap = $('#zoom-wrap');
+  const range = $('#zoom-range');
+  const v = $('#webcam');
+  const track = stream.getVideoTracks()[0];
+  trackZoomSupported = false;
+  currentZoom = 1;
+
+  if(track.getCapabilities){
+    const caps = track.getCapabilities();
+    if(caps && typeof caps.zoom === 'object'){
+      trackZoomSupported = true;
+      zoomCaps = {min:caps.zoom.min ?? 1, max:caps.zoom.max ?? 3, step:caps.zoom.step ?? 0.1};
+      const setts = track.getSettings ? track.getSettings() : {};
+      currentZoom = setts.zoom ?? 1;
+    }
+  }
+  if(!trackZoomSupported){
+    zoomCaps = {min:1, max:3, step:0.1};
+    currentZoom = 1;
+    v.style.transform = 'scale(1)';
+  }
+
+  range.min = zoomCaps.min;
+  range.max = zoomCaps.max;
+  range.step = zoomCaps.step;
+  range.value = currentZoom;
+  wrap.style.display = '';
+
+  range.oninput = ()=> applyZoom(parseFloat(range.value));
+  $('#zoom-in').onclick = ()=>{ const val=Math.min(parseFloat(range.value)+zoomCaps.step, zoomCaps.max); range.value=val; applyZoom(val); };
+  $('#zoom-out').onclick = ()=>{ const val=Math.max(parseFloat(range.value)-zoomCaps.step, zoomCaps.min); range.value=val; applyZoom(val); };
+
+  // wheel zoom (desktop)
+  const box = $('#image-box');
+  box.onwheel = (e)=>{
+    if(!hasLiveStream()) return;
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY) * (-zoomCaps.step);
+    let val = parseFloat(range.value) + delta;
+    val = Math.min(zoomCaps.max, Math.max(zoomCaps.min, val));
+    range.value = val; applyZoom(val);
+  };
+}
+function hideZoomControls(){
+  const wrap = $('#zoom-wrap');
+  if(wrap){ wrap.style.display='none'; }
+  const box = $('#image-box');
+  box.onwheel = null;
+}
+async function applyZoom(val){
+  const v = $('#webcam');
+  currentZoom = Math.min(zoomCaps.max, Math.max(zoomCaps.min, val));
+  if(trackZoomSupported && hasLiveStream()){
+    try{
+      const track = v.srcObject.getVideoTracks()[0];
+      if(track.applyConstraints){
+        // Try standard, then advanced fallback
+        await track.applyConstraints({ zoom: currentZoom }).catch(()=>track.applyConstraints({advanced:[{zoom:currentZoom}]}));
+      }
+    }catch(e){
+      // fallback to CSS
+      v.style.transform = `scale(${currentZoom})`;
+    }
+  }else{
+    // CSS fallback zoom (digital crop)
+    v.style.transform = `scale(${currentZoom})`;
+    $('#image-box').classList.add('fit-cover');
+  }
+}
+
+/* Pinch to zoom (touch) */
+let pinchBound = false, pinchStartDist = 0, pinchStartZoom = 1;
+function bindPinchToZoom(){
+  if(pinchBound) return;
+  const box = $('#image-box');
+  const range = $('#zoom-range');
+
+  function distance(t1,t2){
+    const dx = t1.clientX - t2.clientX;
+    const dy = t1.clientY - t2.clientY;
+    return Math.hypot(dx,dy);
+  }
+  function onStart(e){
+    if(e.touches && e.touches.length===2){
+      pinchStartDist = distance(e.touches[0], e.touches[1]);
+      pinchStartZoom = parseFloat(range.value);
+    }
+  }
+  function onMove(e){
+    if(e.touches && e.touches.length===2){
+      e.preventDefault();
+      const d = distance(e.touches[0], e.touches[1]);
+      const scale = d / (pinchStartDist||d);
+      let val = pinchStartZoom * scale;
+      val = Math.min(zoomCaps.max, Math.max(zoomCaps.min, val));
+      range.value = val;
+      applyZoom(val);
+    }
+  }
+  box.addEventListener('touchstart', onStart, {passive:false});
+  box.addEventListener('touchmove', onMove, {passive:false});
+  pinchBound = true;
+  // store to remove later
+  box._pinchHandlers = {onStart,onMove};
+}
+function unbindPinchToZoom(){
+  const box = $('#image-box');
+  if(!box || !pinchBound) return;
+  const {onStart,onMove} = box._pinchHandlers || {};
+  if(onStart) box.removeEventListener('touchstart', onStart);
+  if(onMove) box.removeEventListener('touchmove', onMove);
+  pinchBound = false;
+}
+
+/* ====== MODEL ====== */
 async function loadModel(url){
   $('#loading').style.display='flex';
   $('#analysis-page').setAttribute('aria-busy','true');
@@ -868,36 +987,8 @@ async function loadModel(url){
     $('#loading').style.display='none';
   }
 }
-async function initWebcam(){
-  $('#loading').style.display='flex';
-  $('#analysis-page').setAttribute('aria-busy','true');
-  const v = $('#webcam');
-  try{
-    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}}});
-    v.srcObject = stream;
-    v.style.display='block';
-    $('#placeholder').style.display='none';
-    const chip = $('#img-source'); if(chip){ chip.style.display=''; chip.textContent='แหล่งภาพ: กล้อง (สด)'; }
-  }catch(e){
-    console.warn(e);
-    showToast('เปิดกล้องไม่สำเร็จ โปรดอนุญาตการเข้าถึงกล้องหรือใช้อัปโหลดภาพแทน', 'error');
-  }finally{
-    $('#analysis-page').removeAttribute('aria-busy');
-    $('#loading').style.display='none';
-  }
-}
-function stopWebcam(){
-  const v = $('#webcam');
-  const stream = v && v.srcObject;
-  if(stream && typeof stream.getTracks === 'function'){
-    stream.getTracks().forEach(t => t.stop());
-  }
-  if(v){ v.srcObject = null; v.style.display='none'; }
-  const ph = $('#placeholder');
-  if(ph){ ph.style.display=''; }
-  const chip = $('#img-source'); if(chip){ chip.style.display='none'; }
-}
 
+/* Capture/preview/analyze */
 function captureFromWebcam(){
   const v = $('#webcam');
   const c = document.createElement('canvas');
@@ -919,8 +1010,8 @@ function showPreview(dataURL){
   document.getElementById('recapture').style.display='inline-flex';
   document.getElementById('sr-status').textContent = 'มีภาพแล้ว พร้อมวิเคราะห์';
   const chip = $('#img-source'); if(chip){ chip.style.display=''; chip.textContent='แหล่งภาพ: อัปโหลด'; }
+  hideZoomControls(); // ไม่ต้องให้ซูมภาพนิ่ง
 }
-
 async function analyze(){
   if(!capturedImageDataUrl){ showToast('กรุณาถ่ายหรืออัปโหลดภาพก่อน', 'error'); return; }
   if(!currentModel){ showToast('โมเดลไม่พร้อม โปรดเลือกประเภทใหม่', 'error'); return; }
@@ -1049,7 +1140,6 @@ function bindHomeCards(){
       document.getElementById('instruction').textContent = mInfo.instruction;
 
       await ensureAILibs();
-
       if(!currentModel || currentModel.url !== mInfo.url){
         currentModel = await loadModel(mInfo.url);
       }
@@ -1079,6 +1169,7 @@ function bindAnalysisButtons(){
     analyzeBtn.style.display='none'; analyzeBtn.disabled=true; analyzeBtn.title='ต้องมีภาพก่อนจึงจะวิเคราะห์ได้';
     document.getElementById('recapture').style.display='none';
     const chip = $('#img-source'); if(chip){ chip.style.display=''; chip.textContent='แหล่งภาพ: กล้อง (สด)'; }
+    setupZoomControls($('#webcam').srcObject); // กลับมาให้ซูมได้อีกครั้ง
   });
   document.getElementById('fit-toggle').addEventListener('click', ()=>{
     const box = $('#image-box');
@@ -1094,7 +1185,7 @@ function bindResultButtons(){
   document.getElementById('back-to-result').addEventListener('click',()=>setActivePage('result-page'));
 }
 
-/* GAS */
+/* GAS (unchanged network flow from latest) */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxMcdkHDEBPv5aspReCHxOW6lh_Y00O3wWQLpeIR43KhKNjV70Cli9z9fuK4GRHNV7/exec';
 async function submitData(payload){
   try{
@@ -1239,6 +1330,22 @@ function bindDirectContribution(){
     setActivePage('home-page');
   });
 }
+
+/* Background/visibility handling for iOS/Android freeze */
+document.addEventListener('visibilitychange', async ()=>{
+  if(currentPageId !== 'analysis-page') return;
+  if(document.hidden){
+    stopWebcam();
+  }else{
+    // return to page: re-init if no live stream
+    if(!hasLiveStream()){
+      await initWebcam();
+      try{ await $('#webcam').play?.(); }catch(e){}
+    }
+  }
+});
+window.addEventListener('pagehide', ()=>{ if(currentPageId==='analysis-page') stopWebcam(); });
+window.addEventListener('beforeunload', ()=>{ if(currentPageId==='analysis-page') stopWebcam(); });
 
 /* INIT */
 document.addEventListener('DOMContentLoaded', ()=>{
