@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+<meta name="viewport" content="width=device-width, initial-scale=5.0, user-scalable=yes" />
 <meta name="description" content="AgriCare AI — ระบุชนิดแมลงและโรคพืชด้วย Teachable Machine" />
 <title>AgriCare AI - เครื่องมือตรวจแยกแมลงและโรคพืช</title>
 
@@ -42,7 +42,11 @@ body{
   color:#fff;box-shadow:var(--shadow);
 }
 .header-inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:16px;padding:14px 18px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.55rem}
+/* ทำโลโก้คลิกได้เพื่อกลับหน้าแรก */
+.brand{
+  display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.55rem;
+  text-decoration:none;color:#fff;cursor:pointer;
+}
 .brand i{font-size:1.4em}
 
 /* Top nav */
@@ -75,15 +79,21 @@ body{
 }
 .hero p{color:var(--ink-2);text-align:center;margin:0 0 24px}
 
-/* Grid 7 features */
+/* Grid 7 features (แก้ให้จัดกึ่งกลางทุกอุปกรณ์) */
 .grid{
-  display:grid;gap:18px;justify-content:center;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  /* เปลี่ยนเป็น Flexbox เพื่อให้แถวสุดท้าย “กึ่งกลาง” จริง */
+  display:flex;flex-wrap:wrap;gap:18px;
+  justify-content:center;           /* จัดทุกแถวให้อยู่กึ่งกลางแนวนอน */
+  align-items:stretch;
+  max-width:1000px;                 /* จำกัดความกว้างรวมเพื่อคงสัดส่วนหน้าแรก */
+  margin-inline:auto;
 }
 .card{
   background:var(--surface);border:1px solid var(--outline);border-radius:18px;
   box-shadow:var(--shadow-sm);padding:22px 16px;text-align:center;cursor:pointer;
-  transition:.25s;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center
+  transition:.25s;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:100%;max-width:320px;       /* การ์ดไม่กว้างเกินไป */
+  flex:0 1 260px;                   /* ความกว้างพื้นฐาน ~260px และย่อ/ขยายได้ */
 }
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
 .card i{font-size:2.2rem;margin-bottom:10px}
@@ -94,21 +104,31 @@ body{
 .page-section.active{display:block}
 @keyframes fade{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 
-/* Analysis & shared */
+/* Titles & panels */
 .section-title{display:flex;align-items:center;gap:10px;color:var(--primary-dark)}
 .section-title i{background:#e9f6ea;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem}
 .panel{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px}
 
-/* Image box */
+/* Image box (analysis) */
 .image-box{
   width:100%;max-width:720px;height:430px;margin:auto;border:2px dashed #cfe4cf;border-radius:16px;
-  display:grid;place-items:center;overflow:hidden;background:#fbfdfb;position:relative
+  /* เปลี่ยนเป็น flex + center เพื่อให้ภาพ/วิดีโอถูกจัดกึ่งกลางและคงสัดส่วนครบทั้งภาพ */
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;background:#fbfdfb;position:relative
 }
-.image-box video,.image-box img{width:100%;height:100%;object-fit:cover}
+/* ✅ ให้แสดงตัวอย่างรูป/วิดีโอครบทั้งภาพ (ไม่ถูกครอป/ซูมเกิน) */
+.image-box video,
+.image-box img{
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+}
 .placeholder{text-align:center;color:#9aa7a1}
 .placeholder i{font-size:3.2rem;margin-bottom:10px}
 
-/* Big buttons */
+/* Buttons */
 .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
 .btn{
   --bg:var(--primary);--bg2:var(--primary-light);
@@ -124,6 +144,24 @@ body{
 .btn.danger{--bg:#e53935;--bg2:#ef5350}
 .btn.gray{--bg:#90A4AE;--bg2:#B0BEC5}
 
+/* 🎨 ปรับสี/โทนปุ่มหลักให้ชวนกดและคุมธีมเว็บ */
+#capture.btn{
+  --bg:#2E7D32; --bg2:#43A047;
+  box-shadow:0 10px 22px rgba(46,125,50,.25);
+}
+#upload.btn{
+  --bg:#F59E0B; --bg2:#FBBF24;
+  box-shadow:0 10px 22px rgba(245,158,11,.25);
+}
+#analyze.btn{
+  --bg:#1E88E5; --bg2:#4FC3F7;
+  box-shadow:0 10px 22px rgba(30,136,229,.25);
+}
+#recapture.btn{
+  --bg:#607D8B; --bg2:#90A4AE;
+  box-shadow:0 10px 22px rgba(96,125,139,.25);
+}
+
 /* Loading */
 .loading{display:none;align-items:center;gap:10px;justify-content:center;margin:14px 0;color:var(--ink-2)}
 .loading .spin{
@@ -132,23 +170,69 @@ body{
 }
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* Result */
-.result-grid{display:grid;grid-template-columns:1.1fr 1.6fr;gap:24px}
-.result-img{border-radius:16px;overflow:hidden;border:1px solid var(--outline);box-shadow:var(--shadow-sm)}
-.result-img img{display:block;width:100%;height:auto}
+/* ===== Result page (UPGRADED UI) ===== */
+.result-grid{display:grid;grid-template-columns:1.05fr 1.6fr;gap:24px}
+
+/* ---------- upgraded image frame with dashed inner ring ---------- */
+.result-img{
+  background:linear-gradient(135deg,#f3faf3,#eaf5ea);
+  border-radius:22px;padding:14px;border:1px solid #dfe9df;
+  box-shadow:0 10px 24px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.result-img .frame{
+  position:relative;
+  border-radius:18px;overflow:hidden;background:#fff;
+  aspect-ratio: 4/3; display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.03);
+}
+.result-img .frame::after{
+  content:"";position:absolute;inset:10px;border:2px dashed #c9dfc9;border-radius:14px;pointer-events:none;
+}
+.result-img img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------- NEW: tip card under the image (left column) ---------- */
+.tip-card{
+  margin-top:14px;background:#F4FAF3;border:1px solid #d6ead6;border-radius:16px;
+  padding:14px 16px;box-shadow:var(--shadow-sm)
+}
+.tip-title{display:flex;align-items:center;gap:10px;color:#1b5e20;font-weight:800;margin:0 0 6px}
+.tip-title i{color:#2E7D32}
+.tip-list{list-style:none;padding:0;margin:8px 0 0}
+.tip-list li{display:flex;gap:10px;align-items:flex-start;margin:8px 0;color:#42534d}
+.tip-list li i{color:#43A047;margin-top:2px}
+
+/* badges */
 .badge{display:inline-flex;align-items:center;gap:8px;background:#ffeaea;color:#b71c1c;padding:8px 12px;border-radius:999px;font-weight:700;margin-bottom:8px}
 .badge.beneficial{background:#e8f5e9;color:#1b5e20}
 .badge.healthy{background:#e8f5e9;color:#1b5e20}
 .badge.disease{background:#fff3e0;color:#e65100}
 .badge.unknown{background:#fff8e1;color:#8d6e00}
 
+/* result title + confidence emphasis */
 .result-title{font-family:'Kanit',sans-serif;font-size:2rem;margin:.4rem 0 .6rem}
 .conf-row{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
 .conf-row i{color:#2e7d32}
-.conf-label{font-weight:700}
-.progress{height:26px;border-radius:13px;background:#e9ecef;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.12)}
-.progress>span{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,#9CCC65,#689F38 15px,#7CB342 15px,#7CB342 30px);transition:width .9s cubic-bezier(.22,.61,.36,1)}
+.conf-label{
+  font-weight:800;letter-spacing:.2px;
+  padding:4px 10px;border-radius:10px;background:#e9f6ea;color:#1b5e20;
+  display:inline-flex;align-items:center;gap:8px
+}
+.conf-bubble{
+  background:#1b5e20;color:#fff;border-radius:999px;padding:6px 10px;font-weight:800;min-width:64px;text-align:center
+}
 
+/* modern confidence meter */
+.meter{
+  position:relative;height:18px;border-radius:999px;background:#e8efe8;overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.08);
+}
+.meter > span{
+  display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,#a5d6a7,#66bb6a,#43a047);
+  transition:width .9s cubic-bezier(.22,.61,.36,1);
+}
+
+/* blocks */
 .block h4{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--primary-dark)}
 .block h4 i{color:var(--primary)}
 .list{list-style:none;padding:0;margin:0}
@@ -161,13 +245,18 @@ body{
 .unknown-box{
   background:#fff7e6;border:1px solid #ffe0b2;padding:16px;border-radius:14px;margin-top:14px;color:#6d4c41
 }
-.unknown-box .adv{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
-.unknown-box .adv i{margin-top:3px;color:#ff9800}
+
+/* disclaimer: โทนเตือนสีเหลืองอุ่น คุมธีมเขียว */
+.disclaimer{
+  background:#FFF8E6;border:1px solid #F3D38C;color:#6D4C41;
+  padding:12px;border-radius:12px;margin-top:12px;
+  display:flex;gap:10px;align-items:flex-start
+}
 
 /* Footer */
 footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:center}
 
-/* Forms */
+/* Forms (direct/report) */
 .form{max-width:640px;margin:auto}
 .form .group{margin:14px 0}
 .form label{font-weight:700;margin-bottom:6px;display:block}
@@ -176,23 +265,27 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 }
 .form textarea{min-height:110px;resize:vertical}
 
-/* Sweet-like modal (ใช้เฉพาะ direct contribution) */
+/* Direct Contribution only */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50}
 .modal .box{background:#fff;border-radius:18px;box-shadow:var(--shadow);max-width:460px;width:92%;padding:20px 22px;text-align:center}
 .modal .box h3{margin:8px 0 6px;font-family:'Kanit',sans-serif;color:var(--primary-dark)}
 .modal .box p{margin:0 0 12px;color:#54635c}
 .modal .box .ok{margin-top:6px}
 
-/* --- UI tweaks for Direct Contribution only --- */
 .center-note{ text-align:center; color:#5b6a61; margin:0 0 8px; }
 .upload-wrap{ display:flex; flex-direction:column; align-items:center; }
 #dc-preview{ display:none; max-width:420px; width:100%; border-radius:14px; margin:12px auto; border:1px solid var(--outline) }
-.consent-box{
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  background:#e8f5e9; border:1px dashed #a5d6a7; border-radius:14px; padding:12px;
-  color:#1b5e20; font-weight:700;
-}
+.consent-box{display:flex;align-items:center;justify-content:center;gap:12px;background:#e8f5e9;border:1px dashed #a5d6a7;border-radius:14px;padding:12px;color:#1b5e20;font-weight:700;text-align:center}
+#dc-consent{ transform:scale(1.5); accent-color:var(--primary); }
+.consent-box label{ margin:0; white-space:nowrap; }
 
+/* Info pages */
+.info-body{max-width:860px;margin:auto}
+.info-body h3{margin:14px 0 6px;color:var(--primary-dark);font-family:'Kanit',sans-serif}
+.info-list{margin:8px 0 0 0;padding-left:18px}
+.info-note{background:#f1f8e9;border:1px solid #c5e1a5;padding:12px;border-radius:12px;color:#33691e;margin-top:12px}
+
+/* Responsive */
 @media (max-width:1000px){ .result-grid{grid-template-columns:1fr} }
 @media (max-width:640px){
   .brand{font-size:1.3rem}
@@ -201,6 +294,8 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
   .hero h1{font-size:2rem}
   .image-box{height:360px}
   .btn{min-width:46%;padding:14px 16px}
+  /* จัดเมนูบนมือถือเป็น 2 คอลัมน์ และยังคง “กึ่งกลาง” */
+  .card{flex:0 1 calc(50% - 18px);max-width:300px;min-height:140px}
 }
 </style>
 </head>
@@ -208,11 +303,12 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 
 <header class="header">
   <div class="header-inner">
-    <div class="brand"><i class="fa-solid fa-seedling"></i> AgriCare AI</div>
+    <!-- ทำให้โลโก้กดแล้วกลับหน้าแรก -->
+    <a href="#" class="brand" id="logo"><i class="fa-solid fa-seedling"></i> AgriCare AI</a>
   </div>
 </header>
 
-<!-- ซ่อนแถบนำทางบนหน้าแรก -->
+<!-- Nav ซ่อนบนหน้าแรก/ร่วมพัฒนา/วิธีใช้งาน/เกี่ยวกับเรา -->
 <nav class="nav" id="top-nav" style="display:none">
   <a href="#" data-target="home-page" class="active"><i class="fa-solid fa-house"></i>หน้าหลัก</a>
   <a href="#" data-target="analysis-page"><i class="fa-solid fa-magnifying-glass"></i>วิเคราะห์</a>
@@ -232,19 +328,17 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
         <a class="card feature" data-model="corn"><i class="fa-solid fa-seedling" style="color:#f3b300"></i><h3>โรคใบข้าวโพด</h3></a>
         <a class="card feature" data-model="sugarcane"><i class="fa-solid fa-leaf" style="color:#7CB342"></i><h3>โรคใบอ้อย</h3></a>
         <a class="card feature" data-model="cassava"><i class="fa-solid fa-wheat-awn" style="color:#6D4C41"></i><h3>โรคใบมันสำปะหลัง</h3></a>
-        <!-- ปุ่มนี้จะไปหน้า Direct Contribution -->
         <a class="card" id="contribute-data-home"><i class="fa-solid fa-robot" style="color:#0ea5e9"></i><h3>ร่วมพัฒนา AI</h3></a>
         <a class="card" id="usage-btn"><i class="fa-solid fa-circle-question" style="color:#3F51B5"></i><h3>วิธีใช้งาน</h3></a>
         <a class="card" id="about-btn"><i class="fa-solid fa-circle-info" style="color:#8E24AA"></i><h3>เกี่ยวกับเรา</h3></a>
       </div>
-
       <div class="panel" style="margin-top:18px;text-align:center;color:#2e7d32">
         พร้อมใช้งาน : ถ่ายภาพแล้วกด ‘วิเคราะห์ภาพ’ ได้ทันที
       </div>
     </div>
   </section>
 
-  <!-- ANALYSIS (เดิม) -->
+  <!-- ANALYSIS -->
   <section id="analysis-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-camera-retro"></i> <span id="analysis-title">วิเคราะห์</span></h2>
     <div class="panel">
@@ -266,24 +360,43 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- RESULT (เดิม) -->
+  <!-- RESULT (UPGRADED) -->
   <section id="result-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> ผลการวิเคราะห์</h2>
     <div class="panel">
       <div class="result-grid">
-        <div class="result-img"><img id="result-image" alt="ภาพที่วิเคราะห์"></div>
+        <div>
+          <div class="result-img">
+            <div class="frame">
+              <img id="result-image" alt="ภาพที่วิเคราะห์">
+            </div>
+          </div>
+
+          <!-- NEW: เคล็ดลับใต้ภาพ (Tips only) -->
+          <div class="tip-card">
+            <div class="tip-title"><i class="fa-solid fa-lightbulb"></i>คำแนะนำเพิ่มเติม</div>
+            <ul class="tip-list">
+              <li><i class="fa-solid fa-check-circle"></i><span>พยายามถ่ายใกล้ให้เห็นตัวอย่างชัด โฟกัสดี และหลีกเลี่ยงแสงย้อน/ฉากหลังลายตา</span></li>
+              <li><i class="fa-solid fa-check-circle"></i><span>หากเป็นโรคพืช ให้ถ่ายทั้งภาพใกล้จุดอาการและภาพรวมของใบ/กิ่ง</span></li>
+              <li><i class="fa-solid fa-check-circle"></i><span>ถ้าผลยังไม่แน่ใจ กด <b>ส่งภาพนี้ให้เรา</b> เพื่อช่วยปรับปรุงโมเดล</span></li>
+              <li><i class="fa-solid fa-check-circle"></i><span>ถ่ายภาพเพิ่มจากหลายมุมจะช่วยให้ความแม่นยำดีขึ้น</span></li>
+            </ul>
+          </div>
+        </div>
+
         <div>
           <span id="result-type" class="badge unknown"><i class="fa-solid fa-tag"></i><b>ไม่ทราบประเภท</b></span>
           <div class="result-title" id="result-name">—</div>
 
           <div class="conf-row">
-            <i class="fa-solid fa-chart-line"></i>
-            <span class="conf-label">ระดับความมั่นใจ:</span>
-            <b id="result-confidence">—</b>
+            <span class="conf-label"><i class="fa-solid fa-chart-line"></i> ระดับความมั่นใจ</span>
+            <span id="conf-bubble" class="conf-bubble">—</span>
           </div>
-          <div class="progress"><span id="conf-fill"></span></div>
+          <div class="meter" aria-label="confidence meter"><span id="conf-fill"></span></div>
 
           <div class="block" id="result-info" style="margin-top:8px"></div>
+
+          <div id="result-disclaimer"></div>
 
           <div class="block" id="nearby-block" style="margin-top:10px">
             <h4><i class="fa-solid fa-list-check"></i>ผลลัพธ์ที่ใกล้เคียง</h4>
@@ -299,7 +412,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- REPORT หลังวิเคราะห์ (เดิม) -->
+  <!-- REPORT หลังวิเคราะห์ -->
   <section id="report-feedback-page" class="page-section">
     <h2 class="section-title"><i class="fa-solid fa-heart"></i> ส่งภาพนี้ให้เรา</h2>
     <div class="panel form">
@@ -323,13 +436,11 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
-  <!-- NEW: DIRECT CONTRIBUTION อิสระจากส่วนอื่น -->
+  <!-- DIRECT CONTRIBUTION -->
   <section id="direct-contrib-page" class="page-section">
-    <h2 class="section-title"><i class="fa-solid fa-heart-circle-plus"></i> ร่วมพัฒนา AI (ส่งภาพโดยตรง)</h2>
+    <h2 class="section-title"><i class="fa-solid fa-heart-circle-plus"></i> ร่วมพัฒนา AI</h2>
     <div class="panel form">
-      <p class="center-note">
-        ช่องทางนี้สำหรับส่งภาพโดยตรงจากผู้ใช้ เพื่อนำไปปรับปรุงโมเดล
-      </p>
+      <p class="center-note">ช่องทางนี้สำหรับส่งภาพจากผู้ใช้ เพื่อนำไปปรับปรุงโมเดล</p>
 
       <div class="group">
         <label for="dc-category">ประเภทภาพ</label>
@@ -362,11 +473,10 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
         <textarea id="dc-note" placeholder="ระบุบริบทของภาพ เช่น พืชที่พบ พื้นที่/อำเภอ เวลา ฉีดสารหรือไม่ ฯลฯ"></textarea>
       </div>
 
-      <!-- Consent, centered & emphasized -->
       <div class="group">
         <div class="consent-box">
           <input type="checkbox" id="dc-consent">
-          <label for="dc-consent" style="margin:0">ยินยอมให้ใช้ภาพเพื่อพัฒนา AI</label>
+          <label for="dc-consent">ยินยอมให้ใช้ภาพเพื่อพัฒนา AI</label>
         </div>
       </div>
 
@@ -377,11 +487,39 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
     </div>
   </section>
 
+  <!-- วิธีใช้งาน -->
+  <section id="usage-page" class="page-section">
+    <h2 class="section-title"><i class="fa-solid fa-circle-question"></i> วิธีใช้งาน</h2>
+    <div class="panel info-body">
+      <h3>เริ่มต้นอย่างรวดเร็ว</h3>
+      <ol class="info-list">
+        <li>เลือกโมเดลที่ต้องการ</li>
+        <li>ถ่าย/อัปโหลดรูป และกด <b>วิเคราะห์ภาพ</b></li>
+        <li>ตรวจดูผลลัพธ์และระดับความมั่นใจ</li>
+        <li>หากยังไม่แม่นยำ กด <b>ส่งภาพนี้ให้เรา</b></li>
+      </ol>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn gray" onclick="setActivePage('home-page')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- เกี่ยวกับเรา -->
+  <section id="about-page" class="page-section">
+    <h2 class="section-title"><i class="fa-solid fa-circle-info"></i> เกี่ยวกับเรา</h2>
+    <div class="panel info-body">
+      <p><b>AgriCare AI</b> ช่วยเกษตรกรตรวจจับศัตรูพืช/โรคพืชด้วย AI บนเบราว์เซอร์ ใช้ TensorFlow.js + Teachable Machine</p>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn gray" onclick="setActivePage('home-page')"><i class="fa-solid fa-arrow-left"></i> กลับหน้าแรก</button>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>&copy; 2024 AgriCare AI Project — ใช้ Google Apps Script สำหรับเก็บข้อมูล</footer>
 
-<!-- Success Modal (ใช้กับ Direct Contribution เท่านั้น) -->
+<!-- Success Modal -->
 <div class="modal" id="dc-modal">
   <div class="box">
     <div style="font-size:2rem;line-height:1">🎉</div>
@@ -392,7 +530,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
 </div>
 
 <script>
-/* ================== MODEL & DATA (เดิมทั้งหมด) =================== */
+/* ================== MODEL & DATA (คงเดิม) =================== */
 const MODELS_INFO = {
   insect   : { url:'https://teachablemachine.withgoogle.com/models/gCL-xqZ8C/', title:'วิเคราะห์แมลง', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปแมลง' },
   corn     : { url:'https://teachablemachine.withgoogle.com/models/RfjRGiUuH/', title:'วิเคราะห์โรคใบข้าวโพด', instruction:'กรุณาถ่ายภาพหรืออัปโหลดรูปใบข้าวโพด' },
@@ -448,7 +586,7 @@ const RESULTS_DATA = {
     management:[] }
 };
 
-/* ================== GLOBAL (เดิม + ตัวแปรเฉพาะ direct) =================== */
+/* ================== GLOBAL =================== */
 let currentModelKey = null;
 let currentModel = null;
 let lastPrediction = null;
@@ -459,16 +597,15 @@ let dcImageDataUrl = null; // สำหรับ Direct Contribution
 const CONF_LIMIT = 0.80;
 const UNKNOWN_NAME = "ไม่สามารถระบุประเภทได้";
 
-/* Helpers */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 
 function updateNavVisibility(activeId){
   const top = document.getElementById('top-nav');
   if (!top) return;
-  top.style.display = (activeId === 'home-page') ? 'none' : '';
+  const hideNav = ['home-page','direct-contrib-page','usage-page','about-page'].includes(activeId);
+  top.style.display = hideNav ? 'none' : '';
 }
-
 function setActivePage(id){
   $$('.page-section').forEach(el=>el.classList.remove('active'));
   $('#'+id).classList.add('active');
@@ -483,7 +620,7 @@ function setActivePage(id){
   updateNavVisibility(id);
 }
 
-/* Resize to 224×224 for model (เดิม) */
+/* Helpers */
 function toModelCanvasFromImage(img){
   const c=document.createElement('canvas');
   c.width=224; c.height=224;
@@ -491,7 +628,7 @@ function toModelCanvasFromImage(img){
   return c;
 }
 
-/* ====== MODEL (เดิม) ====== */
+/* MODEL */
 async function loadModel(url){
   $('#loading').style.display='flex';
   try{
@@ -505,7 +642,6 @@ async function loadModel(url){
     $('#loading').style.display='none';
   }
 }
-
 async function initWebcam(){
   $('#loading').style.display='flex';
   const v = $('#webcam');
@@ -519,7 +655,6 @@ async function initWebcam(){
     alert('ไม่สามารถเปิดกล้องได้ โปรดอนุญาตการเข้าถึงกล้องหรือใช้อัปโหลดภาพแทน');
   }finally{$('#loading').style.display='none';}
 }
-
 function captureFromWebcam(){
   const v = $('#webcam');
   const c = document.createElement('canvas');
@@ -528,14 +663,13 @@ function captureFromWebcam(){
   capturedImageDataUrl = c.toDataURL('image/jpeg');
   showPreview(capturedImageDataUrl);
 }
-
 function showPreview(dataURL){
   const img = $('#preview');
   img.src=dataURL; img.style.display='block';
   $('#webcam').style.display='none';
   $('#placeholder').style.display='none';
-  $('#analyze').style.display='inline-flex';
-  $('#recapture').style.display='inline-flex';
+  document.getElementById('analyze').style.display='inline-flex';
+  document.getElementById('recapture').style.display='inline-flex';
 }
 
 async function analyze(){
@@ -550,6 +684,7 @@ async function analyze(){
     prediction.sort((a,b)=>b.probability-a.probability);
     lastPrediction = prediction;
 
+    // แสดงผลลัพธ์ตามกติกาใหม่ (ข้อ 1 และ 2) จะตัดสินใจใน renderResult
     renderResult(prediction[0]);
     setActivePage('result-page');
   }catch(e){
@@ -557,55 +692,90 @@ async function analyze(){
   }finally{$('#loading').style.display='none'}
 }
 
-/* ====== RESULT RENDER (เดิม) ====== */
+/* ===== RENDER RESULT (แก้เฉพาะตามโจทย์) ===== */
 function renderResult(top){
   $('#result-image').src = capturedImageDataUrl;
+
   const percent = Math.round(top.probability*100);
-  const confident = top.probability >= CONF_LIMIT;
-  const isUnknown = top.className === UNKNOWN_NAME;
+  const isUnknownPred = (top.className === UNKNOWN_NAME);
+  const lowConfidence = (top.probability < CONF_LIMIT);
 
-  let d = RESULTS_DATA[top.className] || {type:'unknown',label:'ไม่ทราบประเภท'};
+  // กติกาใหม่:
+  // 1) ถ้า TM ส่งคลาส "ไม่สามารถระบุประเภทได้" => แสดง "ไม่สามารถระบุประเภทได้", bubble "ต่ำ", บาร์ 50%
+  // 2) ถ้าความมั่นใจ < 80% => บังคับแสดง "ไม่สามารถระบุประเภทได้" ทุกกรณี
+  const showAsUnknown = isUnknownPred || lowConfidence;
+
+  // Badge & name
   const typeEl = $('#result-type');
-  typeEl.className = 'badge '+(d.type||'unknown');
-  typeEl.innerHTML = `<i class="fa-solid fa-tag"></i><b>${d.label}</b>`;
-  $('#result-name').textContent = confident ? top.className : (isUnknown ? UNKNOWN_NAME : top.className);
+  const dataForDisplay = showAsUnknown
+    ? (RESULTS_DATA[UNKNOWN_NAME] || {type:'unknown', label:'ไม่ทราบประเภท'})
+    : (RESULTS_DATA[top.className] || {type:'unknown', label:'ไม่ทราบประเภท'});
 
-  $('#conf-fill').style.width = (confident?percent:Math.max(percent,5))+'%';
-  $('#result-confidence').textContent = confident ? `${percent}%` : 'ระดับความมั่นใจยังไม่เพียงพอ';
+  typeEl.className = 'badge ' + (dataForDisplay.type || 'unknown');
+  typeEl.innerHTML = `<i class="fa-solid fa-tag"></i><b>${dataForDisplay.label}</b>`;
+  $('#result-name').textContent = showAsUnknown ? UNKNOWN_NAME : top.className;
 
+  // Confidence meter & bubble
+  const meterFill = $('#conf-fill');
+  const bubble = $('#conf-bubble');
+  if (showAsUnknown) {
+    meterFill.style.width = '50%';     // ครึ่งเดียว
+    bubble.textContent = 'ต่ำ';
+  } else {
+    meterFill.style.width = percent + '%';
+    bubble.textContent = `${percent}%`;
+  }
+
+  // Info / Disclaimer
   const infoBox = $('#result-info');
-  if(isUnknown || !confident){
+  const disclaimerBox = $('#result-disclaimer');
+
+  if (showAsUnknown) {
     infoBox.innerHTML = `
       <div class="unknown-box">
+        <b>ไม่สามารถระบุประเภทได้ เนื่องจาก</b>
         <div class="adv"><i class="fa-solid fa-eye-slash"></i> ภาพไม่ชัดเจนหรือมีแสงน้อย/มากเกินไป</div>
         <div class="adv"><i class="fa-solid fa-image"></i> มุมภาพไม่เหมาะสมสำหรับการระบุชนิด</div>
         <div class="adv"><i class="fa-solid fa-database"></i> ภาพนี้อาจไม่ได้อยู่ในฐานข้อมูลของโมเดล</div>
       </div>`;
-  }else{
+    disclaimerBox.innerHTML = '';
+  } else {
     infoBox.innerHTML = `
       <div class="block">
         <h4><i class="fa-solid fa-circle-info"></i>ข้อมูลเบื้องต้น</h4>
-        <p>${d.info || '-'}</p>
+        <p>${dataForDisplay.info || '-'}</p>
         <h4><i class="fa-solid fa-clipboard-check"></i>แนวทางการจัดการ</h4>
         <ul class="list">
-          ${(d.management||[]).map(t=>`<li><i class="fa-solid fa-check-circle"></i>${t}</li>`).join('')}
+          ${(dataForDisplay.management||[]).map(t=>`<li><i class="fa-solid fa-check-circle"></i>${t}</li>`).join('')}
         </ul>
       </div>
     `;
+    // แสดงหมายเหตุเมื่อความมั่นใจ >= 80% (ซึ่งกรณีนี้ต้องจริงเพราะไม่อยู่ใน showAsUnknown)
+    if (percent >= 80){
+      disclaimerBox.innerHTML = `
+        <div class="disclaimer">
+          <i class="fa-solid fa-triangle-exclamation" style="color:#B26A00;margin-top:2px"></i>
+          <div><b>หมายเหตุ:</b> ผลการวิเคราะห์นี้เป็นเพียงการประเมินเบื้องต้นจาก AI กรุณาตรวจสอบซ้ำกับผู้เชี่ยวชาญหรือคู่มือทางการเกษตรก่อนดำเนินการใด ๆ</div>
+        </div>`;
+    }else{
+      disclaimerBox.innerHTML = '';
+    }
   }
 
+  // Nearby list
   const near = lastPrediction
-    .filter(p => p.className !== UNKNOWN_NAME && (!confident ? true : p.className !== top.className))
+    .filter(p => p.className !== UNKNOWN_NAME && (!(!showAsUnknown) ? true : p.className !== top.className))
     .slice(0, 3)
     .map(p => `<li><i class="fa-regular fa-circle-check"></i> ${p.className} – ${Math.round(p.probability*100)}%</li>`)
     .join('');
   $('#nearby-list').innerHTML = near;
 
+  // Report page preview
   $('#report-img').src = capturedImageDataUrl;
-  $('#ai-summary').textContent = confident && !isUnknown ? top.className : UNKNOWN_NAME;
+  $('#ai-summary').textContent = showAsUnknown ? UNKNOWN_NAME : top.className;
 }
 
-/* ====== NAV / EVENTS (เดิม + ปรับคลิกปุ่มร่วมพัฒนาไปหน้าใหม่) ====== */
+/* ===== Nav / Events (คงเดิม + ปุ่มหน้าอื่น) ===== */
 function bindNav(){
   $$('#top-nav a').forEach(a=>{
     a.addEventListener('click',e=>{
@@ -614,15 +784,14 @@ function bindNav(){
     });
   });
 }
-
 function bindHomeCards(){
   $$('.feature').forEach(card=>{
     card.addEventListener('click', async ()=>{
       const key = card.dataset.model;
       currentModelKey = key;
       const mInfo = MODELS_INFO[key];
-      $('#analysis-title').textContent = mInfo.title;
-      $('#instruction').textContent = mInfo.instruction;
+      document.getElementById('analysis-title').textContent = mInfo.title;
+      document.getElementById('instruction').textContent = mInfo.instruction;
 
       if(!currentModel || currentModel.url !== mInfo.url){
         currentModel = await loadModel(mInfo.url);
@@ -631,15 +800,14 @@ function bindHomeCards(){
       setActivePage('analysis-page');
     });
   });
-
-  // ไปหน้า Direct Contribution (อิสระจากการวิเคราะห์)
-  $('#contribute-data-home').addEventListener('click',()=>setActivePage('direct-contrib-page'));
+  document.getElementById('contribute-data-home').addEventListener('click',()=>setActivePage('direct-contrib-page'));
+  document.getElementById('usage-btn').addEventListener('click',()=>setActivePage('usage-page'));
+  document.getElementById('about-btn').addEventListener('click',()=>setActivePage('about-page'));
 }
-
 function bindAnalysisButtons(){
-  $('#capture').addEventListener('click',captureFromWebcam);
-  $('#upload').addEventListener('click',()=>$('#file-input').click());
-  $('#file-input').addEventListener('change',e=>{
+  document.getElementById('capture').addEventListener('click',captureFromWebcam);
+  document.getElementById('upload').addEventListener('click',()=>document.getElementById('file-input').click());
+  document.getElementById('file-input').addEventListener('change',e=>{
     if(e.target.files?.length){
       const file=e.target.files[0];
       const r=new FileReader();
@@ -647,42 +815,33 @@ function bindAnalysisButtons(){
       r.readAsDataURL(file);
     }
   });
-  $('#analyze').addEventListener('click',analyze);
-  $('#recapture').addEventListener('click',()=>{
-    $('#preview').style.display='none'; $('#webcam').style.display='block';
-    $('#analyze').style.display='none'; $('#recapture').style.display='none';
+  document.getElementById('analyze').addEventListener('click',analyze);
+  document.getElementById('recapture').addEventListener('click',()=>{
+    document.getElementById('preview').style.display='none'; document.getElementById('webcam').style.display='block';
+    document.getElementById('analyze').style.display='none'; document.getElementById('recapture').style.display='none';
   });
 }
-
 function bindResultButtons(){
-  $('#again').addEventListener('click',()=>setActivePage('analysis-page'));
-  $('#go-report').addEventListener('click',()=>setActivePage('report-feedback-page'));
-  $('#back-to-result').addEventListener('click',()=>setActivePage('result-page'));
+  document.getElementById('again').addEventListener('click',()=>setActivePage('analysis-page'));
+  document.getElementById('go-report').addEventListener('click',()=>setActivePage('report-feedback-page'));
+  document.getElementById('back-to-result').addEventListener('click',()=>setActivePage('result-page'));
 }
 
-/* ================== GOOGLE APPS SCRIPT (เดิม) =================== */
+/* ===== GAS (คงเดิม) ===== */
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxMcdkHDEBPv5aspReCHxOW6lh_Y00O3wWQLpeIR43KhKNjV70Cli9z9fuK4GRHNV7/exec';
-
 async function submitData(payload){
   try{
     payload.timestamp = new Date().toISOString();
-    await fetch(GAS_URL,{
-      method:'POST',mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
+    await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     return true;
-  }catch(err){
-    console.error(err);
-    return false;
-  }
+  }catch(err){ console.error(err); return false; }
 }
 
-/* ===== ส่งจากหน้า “รายงาน” หลังวิเคราะห์ (เดิม) ===== */
-$('#send-report').addEventListener('click',async ()=>{
-  const ai = $('#ai-summary').textContent.trim();
-  const fix = $('#fix-name').value.trim();
-  const desc= $('#desc').value.trim();
+/* ส่งรายงานหลังวิเคราะห์ (คงเดิม) */
+document.getElementById('send-report').addEventListener('click',async ()=>{
+  const ai = document.getElementById('ai-summary').textContent.trim();
+  const fix = document.getElementById('fix-name').value.trim();
+  const desc= document.getElementById('desc').value.trim();
   const payload = {
     type:'report',
     category: currentModelKey,
@@ -697,14 +856,14 @@ $('#send-report').addEventListener('click',async ()=>{
   setActivePage('home-page');
 });
 
-/* ===== ใหม่: DIRECT CONTRIBUTION (อิสระจากส่วนอื่น) ===== */
+/* Direct Contribution (คงเดิม) */
 function bindDirectContribution(){
-  const uploadBtn = $('#dc-upload');
-  const fileInput = $('#dc-file');
-  const preview   = $('#dc-preview');
-  const clearBtn  = $('#dc-clear');
-  const modal     = $('#dc-modal');
-  const modalOk   = $('#dc-ok');
+  const uploadBtn = document.getElementById('dc-upload');
+  const fileInput = document.getElementById('dc-file');
+  const preview   = document.getElementById('dc-preview');
+  const clearBtn  = document.getElementById('dc-clear');
+  const modal     = document.getElementById('dc-modal');
+  const modalOk   = document.getElementById('dc-ok');
 
   uploadBtn.addEventListener('click', ()=> fileInput.click());
   fileInput.addEventListener('change', (e)=>{
@@ -728,32 +887,28 @@ function bindDirectContribution(){
     clearBtn.style.display='none';
   });
 
-  $('#dc-back').addEventListener('click', ()=> setActivePage('home-page'));
+  document.getElementById('dc-back').addEventListener('click', ()=> setActivePage('home-page'));
 
-  // ส่งแบบเดียวกับ “รายงานหลังวิเคราะห์”
-  $('#dc-send').addEventListener('click', async ()=>{
+  document.getElementById('dc-send').addEventListener('click', async ()=>{
     if(!dcImageDataUrl){ alert('โปรดอัปโหลดภาพก่อน'); return; }
-    if(!$('#dc-consent').checked){ alert('โปรดยืนยันการยินยอมให้ใช้ข้อมูล'); return; }
-
-    const note = $('#dc-note').value.trim();
+    if(!document.getElementById('dc-consent').checked){ alert('โปรดยืนยันการยินยอมให้ใช้ข้อมูล'); return; }
 
     const payload = {
       type: 'report',
-      category: $('#dc-category').value,
+      category: document.getElementById('dc-category').value,
       imageData: dcImageDataUrl,
       aiPrediction: '',
       aiConfidence: '',
-      userCorrection: $('#dc-true').value.trim(),
-      userDescription: note
+      userCorrection: document.getElementById('dc-true').value.trim(),
+      userDescription: document.getElementById('dc-note').value.trim()
     };
 
     const ok = await submitData(payload);
     if(ok){
       modal.style.display='flex';
       modalOk.focus();
-      // reset ฟอร์ม
-      $('#dc-true').value=''; $('#dc-note').value='';
-      $('#dc-consent').checked=false;
+      document.getElementById('dc-true').value=''; document.getElementById('dc-note').value='';
+      document.getElementById('dc-consent').checked=false;
       fileInput.value=''; dcImageDataUrl=null; preview.style.display='none'; clearBtn.style.display='none';
     }else{
       alert('ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
@@ -761,12 +916,12 @@ function bindDirectContribution(){
   });
 
   modalOk.addEventListener('click', ()=>{
-    $('#dc-modal').style.display='none';
+    document.getElementById('dc-modal').style.display='none';
     setActivePage('home-page');
   });
 }
 
-/* ================== INIT =================== */
+/* INIT */
 document.addEventListener('DOMContentLoaded', ()=>{
   updateNavVisibility('home-page');
 
@@ -774,9 +929,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
   bindHomeCards();
   bindAnalysisButtons();
   bindResultButtons();
-  bindDirectContribution();  // ใช้งาน Direct Contribution
+  bindDirectContribution();
 
-  // ซ่อนแท็บผลลัพธ์/ส่งภาพนี้ให้เราเมื่อยังไม่มีผล (เดิม)
+  // ทำให้คลิกโลโก้แล้วกลับหน้าแรกเสมอ
+  const logo = document.getElementById('logo');
+  if(logo){
+    logo.addEventListener('click',(e)=>{
+      e.preventDefault();
+      setActivePage('home-page');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+
   $$('#top-nav a').forEach(a=>{
     if(['result-page','report-feedback-page'].includes(a.dataset.target)) a.style.display='none';
   });
