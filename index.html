@@ -549,7 +549,7 @@ footer{max-width:1200px;margin:24px auto;padding:16px;color:#62706b;text-align:c
           <button class="btn" id="dc-capture"><i class="fa-solid fa-camera"></i> ถ่ายภาพ</button>
           <button class="btn secondary" id="dc-upload"><i class="fa-solid fa-upload"></i> อัปโหลดภาพ</button>
           <input type="file" id="dc-file" accept="image/*" capture="environment" hidden>
-          <button class="btn gray" id="dc-recapture" style="display:none"><i class="fa-solid fa-arrows-rotate"></i> ถ่าย/เลือกใหม่</button>
+          <button class="btn gray" id="dc-recapture" style="display:none"><i class="fa-solid fa-eraser"></i> ถ่าย/เลือกใหม่</button>
           <button class="btn gray" id="dc-clear" style="display:none"><i class="fa-solid fa-eraser"></i> ล้างรูป</button>
         </div>
       </div>
@@ -730,8 +730,11 @@ const RESULTS_DATA = {
   "โรคใบไหม้ - Leaf Blight":{ type:"disease", label:"โรคใบไหม้",
     info:"โรคใบไหม้ข้าวโพดเหนือ เกิดจากเชื้อรา Exserohilum (Setosphaeria) turcicum แผลยาวรีสีน้ำตาล",
     management:["ใช้พันธุ์ต้านทาน","ปลูกหมุนเวียนและไถกลบเศษซาก","พ่นสารป้องกันเชื้อราเมื่อเริ่มพบ"] },
-  "โรคราสนิม - Common Rust":{ type:"disease", label:"โรคราสนิม",
+  "โรคราสนิม - Corn Rust":{ type:"disease", label:"โรคราสนิม",
     info:"เชื้อรา Puccinia sorghi ทำจุดนูนสีน้ำตาลแดงเป็นผงสปอร์บนใบข้าวโพด",
+    management:["ใช้พันธุ์ต้านทาน/ปลูกไม่หนาแน่น","ลดความชื้นสะสม","พ่นสารป้องกันเมื่อระบาด"] },
+  "โรคราสนิม - Sugarcane rust":{ type:"disease", label:"โรคราสนิม",
+    info:"เชื้อรา Puccinia sorghi ทำจุดนูนสีน้ำตาลแดงเป็นผงสปอร์บนใบอ้อย",
     management:["ใช้พันธุ์ต้านทาน/ปลูกไม่หนาแน่น","ลดความชื้นสะสม","พ่นสารป้องกันเมื่อระบาด"] },
   "โรคใบเหลือง - Yellow Leaf":{ type:"disease", label:"โรคใบเหลือง",
     info:"อ้อยติดเชื้อไวรัส SCYLV ทำให้เส้นกลางใบและใบเหลือง ผลผลิตลดลง",
@@ -765,6 +768,32 @@ const UNKNOWN_NAME = "ไม่สามารถระบุประเภท�
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ---------- [FIX] ช่วยหา key แบบไม่เคร่งครัด ---------- */
+// ทำมาตรฐานชื่อ: ลบช่องว่างปลาย-หัว, แปลงเป็น lower, รวมช่องว่างซ้ำ, รวมเครื่องหมายขีดทุกแบบเป็น '-'
+function normalizeKey(s){
+  return String(s ?? '')
+    .replace(/[–—]/g,'-')                 // en/em dash -> hyphen
+    .normalize('NFKC')                    // รูปแบบ unicode เป็นมาตรฐาน
+    .trim()
+    .toLowerCase()
+    .replace(/\s*-\s*/g,' - ')            // บีบช่องว่างรอบ '-'
+    .replace(/\s+/g,' ');                 // ช่องว่างซ้ำให้เหลือช่องเดียว
+}
+// สร้างแผนที่ค้นหาแบบ normalized จาก RESULTS_DATA
+const RESULTS_DATA_LOOKUP = (() => {
+  const map = new Map();
+  Object.keys(RESULTS_DATA).forEach(k => {
+    map.set(normalizeKey(k), RESULTS_DATA[k]);
+  });
+  return map;
+})();
+// ฟังก์ชันช่วยดึงข้อมูลด้วยชื่อคลาส (ลอง exact -> normalized)
+function getResultData(label){
+  if (RESULTS_DATA[label]) return RESULTS_DATA[label];
+  return RESULTS_DATA_LOOKUP.get(normalizeKey(label));
+}
+/* ---------- [END FIX] ---------- */
 
 /* Lazy-load libs */
 let libsLoaded = false;
@@ -1292,9 +1321,13 @@ function renderResult(top){
   const showAsUnknown = isUnknownPred || lowConfidence;
 
   const typeEl = $('#result-type');
+
+  /* [FIX] ใช้ตัวช่วย getResultData() เพื่อให้หา key แบบยืดหยุ่น */
+  const foundData = getResultData(top.className); // <— ใช้ตัวช่วยใหม่
   const dataForDisplay = showAsUnknown
     ? (RESULTS_DATA[UNKNOWN_NAME] || {type:'unknown', label:'ไม่ทราบประเภท'})
-    : (RESULTS_DATA[top.className] || {type:'unknown', label:'ไม่ทราบประเภท'});
+    : (foundData || {type:'unknown', label:'ไม่ทราบประเภท'});
+  /* [END FIX] */
 
   typeEl.className = 'badge ' + (dataForDisplay.type || 'unknown');
   typeEl.innerHTML = `<i class="fa-solid fa-tag"></i><b>${dataForDisplay.label}</b>`;
